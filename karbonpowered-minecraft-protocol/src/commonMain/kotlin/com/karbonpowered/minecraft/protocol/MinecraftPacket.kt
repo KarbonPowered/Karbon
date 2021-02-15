@@ -1,3 +1,5 @@
 package com.karbonpowered.minecraft.protocol
 
-interface MinecraftPacket
+import com.karbonpowered.network.Message
+
+interface MinecraftPacket : Message

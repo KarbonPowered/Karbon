@@ -13,7 +13,7 @@ interface Codec<T : Message> {
      * @param byteReadChannel the input read from
      * @return the message fully encoded.
      */
-    suspend fun decode(byteReadChannel: ByteReadChannel): T?
+    suspend fun decode(input: Input): T?
 
     /**
      * Encodes a [Message] into a [Output].
@@ -21,11 +21,11 @@ interface Codec<T : Message> {
      * @param byteWriteChannel the output to encode into.
      * @param message The message to encode
      */
-    suspend fun encode(byteWriteChannel: ByteWriteChannel, message: T)
+    suspend fun encode(output: Output, message: T)
 
     data class CodecRegistration<M : Message>(
         val opcode: Int,
-        val codec: Codec<M>
+        val codec: Codec<in M>
     )
 }
 

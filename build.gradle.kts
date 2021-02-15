@@ -32,7 +32,7 @@ allprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
             useIR = true
-            jvmTarget = "1.8"
+            jvmTarget = "11"
         }
     }
 }

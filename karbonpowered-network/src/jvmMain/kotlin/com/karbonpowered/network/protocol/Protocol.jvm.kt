@@ -1,6 +1,9 @@
-package com.karbonpowered.network
+package com.karbonpowered.network.protocol
 
 import com.karbonpowered.common.Named
+import com.karbonpowered.network.Codec
+import com.karbonpowered.network.Message
+import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
@@ -10,9 +13,9 @@ actual interface Protocol : Named {
      */
     actual override val name: String
 
-    actual fun readHeader(input: Input): Codec<*>
+    actual suspend fun readHeader(input: ByteReadChannel): Codec<*>
 
-    actual fun writeHeader(output: BytePacketBuilder, codec: Codec.CodecRegistration<*>, data: BytePacketBuilder)
+    actual suspend fun writeHeader(output: ByteWriteChannel, codec: Codec.CodecRegistration<*>, data: ByteReadPacket)
 
     actual fun <M : Message> getCodecRegistration(message: KClass<M>): Codec.CodecRegistration<M>?
 

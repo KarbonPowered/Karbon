@@ -1,5 +1,9 @@
 package com.karbonpowered.network
 
+import com.karbonpowered.network.protocol.Protocol
+import io.ktor.network.sockets.*
+import kotlinx.coroutines.flow.Flow
+
 /**
  * Represents a connection to another engine.
  *
@@ -11,26 +15,24 @@ interface Session {
      */
     val protocol: Protocol
 
+    val connection: Connection
+
+    val outgoingMessages: Flow<Message>
+
+    val incomingMessages: Flow<Message>
     /**
      * Passes a message to a session for processing.
      *
      * @param message message to be processed
      */
-    fun <T : Message> messageReceived(message: T)
+    suspend fun <T : Message> messageReceived(message: T)
 
     /**
      * Sends a message across the network.
      *
      * @param message The message.
      */
-    fun send(message: Message)
-
-    /**
-     * Sends any amount of messages to the client.
-     *
-     * @param messages the messages to send to the client
-     */
-    fun sendAll(vararg messages: Message)
+    suspend fun send(vararg messages: Message)
 
     /**
      * Closes the session.

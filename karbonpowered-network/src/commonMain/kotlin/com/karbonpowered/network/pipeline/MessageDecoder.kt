@@ -8,7 +8,7 @@ class MessageDecoder(
     val messageHandler: MessageHandler
 ) {
     suspend fun decode(input: ByteReadChannel): Message? {
-        val protocol = messageHandler.session?.protocol ?: return null
+        val protocol = messageHandler.session.protocol
         val codec = try {
             protocol.readHeader(input)
         } catch (e: UnknownPacketException) {
@@ -18,6 +18,6 @@ class MessageDecoder(
             }
             throw e
         }
-        return codec.decode(input)
+        return codec.decode(input.readRemaining())
     }
 }
