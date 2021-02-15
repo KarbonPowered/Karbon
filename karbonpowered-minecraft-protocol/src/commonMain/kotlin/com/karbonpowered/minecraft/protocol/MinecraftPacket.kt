@@ -1,0 +1,3 @@
+package com.karbonpowered.minecraft.protocol
+
+interface MinecraftPacket
