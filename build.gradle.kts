@@ -1,9 +1,11 @@
 plugins {
     kotlin("multiplatform") version "1.4.30"
     application
+    `maven-publish`
 }
 
 allprojects {
+    apply(plugin = "maven-publish")
     apply(plugin = "kotlin-multiplatform")
 
     group = "com.karbonpowered"
@@ -33,6 +35,16 @@ allprojects {
         kotlinOptions {
             useIR = true
             jvmTarget = "11"
+        }
+    }
+
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                groupId = this@allprojects.group.toString()
+                artifactId = this@allprojects.name
+                version = this@allprojects.version.toString()
+            }
         }
     }
 }
