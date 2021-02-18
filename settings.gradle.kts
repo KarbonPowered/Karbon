@@ -9,6 +9,7 @@ pluginManagement {
 
 include("karbonpowered-common")
 include("karbonpowered-network")
-include("karbonpowered-minecraft-api")
-include("karbonpowered-minecraft-text")
-include("karbonpowered-minecraft-protocol")
+include("karbonpowered-api")
+include("karbonpowered-text")
+include("karbonpowered-protocol")
+include("karbonpowered-proxy")
