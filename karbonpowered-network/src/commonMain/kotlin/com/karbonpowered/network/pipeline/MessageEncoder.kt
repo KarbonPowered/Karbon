@@ -7,11 +7,11 @@ import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
 
 class MessageEncoder(
-    val messageHandler: MessageHandler
+    val connectionHandler: ConnectionHandler
 ) {
     @Suppress("UNCHECKED_CAST")
     suspend fun encode(output: ByteWriteChannel, message: Message) {
-        val protocol = messageHandler.session.protocol
+        val protocol = connectionHandler.session.protocol
         val codecRegistration = protocol[message::class] as? Codec.CodecRegistration<Message>
             ?: throw Exception("Unknown message type: ${message::class}")
         val data = buildPacket {

@@ -27,6 +27,7 @@ class CodecLookupService(
         require(opcode >= 0) { "Opcode must either greater than or equal to 0" }
         return Codec.CodecRegistration(opcode, codec).also {
             messages[messageKClass] = it
+            put(opcode, codec)
         }
     }
 
@@ -47,5 +48,8 @@ class CodecLookupService(
     }
 
     @Suppress("UNCHECKED_CAST")
-    operator fun <M : Message> get(message: KClass<M>): Codec.CodecRegistration<M>? = messages[message] as? Codec.CodecRegistration<M>
+    operator fun <M : Message> get(message: KClass<M>): Codec.CodecRegistration<M>? =
+        messages[message] as? Codec.CodecRegistration<M>
+
+    override fun toString(): String = "CodecLookupService(messages=$messages)"
 }

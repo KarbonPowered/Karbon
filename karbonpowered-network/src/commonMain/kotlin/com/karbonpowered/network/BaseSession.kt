@@ -4,7 +4,7 @@ import com.karbonpowered.network.protocol.Protocol
 import io.ktor.network.sockets.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 
 open class BaseSession(
     override val connection: Connection,
@@ -13,16 +13,16 @@ open class BaseSession(
     protected val outgoingMessagesChannel = Channel<Message>()
     protected val incomingMessagesChannel = Channel<Message>()
 
-    override val outgoingMessages: Flow<Message> = outgoingMessagesChannel.consumeAsFlow()
-    override val incomingMessages: Flow<Message> = incomingMessagesChannel.consumeAsFlow()
+    override val outgoingMessages: Flow<Message> = outgoingMessagesChannel.receiveAsFlow()
+    override val incomingMessages: Flow<Message> = incomingMessagesChannel.receiveAsFlow()
 
     override suspend fun <T : Message> messageReceived(message: T) {
-        outgoingMessagesChannel.send(message)
+        incomingMessagesChannel.send(message)
     }
 
     override suspend fun send(vararg messages: Message) {
         messages.forEach { message ->
-            incomingMessagesChannel.send(message)
+            outgoingMessagesChannel.send(message)
         }
     }
 

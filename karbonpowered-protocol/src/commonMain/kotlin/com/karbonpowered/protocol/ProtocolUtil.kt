@@ -47,7 +47,7 @@ private fun Input.readString(capacity: Int, length: Int): String {
 //    check(availableForRead >= length) {
 //        "Trying to read a string that is too long (wanted $length, only have $availableForRead)"
 //    }
-    val string = readUTF8Line(length) ?: ""
+    val string = String(readBytes(length))
     check(string.length <= capacity) { "Got a too-long string (got ${string.length}, max $capacity)" }
     return string
 }

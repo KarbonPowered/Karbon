@@ -13,7 +13,7 @@ interface Session {
     /**
      * Gets the protocol associated with this session.
      */
-    val protocol: Protocol
+    var protocol: Protocol
 
     val connection: Connection
 

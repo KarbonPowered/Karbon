@@ -5,10 +5,10 @@ import com.karbonpowered.network.exception.UnknownPacketException
 import io.ktor.utils.io.*
 
 class MessageDecoder(
-    val messageHandler: MessageHandler
+    val connectionHandler: ConnectionHandler
 ) {
     suspend fun decode(input: ByteReadChannel): Message? {
-        val protocol = messageHandler.session.protocol
+        val protocol = connectionHandler.session.protocol
         val codec = try {
             protocol.readHeader(input)
         } catch (e: UnknownPacketException) {
@@ -18,6 +18,6 @@ class MessageDecoder(
             }
             throw e
         }
-        return codec.decode(input.readRemaining())
+        return codec.decode(input.readPacket(input.availableForRead))
     }
 }
