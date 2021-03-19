@@ -13,7 +13,7 @@ actual interface Protocol : Named {
      */
     actual override val name: String
 
-    actual suspend fun readHeader(input: ByteReadChannel): Codec<*>
+    actual suspend fun readHeader(input: ByteReadChannel): Pair<Int, Codec<*>>
 
     actual suspend fun writeHeader(output: ByteWriteChannel, codec: Codec.CodecRegistration<*>, data: ByteReadPacket)
 

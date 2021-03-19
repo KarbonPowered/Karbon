@@ -13,7 +13,7 @@ expect interface Protocol : Named {
      */
     override val name: String
 
-    suspend fun readHeader(input: ByteReadChannel): Codec<*>
+    suspend fun readHeader(input: ByteReadChannel): Pair<Int, Codec<*>>
 
     suspend fun writeHeader(output: ByteWriteChannel, codec: Codec.CodecRegistration<*>, data: ByteReadPacket)
 

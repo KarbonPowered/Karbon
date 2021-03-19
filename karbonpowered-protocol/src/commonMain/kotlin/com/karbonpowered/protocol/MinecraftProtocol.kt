@@ -3,7 +3,6 @@ package com.karbonpowered.protocol
 import com.karbonpowered.network.Codec
 import com.karbonpowered.network.Message
 import com.karbonpowered.network.MessageHandler
-import com.karbonpowered.network.exception.UnknownPacketException
 import com.karbonpowered.network.protocol.AbstractProtocol
 import com.karbonpowered.network.service.CodecLookupService
 import com.karbonpowered.network.service.HandlerLookupService
@@ -16,13 +15,8 @@ abstract class MinecraftProtocol(name: String, val isServer: Boolean) : Abstract
     val serverboundCodecLookupService = CodecLookupService()
     val handlerLookupService = HandlerLookupService()
 
-    override suspend fun readHeader(input: ByteReadChannel): Codec<*> {
-        val varIntByteDecoder = VarIntByteDecoder()
-        input.readVarInt(varIntByteDecoder) ?: throw RuntimeException("Invalid length!")
-        varIntByteDecoder.reset()
-        val opcode = input.readVarInt(varIntByteDecoder) ?: throw RuntimeException("Invalid opcode!")
-        val codec = if (isServer) serverboundCodecLookupService[opcode] else clientboundCodecLookupService[opcode]
-        return codec ?: throw UnknownPacketException("Unknown packet: $opcode", opcode, input.availableForRead)
+    override suspend fun readHeader(input: ByteReadChannel): Pair<Int, Codec<*>> {
+        TODO()
     }
 
     override suspend fun writeHeader(

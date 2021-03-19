@@ -4,7 +4,6 @@ import com.karbonpowered.network.protocol.Protocol
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
-import kotlinx.coroutines.channels.Channel
 
 /**
  * Represents a connection to another engine.
@@ -19,8 +18,6 @@ interface Session {
 
     val connection: Connection
 
-    val outgoingMessages: Channel<Array<out Message>>
-
     /**
      * Passes a message to a session for processing.
      *
@@ -33,9 +30,7 @@ interface Session {
      *
      * @param message The message.
      */
-    suspend fun send(vararg messages: Message) {
-        outgoingMessages.send(messages)
-    }
+    suspend fun send(vararg messages: Message)
 
     /**
      * Closes the session.

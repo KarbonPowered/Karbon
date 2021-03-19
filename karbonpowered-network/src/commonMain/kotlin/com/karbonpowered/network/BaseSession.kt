@@ -2,13 +2,11 @@ package com.karbonpowered.network
 
 import com.karbonpowered.network.protocol.Protocol
 import io.ktor.network.sockets.*
-import kotlinx.coroutines.channels.Channel
 
 open class BaseSession(
     override val connection: Connection,
     override var protocol: Protocol
 ) : Session {
-    override val outgoingMessages: Channel<Array<out Message>> = Channel(Channel.UNLIMITED)
 
     override suspend fun <T : Message> messageReceived(message: T) {
     }
