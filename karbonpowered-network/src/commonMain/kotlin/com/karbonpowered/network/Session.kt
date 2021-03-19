@@ -2,7 +2,9 @@ package com.karbonpowered.network
 
 import com.karbonpowered.network.protocol.Protocol
 import io.ktor.network.sockets.*
-import kotlinx.coroutines.flow.Flow
+import io.ktor.utils.io.*
+import io.ktor.utils.io.core.*
+import kotlinx.coroutines.channels.Channel
 
 /**
  * Represents a connection to another engine.
@@ -17,9 +19,8 @@ interface Session {
 
     val connection: Connection
 
-    val outgoingMessages: Flow<Message>
+    val outgoingMessages: Channel<Array<out Message>>
 
-    val incomingMessages: Flow<Message>
     /**
      * Passes a message to a session for processing.
      *
@@ -32,7 +33,9 @@ interface Session {
      *
      * @param message The message.
      */
-    suspend fun send(vararg messages: Message)
+    suspend fun send(vararg messages: Message) {
+        outgoingMessages.send(messages)
+    }
 
     /**
      * Closes the session.

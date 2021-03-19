@@ -9,8 +9,10 @@ import io.ktor.util.*
 import io.ktor.util.network.*
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 
 abstract class NetworkServer(
     val dispatcher: CoroutineDispatcher = Dispatchers.Default
@@ -30,14 +32,16 @@ abstract class NetworkServer(
                 val messageDecoder = MessageDecoder(connectionHandler)
                 val messageEncoder = MessageEncoder(connectionHandler)
                 connectionHandler.connectionActive(clientConnection)
-                launch {
-                    while (true) {
-                        val message = messageDecoder.decode(input)
-                        if (message != null) {
-                            connectionHandler.connectionReceive(message)
-                        }
-                        repeat(input.availableForRead) {
-                            input.readByte()
+                val connectionScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+                connectionScope.launch {
+                    while (!input.isClosedForWrite) {
+                        try {
+                            val message = messageDecoder.decode(input)
+                            if (message != null) {
+                                connectionHandler.connectionReceive(message)
+                            }
+                        } catch (e: ClosedReceiveChannelException) {
+                            break
                         }
                     }
                 }.invokeOnCompletion {
@@ -47,15 +51,18 @@ abstract class NetworkServer(
                     connectionHandler.connectionInactive(clientConnection)
                 }
 
-                launch {
-                    connectionHandler.session.outgoingMessages.onEach {
-                        try {
-                            messageEncoder.encode(clientConnection.output, it)
-                        } catch (e: Throwable) {
-                            connectionHandler.connectionExceptionCaught(e)
+                connectionHandler.session.outgoingMessages.receiveAsFlow().onEach { messages ->
+                    if (!clientConnection.output.isClosedForWrite) {
+                        messages.forEach { message ->
+                            try {
+                                messageEncoder.encode(clientConnection.output, message)
+                            } catch (e: Throwable) {
+                                connectionHandler.connectionExceptionCaught(e)
+                            }
                         }
-                    }.collect()
-                }
+                        clientConnection.output.flush()
+                    }
+                }.launchIn(connectionScope)
             }
         }
     }

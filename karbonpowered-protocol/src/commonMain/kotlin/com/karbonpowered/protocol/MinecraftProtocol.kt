@@ -3,6 +3,7 @@ package com.karbonpowered.protocol
 import com.karbonpowered.network.Codec
 import com.karbonpowered.network.Message
 import com.karbonpowered.network.MessageHandler
+import com.karbonpowered.network.exception.UnknownPacketException
 import com.karbonpowered.network.protocol.AbstractProtocol
 import com.karbonpowered.network.service.CodecLookupService
 import com.karbonpowered.network.service.HandlerLookupService
@@ -10,8 +11,9 @@ import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
-abstract class MinecraftProtocol(name: String, highestOpcode: Int = -1) : AbstractProtocol(name) {
-    val codecLookupService = CodecLookupService(highestOpcode + 1)
+abstract class MinecraftProtocol(name: String, val isServer: Boolean) : AbstractProtocol(name) {
+    val clientboundCodecLookupService = CodecLookupService()
+    val serverboundCodecLookupService = CodecLookupService()
     val handlerLookupService = HandlerLookupService()
 
     override suspend fun readHeader(input: ByteReadChannel): Codec<*> {
@@ -19,7 +21,8 @@ abstract class MinecraftProtocol(name: String, highestOpcode: Int = -1) : Abstra
         input.readVarInt(varIntByteDecoder) ?: throw RuntimeException("Invalid length!")
         varIntByteDecoder.reset()
         val opcode = input.readVarInt(varIntByteDecoder) ?: throw RuntimeException("Invalid opcode!")
-        return codecLookupService[opcode]!!
+        val codec = if (isServer) serverboundCodecLookupService[opcode] else clientboundCodecLookupService[opcode]
+        return codec ?: throw UnknownPacketException("Unknown packet: $opcode", opcode, input.availableForRead)
     }
 
     override suspend fun writeHeader(
@@ -36,22 +39,42 @@ abstract class MinecraftProtocol(name: String, highestOpcode: Int = -1) : Abstra
     }
 
     override fun <M : Message> getCodecRegistration(message: KClass<M>): Codec.CodecRegistration<M>? =
-        codecLookupService[message]
+        clientboundCodecLookupService[message] ?: serverboundCodecLookupService[message]
 
-    fun <M : MinecraftPacket> bind(
+    inline fun <reified M : MinecraftPacket> serverbound(
+        opcode: Int,
+        codec: Codec<M>,
+        handler: MessageHandler<*, M>? = null
+    ) = serverbound(opcode, M::class, codec, handler)
+
+    fun <M : MinecraftPacket> serverbound(
         opcode: Int,
         packet: KClass<M>,
         codec: Codec<M>,
         handler: MessageHandler<*, M>? = null
     ) {
-        codecLookupService.bind(packet, codec, opcode)
+        serverboundCodecLookupService.bind(packet, codec, opcode)
         if (handler != null) {
-            registerHandler(codec, handler)
+            handlerLookupService.bind(codec.messageType, handler)
         }
     }
 
-    fun <M : MinecraftPacket> registerHandler(codec: Codec<M>, handler: MessageHandler<*, M>) {
-        handlerLookupService.bind(codec.messageType, handler)
+    inline fun <reified M : MinecraftPacket> clientbound(
+        opcode: Int,
+        codec: Codec<M>,
+        handler: MessageHandler<*, M>? = null
+    ) = clientbound(opcode, M::class, codec, handler)
+
+    fun <M : MinecraftPacket> clientbound(
+        opcode: Int,
+        packet: KClass<M>,
+        codec: Codec<M>,
+        handler: MessageHandler<*, M>? = null
+    ) {
+        clientboundCodecLookupService.bind(packet, codec, opcode)
+        if (handler != null) {
+            handlerLookupService.bind(codec.messageType, handler)
+        }
     }
 
     private suspend fun ByteReadChannel.readVarInt(decoder: VarIntByteDecoder): Int? {
@@ -67,6 +90,3 @@ abstract class MinecraftProtocol(name: String, highestOpcode: Int = -1) : Abstra
         }
     }
 }
-
-inline fun <reified M : MinecraftPacket> MinecraftProtocol.bind(opcode: Int, codec: Codec<M>) =
-    bind(opcode, M::class, codec)

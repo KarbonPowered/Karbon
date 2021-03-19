@@ -6,7 +6,7 @@ import kotlinx.atomicfu.atomic
 import kotlin.reflect.KClass
 
 class CodecLookupService(
-    size: Int
+    size: Int = 0
 ) {
     private val messages = mutableMapOf<KClass<out Message>, Codec.CodecRegistration<*>>()
     private val opcodes =
