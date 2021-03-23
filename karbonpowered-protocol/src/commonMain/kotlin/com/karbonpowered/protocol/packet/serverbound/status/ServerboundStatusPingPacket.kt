@@ -1,6 +1,6 @@
 package com.karbonpowered.protocol.packet.serverbound.status
 
-import com.karbonpowered.network.Codec
+import com.karbonpowered.network.MessageCodec
 import com.karbonpowered.protocol.MinecraftPacket
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 data class ServerboundStatusPingPacket(
     val payload: Long
 ) : MinecraftPacket {
-    companion object : Codec<ServerboundStatusPingPacket> {
+    companion object : MessageCodec<ServerboundStatusPingPacket> {
         override val messageType: KClass<ServerboundStatusPingPacket>
             get() = ServerboundStatusPingPacket::class
 

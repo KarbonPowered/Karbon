@@ -11,7 +11,7 @@ data class ServerboundHandshakePacket(
     val nextState: Int
 ) : MinecraftPacket {
     @OptIn(ExperimentalUnsignedTypes::class)
-    companion object : com.karbonpowered.network.Codec<ServerboundHandshakePacket> {
+    companion object : com.karbonpowered.network.MessageCodec<ServerboundHandshakePacket> {
         override val messageType: KClass<ServerboundHandshakePacket>
             get() = ServerboundHandshakePacket::class
 

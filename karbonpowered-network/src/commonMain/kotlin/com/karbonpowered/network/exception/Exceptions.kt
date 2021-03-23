@@ -1,7 +1,7 @@
 package com.karbonpowered.network.exception
 
 /**
- * Thrown when a [com.karbonpowered.network.Codec] cannot be found for a given opcode and key.
+ * Thrown when a [com.karbonpowered.network.MessageCodec] cannot be found for a given opcode and key.
  */
 class UnknownPacketException(
     /** The message of this exception */

@@ -1,7 +1,7 @@
 package com.karbonpowered.network.protocol
 
 import com.karbonpowered.common.Named
-import com.karbonpowered.network.Codec
+import com.karbonpowered.network.MessageCodec
 import com.karbonpowered.network.Message
 import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
@@ -13,14 +13,14 @@ expect interface Protocol : Named {
      */
     override val name: String
 
-    suspend fun readHeader(input: ByteReadChannel): Pair<Int, Codec<*>>
+    suspend fun readHeader(input: ByteReadChannel): Pair<Int, MessageCodec<*>>
 
-    suspend fun writeHeader(output: ByteWriteChannel, codec: Codec.CodecRegistration<*>, data: ByteReadPacket)
+    suspend fun writeHeader(output: ByteWriteChannel, codec: MessageCodec.CodecRegistration<*>, data: ByteReadPacket)
 
-    fun <M : Message> getCodecRegistration(message: KClass<M>): Codec.CodecRegistration<M>?
+    fun <M : Message> getCodecRegistration(message: KClass<M>): MessageCodec.CodecRegistration<M>?
 }
 
-inline fun <reified M : Message> Protocol.getCodecRegistration(): Codec.CodecRegistration<M>? =
+inline fun <reified M : Message> Protocol.getCodecRegistration(): MessageCodec.CodecRegistration<M>? =
     getCodecRegistration(M::class)
 
-operator fun <M : Message> Protocol.get(message: KClass<M>): Codec.CodecRegistration<M>? = getCodecRegistration(message)
+operator fun <M : Message> Protocol.get(message: KClass<M>): MessageCodec.CodecRegistration<M>? = getCodecRegistration(message)

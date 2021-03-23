@@ -1,7 +1,7 @@
 package com.karbonpowered.protocol.packet.clientbound.login
 
 import com.karbonpowered.api.Identifier
-import com.karbonpowered.network.Codec
+import com.karbonpowered.network.MessageCodec
 import com.karbonpowered.protocol.*
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
@@ -11,7 +11,7 @@ data class ClientboundLoginPluginRequestPacket(
     val identifier: Identifier,
     val data: ByteReadPacket
 ) : MinecraftPacket {
-    companion object : Codec<ClientboundLoginPluginRequestPacket> {
+    companion object : MessageCodec<ClientboundLoginPluginRequestPacket> {
         override suspend fun decode(input: Input): ClientboundLoginPluginRequestPacket {
             val messageId = input.readVarInt()
             val identifier = Identifier(input.readString())

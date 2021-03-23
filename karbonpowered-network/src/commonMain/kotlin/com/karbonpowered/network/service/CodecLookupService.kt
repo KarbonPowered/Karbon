@@ -1,6 +1,6 @@
 package com.karbonpowered.network.service
 
-import com.karbonpowered.network.Codec
+import com.karbonpowered.network.MessageCodec
 import com.karbonpowered.network.Message
 import kotlinx.atomicfu.atomic
 import kotlin.reflect.KClass
@@ -8,30 +8,30 @@ import kotlin.reflect.KClass
 class CodecLookupService(
     size: Int = 0
 ) {
-    private val messages = mutableMapOf<KClass<out Message>, Codec.CodecRegistration<*>>()
+    private val messages = mutableMapOf<KClass<out Message>, MessageCodec.CodecRegistration<*>>()
     private val opcodes =
-        if (size > 0) null else mutableMapOf<Int, Codec<*>>()
-    private val opcodeTable = if (size > 0) arrayOfNulls<Codec<*>>(size) else null
+        if (size > 0) null else mutableMapOf<Int, MessageCodec<*>>()
+    private val opcodeTable = if (size > 0) arrayOfNulls<MessageCodec<*>>(size) else null
     private var nextInt by atomic(0)
 
     @Suppress("UNCHECKED_CAST")
     fun <M : Message> bind(
         messageKClass: KClass<M>,
-        codec: Codec<in M>,
+        codec: MessageCodec<in M>,
         opcode: Int = nextInt++
-    ): Codec.CodecRegistration<M> {
-        val registration = messages[messageKClass] as? Codec.CodecRegistration<M>
+    ): MessageCodec.CodecRegistration<M> {
+        val registration = messages[messageKClass] as? MessageCodec.CodecRegistration<M>
         if (registration != null) {
             return registration
         }
         require(opcode >= 0) { "Opcode must either greater than or equal to 0" }
-        return Codec.CodecRegistration(opcode, codec).also {
+        return MessageCodec.CodecRegistration(opcode, codec).also {
             messages[messageKClass] = it
             put(opcode, codec)
         }
     }
 
-    private fun put(opcode: Int, codec: Codec<*>) {
+    private fun put(opcode: Int, codec: MessageCodec<*>) {
         if (opcodeTable != null && opcodes == null) {
             opcodeTable[opcode] = codec
         } else if (opcodes != null && opcodeTable == null) {
@@ -39,7 +39,7 @@ class CodecLookupService(
         }
     }
 
-    operator fun get(opcode: Int): Codec<*>? {
+    operator fun get(opcode: Int): MessageCodec<*>? {
         return if (opcodeTable != null && opcodes == null) {
             opcodeTable[opcode]
         } else if (opcodes != null && opcodeTable == null) {
@@ -48,8 +48,8 @@ class CodecLookupService(
     }
 
     @Suppress("UNCHECKED_CAST")
-    operator fun <M : Message> get(message: KClass<M>): Codec.CodecRegistration<M>? =
-        messages[message] as? Codec.CodecRegistration<M>
+    operator fun <M : Message> get(message: KClass<M>): MessageCodec.CodecRegistration<M>? =
+        messages[message] as? MessageCodec.CodecRegistration<M>
 
     override fun toString(): String = "CodecLookupService(messages=$messages)"
 }

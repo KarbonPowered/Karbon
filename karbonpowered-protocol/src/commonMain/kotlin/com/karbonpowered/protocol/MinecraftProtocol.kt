@@ -1,6 +1,6 @@
 package com.karbonpowered.protocol
 
-import com.karbonpowered.network.Codec
+import com.karbonpowered.network.MessageCodec
 import com.karbonpowered.network.Message
 import com.karbonpowered.network.MessageHandler
 import com.karbonpowered.network.protocol.AbstractProtocol
@@ -15,13 +15,13 @@ abstract class MinecraftProtocol(name: String, val isServer: Boolean) : Abstract
     val serverboundCodecLookupService = CodecLookupService()
     val handlerLookupService = HandlerLookupService()
 
-    override suspend fun readHeader(input: ByteReadChannel): Pair<Int, Codec<*>> {
+    override suspend fun readHeader(input: ByteReadChannel): Pair<Int, MessageCodec<*>> {
         TODO()
     }
 
     override suspend fun writeHeader(
         output: ByteWriteChannel,
-        codec: Codec.CodecRegistration<*>,
+        codec: MessageCodec.CodecRegistration<*>,
         data: ByteReadPacket
     ) {
         output.writePacket {
@@ -32,19 +32,19 @@ abstract class MinecraftProtocol(name: String, val isServer: Boolean) : Abstract
         }
     }
 
-    override fun <M : Message> getCodecRegistration(message: KClass<M>): Codec.CodecRegistration<M>? =
+    override fun <M : Message> getCodecRegistration(message: KClass<M>): MessageCodec.CodecRegistration<M>? =
         clientboundCodecLookupService[message] ?: serverboundCodecLookupService[message]
 
     inline fun <reified M : MinecraftPacket> serverbound(
         opcode: Int,
-        codec: Codec<M>,
+        codec: MessageCodec<M>,
         handler: MessageHandler<*, M>? = null
     ) = serverbound(opcode, M::class, codec, handler)
 
     fun <M : MinecraftPacket> serverbound(
         opcode: Int,
         packet: KClass<M>,
-        codec: Codec<M>,
+        codec: MessageCodec<M>,
         handler: MessageHandler<*, M>? = null
     ) {
         serverboundCodecLookupService.bind(packet, codec, opcode)
@@ -55,14 +55,14 @@ abstract class MinecraftProtocol(name: String, val isServer: Boolean) : Abstract
 
     inline fun <reified M : MinecraftPacket> clientbound(
         opcode: Int,
-        codec: Codec<M>,
+        codec: MessageCodec<M>,
         handler: MessageHandler<*, M>? = null
     ) = clientbound(opcode, M::class, codec, handler)
 
     fun <M : MinecraftPacket> clientbound(
         opcode: Int,
         packet: KClass<M>,
-        codec: Codec<M>,
+        codec: MessageCodec<M>,
         handler: MessageHandler<*, M>? = null
     ) {
         clientboundCodecLookupService.bind(packet, codec, opcode)

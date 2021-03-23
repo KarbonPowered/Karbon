@@ -1,7 +1,7 @@
 package com.karbonpowered.protocol.packet.clientbound.login
 
 import com.karbonpowered.common.UUID
-import com.karbonpowered.network.Codec
+import com.karbonpowered.network.MessageCodec
 import com.karbonpowered.protocol.*
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
@@ -10,7 +10,7 @@ data class ClientboundLoginSuccessPacket(
     val uniqueId: UUID,
     val username: String
 ) : MinecraftPacket {
-    companion object : Codec<ClientboundLoginSuccessPacket> {
+    companion object : MessageCodec<ClientboundLoginSuccessPacket> {
         override val messageType: KClass<ClientboundLoginSuccessPacket>
             get() = ClientboundLoginSuccessPacket::class
 

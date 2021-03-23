@@ -1,13 +1,14 @@
 package com.karbonpowered.network
 
+import com.karbonpowered.io.Codec
 import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
 /**
- * [Codec]s are used to encode/decode a [Input]/[Message] into [Message]/[Output].
+ * [MessageCodec]s are used to encode/decode a [Input]/[Message] into [Message]/[Output].
  */
-interface Codec<T : Message> {
+interface MessageCodec<T : Message> : Codec<T> {
     val messageType: KClass<T>
 
     /**
@@ -16,19 +17,19 @@ interface Codec<T : Message> {
      * @param byteReadChannel the input read from
      * @return the message fully encoded.
      */
-    suspend fun decode(input: Input): T?
+    override suspend fun decode(input: Input): T
 
     /**
      * Encodes a [Message] into a [Output].
      *
      * @param byteWriteChannel the output to encode into.
-     * @param message The message to encode
+     * @param data The message to encode
      */
-    suspend fun encode(output: Output, message: T)
+    override suspend fun encode(output: Output, data: T)
 
     data class CodecRegistration<M : Message>(
         val opcode: Int,
-        val codec: Codec<in M>
+        val codec: MessageCodec<in M>
     )
 }
 
@@ -44,7 +45,7 @@ data class CodecBuilder<T : Message>(val messageType: KClass<T>) {
         this.encode = encode
     }
 
-    fun build(): Codec<T> = object : Codec<T> {
+    fun build(): MessageCodec<T> = object : MessageCodec<T> {
         val decoder: Input.() -> T? = decode
         val encoder: Output.(T) -> Unit = encode
         override val messageType: KClass<T> = this@CodecBuilder.messageType

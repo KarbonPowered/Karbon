@@ -1,6 +1,6 @@
 package com.karbonpowered.protocol.packet.clientbound.status
 
-import com.karbonpowered.network.Codec
+import com.karbonpowered.network.MessageCodec
 import com.karbonpowered.protocol.MinecraftPacket
 import com.karbonpowered.protocol.readString
 import com.karbonpowered.protocol.writeString
@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 data class ClientboundStatusResponsePacket(
     val response: String
 ) : MinecraftPacket {
-    companion object : Codec<ClientboundStatusResponsePacket> {
+    companion object : MessageCodec<ClientboundStatusResponsePacket> {
         override val messageType: KClass<ClientboundStatusResponsePacket>
             get() = ClientboundStatusResponsePacket::class
 

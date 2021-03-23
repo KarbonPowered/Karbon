@@ -1,6 +1,6 @@
 package com.karbonpowered.engine.network
 
-import com.karbonpowered.network.Codec
+import com.karbonpowered.network.MessageCodec
 import com.karbonpowered.network.Message
 import com.karbonpowered.network.Session
 import com.karbonpowered.network.protocol.Protocol
@@ -32,7 +32,7 @@ class KarbonSession(
         channel.receiveAsFlow().onEach { messages ->
             messages.forEach { message ->
                 val codecRegistration =
-                    (protocol as MinecraftProtocol).clientboundCodecLookupService[message::class] as? Codec.CodecRegistration<Message>
+                    (protocol as MinecraftProtocol).clientboundCodecLookupService[message::class] as? MessageCodec.CodecRegistration<Message>
                         ?: return@forEach
                 connection.output.writePacket {
                     val data = buildPacket {
