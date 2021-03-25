@@ -1,4 +1,4 @@
-package com.karbonpowered.minecraft.api.registry
+package com.karbonpowered.api.registry
 
 interface DefaultedRegistryValue {
 }

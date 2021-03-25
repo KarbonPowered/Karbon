@@ -1,6 +1,6 @@
-package com.karbonpowered.minecraft.api.network
+package com.karbonpowered.api.network
 
-import com.karbonpowered.minecraft.api.profile.GameProfile
+import com.karbonpowered.api.profile.GameProfile
 
 interface ServerSideConnection : EngineConnection {
     val profile: GameProfile

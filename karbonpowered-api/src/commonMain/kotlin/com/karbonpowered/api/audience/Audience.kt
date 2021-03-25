@@ -1,4 +1,4 @@
-package com.karbonpowered.minecraft.api.audience
+package com.karbonpowered.api.audience
 
 import com.karbonpowered.common.UUID
 import com.karbonpowered.minecraft.text.Text

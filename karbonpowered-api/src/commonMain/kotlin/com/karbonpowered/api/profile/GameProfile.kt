@@ -1,4 +1,4 @@
-package com.karbonpowered.minecraft.api.profile
+package com.karbonpowered.api.profile
 
 import com.karbonpowered.common.UUID
 

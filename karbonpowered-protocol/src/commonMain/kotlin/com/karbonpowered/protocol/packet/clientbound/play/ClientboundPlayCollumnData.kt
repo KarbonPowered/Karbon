@@ -1,0 +1,14 @@
+package com.karbonpowered.protocol.packet.clientbound.play
+
+import com.karbonpowered.nbt.NBT
+import com.karbonpowered.protocol.MinecraftPacket
+
+data class ClientboundPlayCollumData(
+    val x: Int,
+    val z: Int,
+    val heightMaps: NBT,
+    val biomes: IntArray,
+    val data: IntArray,
+    val blockEntities: List<NBT>
+) : MinecraftPacket {
+}

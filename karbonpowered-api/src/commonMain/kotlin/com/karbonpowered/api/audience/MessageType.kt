@@ -1,4 +1,4 @@
-package com.karbonpowered.minecraft.api.audience
+package com.karbonpowered.api.audience
 
 enum class MessageType {
     CHAT,

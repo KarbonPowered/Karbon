@@ -1,4 +1,4 @@
-package com.karbonpowered.minecraft.api.network
+package com.karbonpowered.api.network
 
 import com.karbonpowered.minecraft.text.Text
 import io.ktor.utils.io.core.*

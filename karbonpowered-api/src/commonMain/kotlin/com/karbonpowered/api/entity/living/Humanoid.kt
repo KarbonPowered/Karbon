@@ -1,4 +1,4 @@
-package com.karbonpowered.minecraft.api.entity.living
+package com.karbonpowered.api.entity.living
 
 interface Humanoid<E : Humanoid<E>> : Living<E> {
 

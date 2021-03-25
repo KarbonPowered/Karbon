@@ -4,6 +4,7 @@ kotlin {
             dependencies {
                 api(project(":karbonpowered-api"))
                 api(project(":karbonpowered-network"))
+                api(project(":karbonpowered-nbt"))
             }
         }
     }

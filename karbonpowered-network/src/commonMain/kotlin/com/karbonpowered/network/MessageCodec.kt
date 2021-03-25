@@ -32,28 +32,3 @@ interface MessageCodec<T : Message> : Codec<T> {
         val codec: MessageCodec<in M>
     )
 }
-
-data class CodecBuilder<T : Message>(val messageType: KClass<T>) {
-    var decode: Input.() -> T? = { null }
-    var encode: Output.(T) -> Unit = {}
-
-    fun decode(decode: Input.() -> T?) {
-        this.decode = decode
-    }
-
-    fun encode(encode: Output.(T) -> Unit) {
-        this.encode = encode
-    }
-
-    fun build(): MessageCodec<T> = object : MessageCodec<T> {
-        val decoder: Input.() -> T? = decode
-        val encoder: Output.(T) -> Unit = encode
-        override val messageType: KClass<T> = this@CodecBuilder.messageType
-
-        override suspend fun decode(input: Input): T? = decoder(input)
-
-        override suspend fun encode(output: Output, message: T) = encoder(output, message)
-    }
-}
-
-inline fun <reified T : Message> Codec(builder: CodecBuilder<T>.()->Unit) = CodecBuilder(T::class).apply(builder).build()

@@ -1,4 +1,16 @@
-package com.karbonpowered.minecraft.api.world
+package com.karbonpowered.api.world
+
+import com.karbonpowered.api.world.server.ServerLocation
+import com.karbonpowered.math.vector.IntVector3
 
 interface Locatable {
+    val world: World<*, *>
+    val location: Location<*, *>
+
+    val serverLocation: ServerLocation
+        get() = location as? ServerLocation
+            ?: throw RuntimeException("Attempt made to query for a server sided location on the client!")
+
+    val blockPosition: IntVector3
+        get() = location.blockPosition
 }

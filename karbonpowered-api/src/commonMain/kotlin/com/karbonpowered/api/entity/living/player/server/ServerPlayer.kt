@@ -1,6 +1,6 @@
-package com.karbonpowered.minecraft.api.entity.living.player.server
+package com.karbonpowered.api.entity.living.player.server
 
-import com.karbonpowered.minecraft.api.entity.living.player.Player
+import com.karbonpowered.api.entity.living.player.Player
 
 interface ServerPlayer : Player {
     var isOnline: Boolean

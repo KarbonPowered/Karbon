@@ -1,6 +1,6 @@
-package com.karbonpowered.minecraft.api.effect
+package com.karbonpowered.api.effect
 
-import com.karbonpowered.minecraft.api.audience.Audience
+import com.karbonpowered.api.audience.Audience
 
 interface Viewer : Audience {
 }

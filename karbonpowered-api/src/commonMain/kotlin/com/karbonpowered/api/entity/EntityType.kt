@@ -1,7 +1,12 @@
-package com.karbonpowered.minecraft.api.entity
+package com.karbonpowered.api.entity
 
-import com.karbonpowered.minecraft.api.registry.DefaultedRegistryValue
+import com.karbonpowered.api.entity.living.player.Player
+import com.karbonpowered.api.registry.DefaultedRegistryValue
 
 interface EntityType<A : Entity<A>> : DefaultedRegistryValue {
 
+    companion object {
+        val PLAYER = object : EntityType<Player> {
+        }
+    }
 }

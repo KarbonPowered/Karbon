@@ -4,6 +4,7 @@ kotlin {
             dependencies {
                 api(project(":karbonpowered-common"))
                 api(project(":karbonpowered-text"))
+                api(project(":karbonpowered-math"))
             }
         }
     }
