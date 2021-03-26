@@ -12,7 +12,13 @@ data class NBT(
 
     companion object : Codec<NBT?> {
         override suspend fun encode(output: Output, data: NBT?) {
-            write(output, data)
+            if (data == null) {
+                output.writeByte(0)
+            } else {
+                output.writeByte(10)
+                output.writeShort(0)
+                write(output, data)
+            }
         }
 
         override suspend fun decode(input: Input): NBT? {
@@ -61,7 +67,7 @@ data class NBT(
 
         private fun write(output: Output, value: Any?) {
             when (value) {
-                null -> output.writeByte(0)
+                is Boolean -> output.writeByte(if (value) 1.toByte() else 0.toByte())
                 is Byte -> output.writeByte(value)
                 is Short -> output.writeShort(value)
                 is Int -> output.writeInt(value)
@@ -72,22 +78,27 @@ data class NBT(
                     output.writeInt(value.size)
                     output.writeFully(value)
                 }
-                is String -> output.writeText(value)
+                is String -> {
+                    output.writeShort(value.length.toShort())
+                    output.writeFully(value.toByteArray())
+                }
                 is Collection<*> -> {
-                    output.writeByte(value.firstOrNull()?.let { idFor(it) } ?: 0)
+                    val collectionType = value.firstOrNull()?.let { idFor(it) } ?: 0
+                    output.writeByte(collectionType)
                     output.writeInt(value.size)
                     value.forEach {
+                        if (collectionType == 10.toByte()) {
+                            output.writeShort(0)
+                        }
                         write(output, it!!)
                     }
                 }
                 is NBT -> {
-                    output.writeText(value.name)
                     value.forEach { (nbtKey, nbtValue) ->
-                        val id = idFor(value)
-                        if (id != 10.toByte()) {
-                            output.writeByte(id)
-                            output.writeText(nbtKey)
-                        }
+                        val id = idFor(nbtValue)
+                        output.writeByte(id)
+                        output.writeShort(nbtKey.length.toShort())
+                        output.writeFully(nbtKey.toByteArray())
                         write(output, nbtValue)
                     }
                     output.writeByte(0)
@@ -104,6 +115,7 @@ data class NBT(
         }
 
         private fun idFor(value: Any): Byte = when (value) {
+            is Boolean,
             is Byte -> 1
             is Short -> 2
             is Int -> 3

@@ -34,17 +34,17 @@ class KarbonSession(
                 val codecRegistration =
                     (protocol as MinecraftProtocol).clientboundCodecLookupService[message::class] as? MessageCodec.CodecRegistration<Message>
                         ?: return@forEach
-                println("OUT: $codecRegistration $message")
                 connection.output.writePacket {
                     val data = buildPacket {
                         writeVarInt(codecRegistration.opcode)
                         codecRegistration.codec.encode(this, message)
                     }
+                    println("OUT: opcode=${codecRegistration.opcode} length=${data.remaining} $message")
                     writeVarInt(data.remaining.toInt())
                     writePacket(data)
                 }
+                connection.output.flush()
             }
-            connection.output.flush()
         }.launchIn(context)
 
         context.launch {

@@ -9,6 +9,7 @@ import com.karbonpowered.engine.profile.KarbonGameProfile
 import com.karbonpowered.network.MessageHandler
 import com.karbonpowered.protocol.packet.clientbound.login.ClientboundLoginSuccessPacket
 import com.karbonpowered.protocol.packet.serverbound.login.ServerboundLoginStartPacket
+import kotlinx.coroutines.delay
 
 object LoginStartHandler : MessageHandler<KarbonSession, ServerboundLoginStartPacket> {
     override suspend fun handle(session: KarbonSession, message: ServerboundLoginStartPacket) {
@@ -19,6 +20,7 @@ object LoginStartHandler : MessageHandler<KarbonSession, ServerboundLoginStartPa
                 message.username
             )
         )
+        delay(1000)
         session.protocol = GameProtocol(true)
         Engine.server.addPlayer(gameProfile, session)
     }

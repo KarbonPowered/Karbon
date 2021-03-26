@@ -9,6 +9,7 @@ import com.karbonpowered.engine.entity.KarbonPlayer
 import com.karbonpowered.engine.world.KarbonWorld
 import com.karbonpowered.logging.Logger
 import com.karbonpowered.math.vector.BaseMutableDoubleVector3
+import com.karbonpowered.math.vector.doubleVector3of
 import com.karbonpowered.nbt.NBT
 import com.karbonpowered.network.NetworkServer
 import com.karbonpowered.network.Session
@@ -33,12 +34,12 @@ class KarbonServer : NetworkServer() {
             override val world: ServerWorld = this@KarbonServer.world
         })
         session.send(createGameJoinPacket())
-//        player.addComponent(network)
-//        network.sendPositionUpdates(doubleVector3of(), doubleVector3of())
+        player.addComponent(network)
+        network.sendPositionUpdates(doubleVector3of(), doubleVector3of())
     }
 
     private fun createGameJoinPacket() = ClientboundGameJoinPacket(
-        0, false, GameModes.CREATIVE, GameModes.CREATIVE,
+        10, false, GameModes.CREATIVE, GameModes.CREATIVE,
         listOf("minecraft:world"),
         createDimensionCodec(),
         createOverworldTag(),
@@ -52,7 +53,7 @@ class KarbonServer : NetworkServer() {
         true
     )
 
-    private fun createDimensionCodec() = NBT(
+    fun createDimensionCodec() = NBT(
         "minecraft:dimension_type" to NBT(
             "type" to "minecraft:dimension_type",
             "value" to listOf(
