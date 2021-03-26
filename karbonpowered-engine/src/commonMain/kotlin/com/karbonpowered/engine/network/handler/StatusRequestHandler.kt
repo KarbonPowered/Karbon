@@ -6,11 +6,12 @@ import com.karbonpowered.protocol.packet.clientbound.status.ClientboundStatusRes
 import com.karbonpowered.protocol.packet.serverbound.status.ServerboundStatusRequestPacket
 
 object StatusRequestHandler : MessageHandler<Session, ServerboundStatusRequestPacket> {
+    private val PROTOCOL_NUMBER = 0x40000000 + 19
     private val TEST_RESPONSE = """
         {
             "version": {
-                "name": "1.16.5",
-                "protocol": 754
+                "name": "1.17 snapshot",
+                "protocol": $PROTOCOL_NUMBER
             },
             "players": {
                 "max": 100,

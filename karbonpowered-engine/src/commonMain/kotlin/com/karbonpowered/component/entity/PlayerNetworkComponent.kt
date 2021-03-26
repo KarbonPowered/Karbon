@@ -1,7 +1,7 @@
 package com.karbonpowered.component.entity
 
 import com.karbonpowered.api.entity.living.player.Player
-import com.karbonpowered.math.Transform
+import com.karbonpowered.math.vector.DoubleVector3
 
 abstract class PlayerNetworkComponent : NetworkComponent() {
     private var sync: Boolean = false
@@ -10,7 +10,7 @@ abstract class PlayerNetworkComponent : NetworkComponent() {
         super.onAttached()
     }
 
-    abstract fun sendPositionUpdates(live: Transform)
+    abstract suspend fun sendPositionUpdates(position: DoubleVector3, rotation: DoubleVector3)
 
     fun forceSync(){
         sync=true

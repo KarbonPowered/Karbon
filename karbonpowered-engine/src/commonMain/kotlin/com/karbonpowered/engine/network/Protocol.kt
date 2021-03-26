@@ -5,6 +5,8 @@ import com.karbonpowered.engine.network.handler.LoginStartHandler
 import com.karbonpowered.engine.network.handler.StatusPingHandler
 import com.karbonpowered.engine.network.handler.StatusRequestHandler
 import com.karbonpowered.protocol.MinecraftProtocol
+import com.karbonpowered.protocol.packet.clientbound.game.ClientboundGameJoinPacket
+import com.karbonpowered.protocol.packet.clientbound.game.ClientboundGamePlayerPositionRotationPacket
 import com.karbonpowered.protocol.packet.clientbound.login.ClientboundLoginPluginRequestPacket
 import com.karbonpowered.protocol.packet.clientbound.login.ClientboundLoginSuccessPacket
 import com.karbonpowered.protocol.packet.clientbound.status.ClientboundStatusPongPacket
@@ -20,7 +22,7 @@ class HandshakeProtocol(isServer: Boolean) : MinecraftProtocol("handshake", isSe
     }
 }
 
-class LoginProtocol(isServer: Boolean) : MinecraftProtocol("server-login", isServer) {
+class LoginProtocol(isServer: Boolean) : MinecraftProtocol("login", isServer) {
     init {
         serverbound(0x00, ServerboundLoginStartPacket::class, ServerboundLoginStartPacket, LoginStartHandler)
 
@@ -29,12 +31,23 @@ class LoginProtocol(isServer: Boolean) : MinecraftProtocol("server-login", isSer
     }
 }
 
-class StatusProtocol(isServer: Boolean) : MinecraftProtocol("client-status", isServer) {
+class StatusProtocol(isServer: Boolean) : MinecraftProtocol("status", isServer) {
     init {
         clientbound(0x00, ClientboundStatusResponsePacket::class, ClientboundStatusResponsePacket)
         clientbound(0x01, ClientboundStatusPongPacket::class, ClientboundStatusPongPacket)
 
         serverbound(0x00, ServerboundStatusRequestPacket::class, ServerboundStatusRequestPacket, StatusRequestHandler)
         serverbound(0x01, ServerboundStatusPingPacket::class, ServerboundStatusPingPacket, StatusPingHandler)
+    }
+}
+
+class GameProtocol(isServer: Boolean) : MinecraftProtocol("game", isServer) {
+    init {
+        clientbound(0x25, ClientboundGameJoinPacket::class, ClientboundGameJoinPacket)
+        clientbound(
+            0x35,
+            ClientboundGamePlayerPositionRotationPacket::class,
+            ClientboundGamePlayerPositionRotationPacket
+        )
     }
 }

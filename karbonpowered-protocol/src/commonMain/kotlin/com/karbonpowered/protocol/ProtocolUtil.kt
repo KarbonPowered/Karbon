@@ -1,6 +1,7 @@
 package com.karbonpowered.protocol
 
 import com.karbonpowered.common.UUID
+import com.karbonpowered.nbt.NBT
 import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
 import kotlin.experimental.and
@@ -33,6 +34,12 @@ fun Output.writeVarInt(i: Int) {
         writeByte(temp)
     } while (value != 0)
 }
+
+fun Output.writeBoolean(boolean: Boolean) = writeByte(if (boolean) 1.toByte() else 0.toByte())
+fun Input.readBoolean(): Boolean = readByte() == 1.toByte()
+
+suspend fun Output.writeNBT(nbt: NBT?) = NBT.encode(this, nbt)
+suspend fun Input.readNBT(): NBT? = NBT.decode(this)
 
 private const val DEFAULT_MAX_STRING_SIZE = 65536 // 64KiB
 

@@ -1,7 +1,7 @@
 package com.karbonpowered.engine.network
 
-import com.karbonpowered.network.MessageCodec
 import com.karbonpowered.network.Message
+import com.karbonpowered.network.MessageCodec
 import com.karbonpowered.network.Session
 import com.karbonpowered.network.protocol.Protocol
 import com.karbonpowered.protocol.MinecraftProtocol
@@ -34,6 +34,7 @@ class KarbonSession(
                 val codecRegistration =
                     (protocol as MinecraftProtocol).clientboundCodecLookupService[message::class] as? MessageCodec.CodecRegistration<Message>
                         ?: return@forEach
+                println("OUT: $codecRegistration $message")
                 connection.output.writePacket {
                     val data = buildPacket {
                         writeVarInt(codecRegistration.opcode)
@@ -66,7 +67,7 @@ class KarbonSession(
     }
 
     override suspend fun <T : Message> messageReceived(message: T) {
-        println("Incoming: $message")
+        println("IN : $message")
         (protocol as MinecraftProtocol).handlerLookupService[message::class]?.handle(this, message)
     }
 
