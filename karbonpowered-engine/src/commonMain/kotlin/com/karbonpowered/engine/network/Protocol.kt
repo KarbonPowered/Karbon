@@ -44,6 +44,6 @@ class StatusProtocol(isServer: Boolean) : MinecraftProtocol("status", isServer) 
 class GameProtocol(isServer: Boolean) : MinecraftProtocol("game", isServer) {
     init {
         clientbound(0x26, ClientboundGameJoinPacket::class, ClientboundGameJoinPacket)
-        clientbound(0x36, ClientboundGamePlayerPositionRotationPacket::class, ClientboundGamePlayerPositionRotationPacket)
+        clientbound(0x37, ClientboundGamePlayerPositionRotationPacket::class, ClientboundGamePlayerPositionRotationPacket)
     }
 }

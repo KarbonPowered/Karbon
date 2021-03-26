@@ -26,27 +26,8 @@ class KarbonSession(
     override var protocol: Protocol
 ) : Session {
     val context = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    val channel = Channel<Array<out Message>>(Channel.UNLIMITED)
 
     init {
-        channel.receiveAsFlow().onEach { messages ->
-            messages.forEach { message ->
-                val codecRegistration =
-                    (protocol as MinecraftProtocol).clientboundCodecLookupService[message::class] as? MessageCodec.CodecRegistration<Message>
-                        ?: return@forEach
-                connection.output.writePacket {
-                    val data = buildPacket {
-                        writeVarInt(codecRegistration.opcode)
-                        codecRegistration.codec.encode(this, message)
-                    }
-                    println("OUT: opcode=${codecRegistration.opcode} length=${data.remaining} $message")
-                    writeVarInt(data.remaining.toInt())
-                    writePacket(data)
-                }
-                connection.output.flush()
-            }
-        }.launchIn(context)
-
         context.launch {
             try {
                 while (true) {
@@ -67,12 +48,26 @@ class KarbonSession(
     }
 
     override suspend fun <T : Message> messageReceived(message: T) {
-        println("IN : $message")
+//        println("IN : $message")
         (protocol as MinecraftProtocol).handlerLookupService[message::class]?.handle(this, message)
     }
 
     override suspend fun send(vararg messages: Message) {
-        channel.send(messages)
+        messages.forEach { message ->
+            val codecRegistration =
+                (protocol as MinecraftProtocol).clientboundCodecLookupService[message::class] as? MessageCodec.CodecRegistration<Message>
+                    ?: return@forEach
+            connection.output.writePacket {
+                val data = buildPacket {
+                    writeVarInt(codecRegistration.opcode)
+                    codecRegistration.codec.encode(this, message)
+                }
+                writeVarInt(data.remaining.toInt())
+                writePacket(data)
+            }
+//            println("OUT: opcode=${codecRegistration.opcode} ${message::class}")
+        }
+        connection.output.flush()
     }
 
     override fun disconnect() {

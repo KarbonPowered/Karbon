@@ -20,7 +20,6 @@ object LoginStartHandler : MessageHandler<KarbonSession, ServerboundLoginStartPa
                 message.username
             )
         )
-        delay(1000)
         session.protocol = GameProtocol(true)
         Engine.server.addPlayer(gameProfile, session)
     }

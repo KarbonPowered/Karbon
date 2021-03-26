@@ -3,9 +3,7 @@ package com.karbonpowered.protocol.packet.clientbound.game
 import com.karbonpowered.math.vector.DoubleVector2
 import com.karbonpowered.math.vector.DoubleVector3
 import com.karbonpowered.network.MessageCodec
-import com.karbonpowered.protocol.MinecraftPacket
-import com.karbonpowered.protocol.readVarInt
-import com.karbonpowered.protocol.writeVarInt
+import com.karbonpowered.protocol.*
 import io.ktor.utils.io.core.*
 import kotlin.experimental.and
 import kotlin.experimental.or
@@ -17,15 +15,26 @@ data class ClientboundGamePlayerPositionRotationPacket(
     val z: Double = 0.0,
     val yaw: Float = 0f,
     val pitch: Float = 0f,
+    val relative: List<PositionElement> = emptyList(),
     val teleportId: Int = 0,
-    val relative: List<PositionElement> = emptyList()
+    val shouldDismount: Boolean = false
 ) : MinecraftPacket {
     constructor(
         position: DoubleVector3,
         rotation: DoubleVector2,
+        relative: List<PositionElement> = emptyList(),
         teleportId: Int = 0,
-        relative: List<PositionElement> = emptyList()
-    ) : this(position.x, position.y, position.z, rotation.x.toFloat(), rotation.y.toFloat(), teleportId, relative)
+        shouldDismount: Boolean = false
+    ) : this(
+        position.x,
+        position.y,
+        position.z,
+        rotation.x.toFloat(),
+        rotation.y.toFloat(),
+        relative,
+        teleportId,
+        shouldDismount
+    )
 
     enum class PositionElement(val bit: Byte) {
         X(0x01),
@@ -57,6 +66,7 @@ data class ClientboundGamePlayerPositionRotationPacket(
             }
             output.writeByte(flags)
             output.writeVarInt(data.teleportId)
+            output.writeBoolean(data.shouldDismount)
         }
 
         override suspend fun decode(input: Input): ClientboundGamePlayerPositionRotationPacket {
@@ -71,7 +81,17 @@ data class ClientboundGamePlayerPositionRotationPacket(
                 if ((flags and element.bit) == element.bit) relative.add(element)
             }
             val teleportId = input.readVarInt()
-            return ClientboundGamePlayerPositionRotationPacket(x, y, z, yaw, pitch, teleportId, relative)
+            val shouldDismount = input.readBoolean()
+            return ClientboundGamePlayerPositionRotationPacket(
+                x,
+                y,
+                z,
+                yaw,
+                pitch,
+                relative,
+                teleportId,
+                shouldDismount
+            )
         }
     }
 }

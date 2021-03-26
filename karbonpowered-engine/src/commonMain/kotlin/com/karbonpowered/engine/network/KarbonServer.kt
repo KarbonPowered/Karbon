@@ -15,6 +15,7 @@ import com.karbonpowered.network.NetworkServer
 import com.karbonpowered.network.Session
 import com.karbonpowered.protocol.packet.clientbound.game.ClientboundGameJoinPacket
 import io.ktor.network.sockets.*
+import kotlinx.coroutines.delay
 
 class KarbonServer : NetworkServer() {
     override fun newSession(connection: Connection): Session = KarbonSession(
@@ -82,7 +83,9 @@ class KarbonServer : NetworkServer() {
         "bed_works" to true,
         "effects" to "minecraft:overworld",
         "has_raids" to true,
-        "logical_height" to 256,
+        "height" to 384,
+        "min_y" to -64,
+        "logical_height" to 384,
         "coordinate_scale" to 1.0,
         "ultrawarm" to false,
         "has_ceiling" to false

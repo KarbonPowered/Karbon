@@ -10,6 +10,16 @@ data class NBT(
     constructor(tags: Map<String, Any>) : this("", tags)
     constructor(vararg tags: Pair<String, Any>) : this(tags.toMap())
 
+    override fun toString(): String {
+        return buildString {
+            append("{")
+            tags.forEach {
+                append("${it.key}: ${it.value}\n")
+            }
+            append("}")
+        }
+    }
+
     companion object : Codec<NBT?> {
         override suspend fun encode(output: Output, data: NBT?) {
             if (data == null) {
@@ -87,9 +97,6 @@ data class NBT(
                     output.writeByte(collectionType)
                     output.writeInt(value.size)
                     value.forEach {
-                        if (collectionType == 10.toByte()) {
-                            output.writeShort(0)
-                        }
                         write(output, it!!)
                     }
                 }
