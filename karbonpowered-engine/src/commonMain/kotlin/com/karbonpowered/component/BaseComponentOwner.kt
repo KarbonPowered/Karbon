@@ -9,16 +9,16 @@ import kotlin.reflect.KClass
 
 open class BaseComponentOwner : ComponentOwner {
     private val componentsLock = reentrantLock()
-    private val components = mutableMapOf<KClass<out Component>, Component>()
-    override val values: Collection<Component>
+    private val componentsMap = mutableMapOf<KClass<out Component>, Component>()
+    override val components: Collection<Component>
         get() = componentsLock.withLock {
-            components.values.toList()
+            componentsMap.values.toList()
         }
 
     override fun <T : Component> addComponent(component: T, attach: Boolean): T {
         val componentClass = component::class
         componentsLock.withLock {
-            var currentComponent = components[componentClass] as? T
+            var currentComponent = componentsMap[componentClass] as? T
             if (currentComponent != null) {
                 return currentComponent
             }
@@ -33,14 +33,14 @@ open class BaseComponentOwner : ComponentOwner {
     }
 
     override fun <T : Component> getComponent(type: KClass<T>): T? =
-        (components[type] ?: findComponent(type)) as? T
+        (componentsMap[type] ?: findComponent(type)) as? T
 
     override fun <T : Component> detachComponent(type: KClass<T>, force: Boolean) {
         componentsLock.withLock {
-            val component = components[type] as? T
+            val component = componentsMap[type] as? T
 
             if (component != null && (component.isDetachable || force)) {
-                components.remove(type)
+                componentsMap.remove(type)
                 try {
                     component.onDetached()
                 } catch (e: Exception) {
@@ -52,14 +52,14 @@ open class BaseComponentOwner : ComponentOwner {
 
     protected fun attachComponent(key: KClass<out Component>, component: Component, attach: Boolean) {
         if (component.attachTo(this)) {
-            components[key] = component
+            componentsMap[key] = component
             if (attach) {
                 try {
                     component.onAttached()
                 } catch (e: Exception) {
                     // Remove the component from the component map if onAttached can't be
                     // called, pass exception to next catch block.
-                    components.remove(key)
+                    componentsMap.remove(key)
                     throw e
                 }
             }
@@ -67,6 +67,6 @@ open class BaseComponentOwner : ComponentOwner {
     }
 
     private fun <T : Any> findComponent(type: KClass<T>): T? = componentsLock.withLock {
-        components.values.find { type.isInstance(it) }
+        componentsMap.values.find { type.isInstance(it) }
     } as? T
 }

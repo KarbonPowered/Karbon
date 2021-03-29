@@ -4,6 +4,7 @@ import com.karbonpowered.api.block.BlockState
 import com.karbonpowered.api.world.WorldLoadOption
 import com.karbonpowered.api.world.chunk.Chunk
 import com.karbonpowered.api.world.region.Region
+import com.karbonpowered.engine.scheduler.TickManager
 import com.karbonpowered.engine.util.BitSize
 import com.karbonpowered.logging.Logger
 import com.karbonpowered.math.vector.IntVector3
@@ -14,7 +15,7 @@ class KarbonRegion(
     val x: Int,
     val y: Int,
     val z: Int
-) : Region {
+) : Region, TickManager {
     companion object {
         val CHUNKS = BitSize(4)
         val BLOCKS = BitSize(CHUNKS.bits + KarbonChunk.BLOCKS.bits)

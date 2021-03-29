@@ -15,7 +15,9 @@ import com.karbonpowered.network.NetworkServer
 import com.karbonpowered.network.Session
 import com.karbonpowered.protocol.packet.clientbound.game.ClientboundGameJoinPacket
 import io.ktor.network.sockets.*
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class KarbonServer : NetworkServer() {
     override fun newSession(connection: Connection): Session = KarbonSession(
@@ -26,7 +28,14 @@ class KarbonServer : NetworkServer() {
 
     }
 
-    val world = KarbonWorld()
+    val world = KarbonWorld().apply {
+        GlobalScope.launch {
+            while (true) {
+                delay(1000/20)
+                startTick()
+            }
+        }
+    }
 
     suspend fun addPlayer(gameProfile: GameProfile, session: KarbonSession) {
         Logger.info("Connected: $gameProfile")

@@ -6,7 +6,7 @@ import kotlin.reflect.KClass
  * Represents an object which may own components.
  */
 interface ComponentOwner {
-    val values: Collection<Component>
+    val components: Collection<Component>
 
     /**
      * Adds the component of the specified type to the owner and returns it if it is not present.

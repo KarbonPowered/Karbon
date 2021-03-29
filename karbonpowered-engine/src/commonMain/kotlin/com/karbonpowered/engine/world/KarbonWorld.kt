@@ -30,4 +30,10 @@ class KarbonWorld : BaseComponentOwner(), ServerWorld {
     override fun containsBlock(x: Int, y: Int, z: Int): Boolean {
         TODO("Not yet implemented")
     }
+
+    fun startTick() {
+        components.forEach {
+            it.tick(1.0f/20.0f)
+        }
+    }
 }
