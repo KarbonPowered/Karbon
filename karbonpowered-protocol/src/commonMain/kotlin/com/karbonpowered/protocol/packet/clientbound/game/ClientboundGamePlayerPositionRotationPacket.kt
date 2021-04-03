@@ -54,7 +54,7 @@ data class ClientboundGamePlayerPositionRotationPacket(
         override val messageType: KClass<ClientboundGamePlayerPositionRotationPacket> =
             ClientboundGamePlayerPositionRotationPacket::class
 
-        override suspend fun encode(output: Output, data: ClientboundGamePlayerPositionRotationPacket) {
+        override fun encode(output: Output, data: ClientboundGamePlayerPositionRotationPacket) {
             output.writeDouble(data.x)
             output.writeDouble(data.y)
             output.writeDouble(data.z)
@@ -69,7 +69,7 @@ data class ClientboundGamePlayerPositionRotationPacket(
             output.writeBoolean(data.shouldDismount)
         }
 
-        override suspend fun decode(input: Input): ClientboundGamePlayerPositionRotationPacket {
+        override fun decode(input: Input): ClientboundGamePlayerPositionRotationPacket {
             val x = input.readDouble()
             val y = input.readDouble()
             val z = input.readDouble()

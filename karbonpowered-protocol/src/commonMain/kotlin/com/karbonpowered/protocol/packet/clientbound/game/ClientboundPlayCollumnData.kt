@@ -1,52 +1,145 @@
 package com.karbonpowered.protocol.packet.clientbound.game
 
+import com.karbonpowered.io.Codec
 import com.karbonpowered.nbt.NBT
 import com.karbonpowered.network.MessageCodec
 import com.karbonpowered.protocol.*
+import com.karbonpowered.protocol.util.BitStorage
 import io.ktor.utils.io.core.*
+import io.ktor.utils.io.core.internal.*
 import kotlin.reflect.KClass
 
 data class ClientboundPlayChunkData(
     val x: Int,
     val z: Int,
-    val bitmask: LongArray,
-    val heightMaps: NBT,
-    val biomes: IntArray,
-    val data: ByteArray,
-    val blockEntities: List<NBT>
+    val heightMaps: NBT = NBT(),
+    val biomes: IntArray = IntArray(BIOME_SIZE),
+    val chunks: Array<ChunkData?> = arrayOfNulls(CHUNK_COUNT),
+    val blockEntities: List<NBT> = emptyList()
 ) : MinecraftPacket {
-    companion object : MessageCodec<ClientboundPlayChunkData> {
-        override val messageType: KClass<ClientboundPlayChunkData> = ClientboundPlayChunkData::class
+    data class ChunkData(
+        var blockCount: Int = 0,
+        var bitsPerEntry: Int = 4,
+        var states: MutableList<Int> = ArrayList<Int>().apply { add(0) },
+        var storage: BitStorage = BitStorage(4, 4096)
+    ) {
+        fun isEmpty(): Boolean = blockCount == 0
 
-        override suspend fun decode(input: Input): ClientboundPlayChunkData {
-            val x = input.readInt()
-            val z = input.readInt()
-            val bitmask = LongArray(input.readVarInt()) { input.readLong() }
-            val heightMaps = requireNotNull(input.readNBT())
-            val biomes = IntArray(input.readVarInt()) { input.readInt() }
-            val data = ByteArray(input.readVarInt()) { input.readByte() }
-            val blockEntities = List(input.readVarInt()) { requireNotNull(input.readNBT()) }
-            return ClientboundPlayChunkData(
-                x,z,bitmask,heightMaps,biomes,data,blockEntities
-            )
+        operator fun get(x: Int, y: Int, z: Int): Int {
+            val id = storage[index(x, y, z)]
+            return if (bitsPerEntry <= 8) if (id >= 0 && id < states.size) states[id] else AIR else id
         }
 
-        override suspend fun encode(output: Output, data: ClientboundPlayChunkData) {
+        operator fun set(x: Int, y: Int, z: Int, state: Int) {
+            var id = if (bitsPerEntry <= 8) states.indexOf(state) else state
+            if (id == -1) {
+                states.add(state)
+                if (states.size > 1 shl bitsPerEntry) {
+                    bitsPerEntry++
+                    var oldStates = states
+                    if (bitsPerEntry > 8) {
+                        oldStates = ArrayList(states)
+                        states.clear()
+                        bitsPerEntry = 13
+                    }
+                    val oldStorage = storage
+                    storage = BitStorage(bitsPerEntry, storage.size)
+                    for (index in 0 until storage.size) {
+                        storage[index] = if (bitsPerEntry <= 8) oldStorage[index] else oldStates[index]
+                    }
+                }
+                id = if (bitsPerEntry <= 8) states.indexOf(state) else state
+            }
+            val ind: Int = index(x, y, z)
+            val curr = storage[ind]
+            if (state != AIR && curr == AIR) {
+                blockCount++
+            } else if (state == AIR && curr != AIR) {
+                blockCount--
+            }
+            storage[ind] = id
+        }
+
+        companion object : Codec<ChunkData> {
+            const val AIR = 0
+            private fun index(x: Int, y: Int, z: Int): Int = y shl 8 or (z shl 4) or x
+
+            override fun encode(output: Output, data: ChunkData) {
+                output.writeShort(data.blockCount.toShort())
+                output.writeByte(data.bitsPerEntry.toByte())
+                if (data.bitsPerEntry <= 8) {
+                    output.writeVarInt(data.states.size)
+                    data.states.forEach {
+                        output.writeVarInt(it)
+                    }
+                }
+                val storageData = data.storage.data
+                output.writeVarInt(storageData.size)
+                storageData.forEach {
+                    output.writeLong(it)
+                }
+            }
+
+            override fun decode(input: Input): ChunkData {
+                val blockCount = input.readShort().toInt()
+                val bitsPerEntry = input.readUByte().toInt()
+                val states = MutableList(if (bitsPerEntry > 8) 0 else input.readVarInt()) {
+                    input.readVarInt()
+                }
+                val storage = BitStorage(bitsPerEntry, 4096, LongArray(input.readVarInt()) { input.readLong() })
+                return ChunkData(blockCount, bitsPerEntry, states, storage)
+            }
+        }
+    }
+
+    companion object : MessageCodec<ClientboundPlayChunkData> {
+        private const val MAX_CHUNK_Y = 20
+        private const val MIN_CHUNK_Y = -4
+        private const val CHUNK_COUNT = MAX_CHUNK_Y - MIN_CHUNK_Y
+        private const val BIOME_SIZE = 16 * 96
+        override val messageType: KClass<ClientboundPlayChunkData> = ClientboundPlayChunkData::class
+
+        override fun decode(input: Input): ClientboundPlayChunkData {
+            val x = input.readInt()
+            val z = input.readInt()
+            input.readVarInt()
+            val chunkMask = input.readLong()
+            val heightMaps = requireNotNull(input.readNBT())
+            val biomes = IntArray(input.readVarInt()) { input.readVarInt() }
+            val chunkData = buildPacket {
+                writeFully(input.readBytes(input.readVarInt()))
+            }
+            val chunks = Array(CHUNK_COUNT) { index ->
+                if (chunkMask and (1L shl index) != 0L) {
+                    ChunkData.decode(chunkData)
+                } else null
+            }
+            val blockEntities = List(input.readVarInt()) { requireNotNull(input.readNBT()) }
+            return ClientboundPlayChunkData(x, z, heightMaps, biomes, chunks, blockEntities)
+        }
+
+        @OptIn(DangerousInternalIoApi::class)
+        override fun encode(output: Output, data: ClientboundPlayChunkData) {
+            var mask = 0L
+            val chunkData = buildPacket {
+                data.chunks.forEachIndexed { index, chunk ->
+                    if (chunk != null && !chunk.isEmpty()) {
+                        mask = mask or (1L shl index)
+                        ChunkData.encode(this, chunk)
+                    }
+                }
+            }
             output.writeInt(data.x)
             output.writeInt(data.z)
-            output.writeVarInt(data.bitmask.size)
-            data.bitmask.forEach {
-                output.writeLong(it)
-            }
+            output.writeVarInt(1)
+            output.writeLong(mask)
             output.writeNBT(data.heightMaps)
             output.writeVarInt(data.biomes.size)
             data.biomes.forEach {
-                output.writeInt(it)
+                output.writeVarInt(it)
             }
-            output.writeVarInt(data.data.size)
-            data.data.forEach {
-                output.writeByte(it)
-            }
+            output.writeVarInt(chunkData.remaining.toInt())
+            output.writePacket(chunkData)
             output.writeVarInt(data.blockEntities.size)
             data.blockEntities.forEach {
                 output.writeNBT(it)

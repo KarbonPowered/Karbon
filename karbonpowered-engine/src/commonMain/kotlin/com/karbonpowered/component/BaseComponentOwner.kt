@@ -12,7 +12,7 @@ open class BaseComponentOwner : ComponentOwner {
     private val componentsMap = mutableMapOf<KClass<out Component>, Component>()
     override val components: Collection<Component>
         get() = componentsLock.withLock {
-            componentsMap.values.toList()
+            componentsMap.values
         }
 
     override fun <T : Component> addComponent(component: T, attach: Boolean): T {

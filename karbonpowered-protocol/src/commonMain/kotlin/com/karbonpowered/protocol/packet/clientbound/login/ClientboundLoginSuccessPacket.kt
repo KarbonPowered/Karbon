@@ -14,13 +14,13 @@ data class ClientboundLoginSuccessPacket(
         override val messageType: KClass<ClientboundLoginSuccessPacket>
             get() = ClientboundLoginSuccessPacket::class
 
-        override suspend fun decode(input: Input): ClientboundLoginSuccessPacket {
+        override fun decode(input: Input): ClientboundLoginSuccessPacket {
             val uniqueId = input.readUUID()
             val username = input.readString()
             return ClientboundLoginSuccessPacket(uniqueId, username)
         }
 
-        override suspend fun encode(output: Output, message: ClientboundLoginSuccessPacket) {
+        override fun encode(output: Output, message: ClientboundLoginSuccessPacket) {
             output.writeUUID(message.uniqueId)
             output.writeString(message.username)
         }

@@ -27,7 +27,7 @@ data class ClientboundGameJoinPacket(
     companion object : MessageCodec<ClientboundGameJoinPacket> {
         override val messageType: KClass<ClientboundGameJoinPacket> = ClientboundGameJoinPacket::class
 
-        override suspend fun encode(output: Output, data: ClientboundGameJoinPacket) {
+        override fun encode(output: Output, data: ClientboundGameJoinPacket) {
             output.writeInt(data.entityId)
             output.writeBoolean(data.isHardcore)
             output.writeByte(MagicValues.value(Byte::class, data.gameMode))
@@ -48,7 +48,7 @@ data class ClientboundGameJoinPacket(
             output.writeBoolean(data.isFlat)
         }
 
-        override suspend fun decode(input: Input): ClientboundGameJoinPacket {
+        override fun decode(input: Input): ClientboundGameJoinPacket {
             val entityId = input.readInt()
             val isHardcore = input.readBoolean()
             val gameMode = MagicValues.key<GameMode>(input.readByte())

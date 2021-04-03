@@ -1,14 +1,14 @@
 package com.karbonpowered.engine.scheduler
 
-import com.karbonpowered.engine.dateNow
+import com.karbonpowered.api.tick.Tickable
 import com.karbonpowered.engine.util.concurrent.snapshotable.SnapshotManager
 import com.karbonpowered.engine.util.concurrent.snapshotable.SnapshotableArrayList
 import com.karbonpowered.logging.Logger
 import kotlinx.atomicfu.atomic
-import kotlinx.coroutines.*
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.random.Random
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
@@ -34,11 +34,27 @@ object KarbonScheduler {
             }
             expectedDuration = startTick.elapsedNow()
             lastTick = TimeSource.Monotonic.markNow()
-            delay(PULSE_DURATION-expectedDuration)
+            delay(PULSE_DURATION - expectedDuration)
         }
     }
 
-    private fun tick(duration: Duration) {
+    private suspend fun tick(duration: Duration) {
         tickManagers.copySnapshot()
+        tickManagers.map {
+            GlobalScope.launch(mainJob) {
+                it.startTickRun(duration)
+                if (it is Tickable) {
+                    it.tick(duration)
+                }
+            }
+        }.joinAll()
+    }
+
+    fun addTickManager(tickManager: TickManager) {
+        tickManagers.add(tickManager)
+    }
+
+    fun removeTickManager(tickManager: TickManager) {
+        tickManagers.remove(tickManager)
     }
 }

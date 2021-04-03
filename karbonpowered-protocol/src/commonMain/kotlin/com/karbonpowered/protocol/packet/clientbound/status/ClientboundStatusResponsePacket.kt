@@ -14,12 +14,12 @@ data class ClientboundStatusResponsePacket(
         override val messageType: KClass<ClientboundStatusResponsePacket>
             get() = ClientboundStatusResponsePacket::class
 
-        override suspend fun decode(input: Input): ClientboundStatusResponsePacket {
+        override fun decode(input: Input): ClientboundStatusResponsePacket {
             val response = input.readString()
             return ClientboundStatusResponsePacket(response)
         }
 
-        override suspend fun encode(output: Output, message: ClientboundStatusResponsePacket) {
+        override fun encode(output: Output, message: ClientboundStatusResponsePacket) {
             output.writeString(message.response)
         }
     }

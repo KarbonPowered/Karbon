@@ -13,12 +13,12 @@ data class ServerboundLoginStartPacket(
         override val messageType: KClass<ServerboundLoginStartPacket>
             get() = ServerboundLoginStartPacket::class
 
-        override suspend fun decode(input: Input): ServerboundLoginStartPacket {
+        override fun decode(input: Input): ServerboundLoginStartPacket {
             val username = input.readString(16)
             return ServerboundLoginStartPacket(username)
         }
 
-        override suspend fun encode(output: Output, message: ServerboundLoginStartPacket) {
+        override fun encode(output: Output, message: ServerboundLoginStartPacket) {
             output.writeString(message.username)
         }
     }

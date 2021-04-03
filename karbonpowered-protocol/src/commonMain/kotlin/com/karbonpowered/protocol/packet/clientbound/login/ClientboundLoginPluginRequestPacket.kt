@@ -12,7 +12,7 @@ data class ClientboundLoginPluginRequestPacket(
     val data: ByteReadPacket
 ) : MinecraftPacket {
     companion object : MessageCodec<ClientboundLoginPluginRequestPacket> {
-        override suspend fun decode(input: Input): ClientboundLoginPluginRequestPacket {
+        override fun decode(input: Input): ClientboundLoginPluginRequestPacket {
             val messageId = input.readVarInt()
             val identifier = Identifier(input.readString())
             val data = buildPacket {
@@ -23,7 +23,7 @@ data class ClientboundLoginPluginRequestPacket(
             return ClientboundLoginPluginRequestPacket(messageId, identifier, data)
         }
 
-        override suspend fun encode(output: Output, message: ClientboundLoginPluginRequestPacket) {
+        override fun encode(output: Output, message: ClientboundLoginPluginRequestPacket) {
             output.writeVarInt(message.messageId)
             output.writeString(message.identifier.toString())
             output.writePacket(message.data)

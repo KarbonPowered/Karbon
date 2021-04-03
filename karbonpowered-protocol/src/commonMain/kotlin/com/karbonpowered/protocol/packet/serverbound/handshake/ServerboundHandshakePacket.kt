@@ -15,7 +15,7 @@ data class ServerboundHandshakePacket(
         override val messageType: KClass<ServerboundHandshakePacket>
             get() = ServerboundHandshakePacket::class
 
-        override suspend fun decode(input: Input): ServerboundHandshakePacket {
+        override fun decode(input: Input): ServerboundHandshakePacket {
             val protocolVersion = input.readVarInt()
             val serverAddress = input.readString()
             val port = input.readUShort().toInt()
@@ -23,7 +23,7 @@ data class ServerboundHandshakePacket(
             return ServerboundHandshakePacket(protocolVersion, serverAddress, port, nextState)
         }
 
-        override suspend fun encode(output: Output, message: ServerboundHandshakePacket) {
+        override fun encode(output: Output, message: ServerboundHandshakePacket) {
             output.writeVarInt(message.protocolVersion)
             output.writeString(message.serverAddress)
             output.writeShort(message.port.toShort())

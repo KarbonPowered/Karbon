@@ -7,37 +7,35 @@ import com.karbonpowered.api.world.server.ServerLocation
 import com.karbonpowered.api.world.server.ServerWorld
 import com.karbonpowered.engine.component.KarbonPlayerNetworkComponent
 import com.karbonpowered.engine.entity.KarbonPlayer
+import com.karbonpowered.engine.scheduler.KarbonScheduler
 import com.karbonpowered.engine.world.KarbonWorld
 import com.karbonpowered.logging.Logger
 import com.karbonpowered.math.vector.BaseMutableDoubleVector3
 import com.karbonpowered.math.vector.doubleVector3of
+import com.karbonpowered.minecraft.text.LiteralText
 import com.karbonpowered.nbt.NBT
 import com.karbonpowered.network.NetworkServer
 import com.karbonpowered.network.Session
 import com.karbonpowered.protocol.packet.clientbound.game.ClientboundGameJoinPacket
+import com.karbonpowered.protocol.packet.clientbound.game.ClientboundPlayChunkData
 import io.ktor.network.sockets.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 class KarbonServer : NetworkServer() {
     private val playersMap = mutableMapOf<Session, Player>()
     val maxPlayers = 100
     val players: Collection<Player> get() = playersMap.values
+    val world = KarbonWorld()
 
     override fun newSession(connection: Connection): Session = KarbonSession(
         connection, HandshakeProtocol(true)
     )
 
     override fun sessionInactivated(session: Session) {
-        playersMap.remove(session)
-    }
-
-    val world = KarbonWorld().apply {
-        GlobalScope.launch {
-            while (true) {
-                delay(1000/20)
-                startTick()
+        playersMap.remove(session)?.let {
+            (it as? KarbonPlayer)?.let { player ->
+                KarbonScheduler.removeTickManager(player)
+                players.forEach { it.sendMessage(LiteralText("§e${player.profile.name} left the game")) }
             }
         }
     }
@@ -45,13 +43,24 @@ class KarbonServer : NetworkServer() {
     suspend fun addPlayer(gameProfile: GameProfile, session: KarbonSession) {
         Logger.info("Connected: $gameProfile")
         val network = KarbonPlayerNetworkComponent(session)
-        val player = KarbonPlayer(gameProfile, object : ServerLocation, BaseMutableDoubleVector3() {
+        val player = KarbonPlayer(session, gameProfile, object : ServerLocation, BaseMutableDoubleVector3() {
             override val world: ServerWorld = this@KarbonServer.world
         })
+        KarbonScheduler.addTickManager(player)
         playersMap[session] = player
+        players.forEach { it.sendMessage(LiteralText("§e${player.profile.name} joined the game")) }
         session.send(createGameJoinPacket())
         player.addComponent(network)
         network.sendPositionUpdates(doubleVector3of(), doubleVector3of())
+        session.send(ClientboundPlayChunkData(0, 0).apply {
+            chunks[0] = ClientboundPlayChunkData.ChunkData().also { chunk ->
+                repeat(16) { dx ->
+                    repeat(16) { dz ->
+                        chunk[dx, 0, dz] = Random.nextInt(1, 16)
+                    }
+                }
+            }
+        })
     }
 
     private fun createGameJoinPacket() = ClientboundGameJoinPacket(

@@ -8,3 +8,7 @@ kotlin {
         }
     }
 }
+
+application {
+    mainClass.set("com.karbonpowered.engine.MainKt")
+}

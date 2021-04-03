@@ -12,12 +12,12 @@ data class ServerboundStatusPingPacket(
         override val messageType: KClass<ServerboundStatusPingPacket>
             get() = ServerboundStatusPingPacket::class
 
-        override suspend fun decode(input: Input): ServerboundStatusPingPacket {
+        override fun decode(input: Input): ServerboundStatusPingPacket {
             val payload = input.readLong()
             return ServerboundStatusPingPacket(payload)
         }
 
-        override suspend fun encode(output: Output, message: ServerboundStatusPingPacket) {
+        override fun encode(output: Output, message: ServerboundStatusPingPacket) {
             output.writeLong(message.payload)
         }
     }

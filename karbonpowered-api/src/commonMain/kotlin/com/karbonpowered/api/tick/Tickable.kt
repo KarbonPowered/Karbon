@@ -1,13 +1,13 @@
 package com.karbonpowered.api.tick
 
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+
+@OptIn(ExperimentalTime::class)
 interface Tickable {
-    fun onTick(dt: Float)
+    suspend fun onTick(duration: Duration)
 
     fun canTick(): Boolean = true
 
-    fun tick(dt: Float) {
-        if(canTick()) {
-            onTick(dt)
-        }
-    }
+    suspend fun tick(duration: Duration)
 }

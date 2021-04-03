@@ -1,16 +1,13 @@
 package com.karbonpowered.engine.network
 
-import com.karbonpowered.engine.network.handler.HandshakeHandler
-import com.karbonpowered.engine.network.handler.LoginStartHandler
-import com.karbonpowered.engine.network.handler.StatusPingHandler
-import com.karbonpowered.engine.network.handler.StatusRequestHandler
+import com.karbonpowered.engine.network.handler.*
 import com.karbonpowered.protocol.MinecraftProtocol
-import com.karbonpowered.protocol.packet.clientbound.game.ClientboundGameJoinPacket
-import com.karbonpowered.protocol.packet.clientbound.game.ClientboundGamePlayerPositionRotationPacket
+import com.karbonpowered.protocol.packet.clientbound.game.*
 import com.karbonpowered.protocol.packet.clientbound.login.ClientboundLoginPluginRequestPacket
 import com.karbonpowered.protocol.packet.clientbound.login.ClientboundLoginSuccessPacket
 import com.karbonpowered.protocol.packet.clientbound.status.ClientboundStatusPongPacket
 import com.karbonpowered.protocol.packet.clientbound.status.ClientboundStatusResponsePacket
+import com.karbonpowered.protocol.packet.serverbound.game.ServerboundChatPacket
 import com.karbonpowered.protocol.packet.serverbound.handshake.ServerboundHandshakePacket
 import com.karbonpowered.protocol.packet.serverbound.login.ServerboundLoginStartPacket
 import com.karbonpowered.protocol.packet.serverbound.status.ServerboundStatusPingPacket
@@ -43,7 +40,16 @@ class StatusProtocol(isServer: Boolean) : MinecraftProtocol("status", isServer) 
 
 class GameProtocol(isServer: Boolean) : MinecraftProtocol("game", isServer) {
     init {
+        clientbound(0x0f, ClientboundMessagePacket::class, ClientboundMessagePacket)
+        clientbound(0x21, ClientboundKeepAlivePacket::class, ClientboundKeepAlivePacket)
+        clientbound(0x22, ClientboundPlayChunkData::class, ClientboundPlayChunkData)
         clientbound(0x26, ClientboundGameJoinPacket::class, ClientboundGameJoinPacket)
-        clientbound(0x37, ClientboundGamePlayerPositionRotationPacket::class, ClientboundGamePlayerPositionRotationPacket)
+        clientbound(
+            0x37,
+            ClientboundGamePlayerPositionRotationPacket::class,
+            ClientboundGamePlayerPositionRotationPacket
+        )
+
+        serverbound(0x03, ServerboundChatPacket::class, ServerboundChatPacket, ChatHandler)
     }
 }

@@ -32,8 +32,6 @@ class KarbonWorld : BaseComponentOwner(), ServerWorld {
     }
 
     fun startTick() {
-        components.forEach {
-            it.tick(1.0f/20.0f)
-        }
+
     }
 }

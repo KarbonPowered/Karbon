@@ -12,12 +12,12 @@ data class ClientboundStatusPongPacket(
         override val messageType: KClass<ClientboundStatusPongPacket>
             get() = ClientboundStatusPongPacket::class
 
-        override suspend fun decode(input: Input): ClientboundStatusPongPacket {
+        override fun decode(input: Input): ClientboundStatusPongPacket {
             val long = input.readLong()
             return ClientboundStatusPongPacket(long)
         }
 
-        override suspend fun encode(output: Output, message: ClientboundStatusPongPacket) {
+        override fun encode(output: Output, message: ClientboundStatusPongPacket) {
             output.writeLong(message.payload)
         }
     }

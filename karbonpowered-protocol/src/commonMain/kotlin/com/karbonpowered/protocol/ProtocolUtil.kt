@@ -35,11 +35,23 @@ fun Output.writeVarInt(i: Int) {
     } while (value != 0)
 }
 
+suspend fun ByteWriteChannel.writeVarInt(i: Int) {
+    var value = i
+    do {
+        var temp = (value and 127).toByte()
+        value = value ushr 7
+        if (value != 0) {
+            temp = temp or 128.toByte()
+        }
+        writeByte(temp)
+    } while (value != 0)
+}
+
 fun Output.writeBoolean(boolean: Boolean) = writeByte(if (boolean) 1.toByte() else 0.toByte())
 fun Input.readBoolean(): Boolean = readByte() == 1.toByte()
 
-suspend fun Output.writeNBT(nbt: NBT?) = NBT.encode(this, nbt)
-suspend fun Input.readNBT(): NBT? = NBT.decode(this)
+fun Output.writeNBT(nbt: NBT?) = NBT.encode(this, nbt)
+fun Input.readNBT(): NBT? = NBT.decode(this)
 
 private const val DEFAULT_MAX_STRING_SIZE = 65536 // 64KiB
 

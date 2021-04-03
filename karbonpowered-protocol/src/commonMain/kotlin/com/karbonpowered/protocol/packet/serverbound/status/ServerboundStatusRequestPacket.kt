@@ -20,8 +20,8 @@ class ServerboundStatusRequestPacket : MinecraftPacket {
         override val messageType: KClass<ServerboundStatusRequestPacket>
             get() = ServerboundStatusRequestPacket::class
 
-        override suspend fun decode(input: Input): ServerboundStatusRequestPacket = ServerboundStatusRequestPacket()
+        override fun decode(input: Input): ServerboundStatusRequestPacket = ServerboundStatusRequestPacket()
 
-        override suspend fun encode(output: Output, message: ServerboundStatusRequestPacket) {}
+        override fun encode(output: Output, message: ServerboundStatusRequestPacket) {}
     }
 }

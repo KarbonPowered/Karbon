@@ -21,7 +21,7 @@ data class NBT(
     }
 
     companion object : Codec<NBT?> {
-        override suspend fun encode(output: Output, data: NBT?) {
+        override fun encode(output: Output, data: NBT?) {
             if (data == null) {
                 output.writeByte(0)
             } else {
@@ -31,7 +31,7 @@ data class NBT(
             }
         }
 
-        override suspend fun decode(input: Input): NBT? {
+        override fun decode(input: Input): NBT? {
             return read(input, input.readByte()) as? NBT
         }
 

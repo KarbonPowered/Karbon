@@ -11,6 +11,7 @@ import com.karbonpowered.protocol.writeVarInt
 import io.ktor.network.sockets.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
+import io.ktor.utils.io.core.internal.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -29,20 +30,18 @@ class KarbonSession(
         (protocol as MinecraftProtocol).handlerLookupService[message::class]?.handle(this, message)
     }
 
+    @OptIn(DangerousInternalIoApi::class)
     override suspend fun send(vararg messages: Message) {
         messages.forEach { message ->
             val codecRegistration =
                 (protocol as MinecraftProtocol).clientboundCodecLookupService[message::class] as? MessageCodec.CodecRegistration<Message>
                     ?: return@forEach
-            connection.output.writePacket {
-                val data = buildPacket {
-                    writeVarInt(codecRegistration.opcode)
-                    codecRegistration.codec.encode(this, message)
-                }
-                writeVarInt(data.remaining.toInt())
-                writePacket(data)
+            val packet = buildPacket {
+                writeVarInt(codecRegistration.opcode)
+                codecRegistration.codec.encode(this, message)
             }
-//            println("OUT: opcode=${codecRegistration.opcode} ${message::class}")
+            connection.output.writeVarInt(packet.remaining.toInt())
+            connection.output.writePacket(packet)
         }
         connection.output.flush()
     }

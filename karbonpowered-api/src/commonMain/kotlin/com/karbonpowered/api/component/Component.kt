@@ -1,6 +1,8 @@
 package com.karbonpowered.api.component
 
 import com.karbonpowered.api.tick.Tickable
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 interface Component : Tickable {
     val owner: ComponentOwner
@@ -10,7 +12,9 @@ interface Component : Tickable {
     val isDetachable: Boolean
         get() = true
 
-    override fun onTick(dt: Float) {}
+    @OptIn(ExperimentalTime::class)
+    override suspend fun onTick(duration: Duration) {
+    }
 
     /**
      * Attaches to a component owner.
