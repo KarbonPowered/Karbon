@@ -83,4 +83,6 @@ abstract class MinecraftProtocol(name: String, val isServer: Boolean) : Abstract
             decoder.readVarInt
         }
     }
+
+    companion object
 }

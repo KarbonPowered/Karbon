@@ -1,17 +1,18 @@
 package com.karbonpowered.engine.network.handler
 
+import com.karbonpowered.engine.network.PROTOCOL_VERSION
 import com.karbonpowered.network.MessageHandler
 import com.karbonpowered.network.Session
+import com.karbonpowered.protocol.MinecraftProtocol
 import com.karbonpowered.protocol.packet.clientbound.status.ClientboundStatusResponsePacket
 import com.karbonpowered.protocol.packet.serverbound.status.ServerboundStatusRequestPacket
 
 object StatusRequestHandler : MessageHandler<Session, ServerboundStatusRequestPacket> {
-    private val PROTOCOL_NUMBER = 0x40000000 + 19
     private val TEST_RESPONSE = """
         {
             "version": {
                 "name": "1.17 snapshot",
-                "protocol": $PROTOCOL_NUMBER
+                "protocol": ${MinecraftProtocol.PROTOCOL_VERSION}
             },
             "players": {
                 "max": 100,

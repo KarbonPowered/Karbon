@@ -16,6 +16,8 @@ import com.karbonpowered.protocol.packet.serverbound.login.ServerboundLoginStart
 import com.karbonpowered.protocol.packet.serverbound.status.ServerboundStatusPingPacket
 import com.karbonpowered.protocol.packet.serverbound.status.ServerboundStatusRequestPacket
 
+val MinecraftProtocol.Companion.PROTOCOL_VERSION: Int get() = 0x40000000 + 20
+
 class HandshakeProtocol(isServer: Boolean) : MinecraftProtocol("handshake", isServer) {
     init {
         serverbound(0x00, ServerboundHandshakePacket::class, ServerboundHandshakePacket, HandshakeHandler)
