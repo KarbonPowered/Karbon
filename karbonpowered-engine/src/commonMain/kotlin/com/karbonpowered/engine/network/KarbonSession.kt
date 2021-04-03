@@ -1,5 +1,6 @@
 package com.karbonpowered.engine.network
 
+import com.karbonpowered.engine.Engine
 import com.karbonpowered.network.Message
 import com.karbonpowered.network.MessageCodec
 import com.karbonpowered.network.Session
@@ -13,11 +14,7 @@ import io.ktor.utils.io.core.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlin.experimental.and
 
@@ -26,26 +23,6 @@ class KarbonSession(
     override var protocol: Protocol
 ) : Session {
     val context = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-
-    init {
-        context.launch {
-            try {
-                while (true) {
-                    val length = connection.input.readVarInt()
-                    val data = connection.input.readPacket(length)
-                    val opcode = data.readVarInt()
-                    val codec = (protocol as MinecraftProtocol).serverboundCodecLookupService[opcode] ?: continue
-                    val message = codec.decode(data) ?: continue
-                    try {
-                        messageReceived(message)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            } catch (e: ClosedReceiveChannelException) {
-            }
-        }
-    }
 
     override suspend fun <T : Message> messageReceived(message: T) {
 //        println("IN : $message")
@@ -77,6 +54,24 @@ class KarbonSession(
     }
 
     override fun onReady() {
+        context.launch {
+            try {
+                while (!connection.socket.isClosed) {
+                    val length = connection.input.readVarInt()
+                    val data = connection.input.readPacket(length)
+                    val opcode = data.readVarInt()
+                    val codec = (protocol as MinecraftProtocol).serverboundCodecLookupService[opcode] ?: continue
+                    val message = codec.decode(data)
+                    try {
+                        messageReceived(message)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            } catch (e: ClosedReceiveChannelException) {
+            }
+            Engine.server.connectionHandler.connectionInactive(connection)
+        }
     }
 
     override fun onInboundThrowable(throwable: Throwable) {

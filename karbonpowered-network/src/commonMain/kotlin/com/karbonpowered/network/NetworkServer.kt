@@ -14,6 +14,7 @@ abstract class NetworkServer(
     val context = Job()
     lateinit var serverSocket: ServerSocket
         private set
+    val connectionHandler = ConnectionHandler(this@NetworkServer)
 
     @OptIn(InternalAPI::class)
     fun bind(localAddress: NetworkAddress): Job {
@@ -21,7 +22,6 @@ abstract class NetworkServer(
         return GlobalScope.launch(context) {
             while (true) {
                 val clientConnection = serverSocket.accept().connection()
-                val connectionHandler = ConnectionHandler(this@NetworkServer)
                 connectionHandler.connectionActive(clientConnection)
             }
         }

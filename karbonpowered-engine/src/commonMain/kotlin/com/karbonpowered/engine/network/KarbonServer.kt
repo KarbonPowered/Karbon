@@ -1,6 +1,7 @@
 package com.karbonpowered.engine.network
 
 import com.karbonpowered.api.entity.living.player.GameModes
+import com.karbonpowered.api.entity.living.player.Player
 import com.karbonpowered.api.profile.GameProfile
 import com.karbonpowered.api.world.server.ServerLocation
 import com.karbonpowered.api.world.server.ServerWorld
@@ -20,12 +21,16 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class KarbonServer : NetworkServer() {
+    private val playersMap = mutableMapOf<Session, Player>()
+    val maxPlayers = 100
+    val players: Collection<Player> get() = playersMap.values
+
     override fun newSession(connection: Connection): Session = KarbonSession(
         connection, HandshakeProtocol(true)
     )
 
     override fun sessionInactivated(session: Session) {
-
+        playersMap.remove(session)
     }
 
     val world = KarbonWorld().apply {
@@ -43,6 +48,7 @@ class KarbonServer : NetworkServer() {
         val player = KarbonPlayer(gameProfile, object : ServerLocation, BaseMutableDoubleVector3() {
             override val world: ServerWorld = this@KarbonServer.world
         })
+        playersMap[session] = player
         session.send(createGameJoinPacket())
         player.addComponent(network)
         network.sendPositionUpdates(doubleVector3of(), doubleVector3of())
