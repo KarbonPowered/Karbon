@@ -1,6 +1,7 @@
 package com.karbonpowered.protocol
 
 import com.karbonpowered.common.UUID
+import com.karbonpowered.math.asLong
 import com.karbonpowered.minecraft.text.Text
 import com.karbonpowered.nbt.NBT
 import io.ktor.utils.io.*
@@ -96,6 +97,8 @@ fun <T> Output.writeCollection(collection: Collection<T>, serializer: (Output, T
         serializer(this, it)
     }
 }
+
+fun Output.writeBlockPosition(x: Int, y: Int, z: Int) = writeLong(asLong(x, y, z))
 
 fun <E : Enum<E>> Output.writeEnum(enum: Enum<E>) = writeVarInt(enum.ordinal)
 
