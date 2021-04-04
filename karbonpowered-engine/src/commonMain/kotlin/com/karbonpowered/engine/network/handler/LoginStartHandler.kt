@@ -13,7 +13,7 @@ import kotlinx.coroutines.delay
 
 object LoginStartHandler : MessageHandler<KarbonSession, ServerboundLoginStartPacket> {
     override suspend fun handle(session: KarbonSession, message: ServerboundLoginStartPacket) {
-        val gameProfile = KarbonGameProfile(message.username, uuid3Of(UUID(0, 0), message.username))
+        val gameProfile = KarbonGameProfile(message.username, uuid3Of(UUID(0, 0), message.username), emptyList())
         session.send(
             ClientboundLoginSuccessPacket(
                 gameProfile.uniqueId,

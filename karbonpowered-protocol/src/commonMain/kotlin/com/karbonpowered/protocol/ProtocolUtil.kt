@@ -1,6 +1,7 @@
 package com.karbonpowered.protocol
 
 import com.karbonpowered.common.UUID
+import com.karbonpowered.minecraft.text.Text
 import com.karbonpowered.nbt.NBT
 import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
@@ -86,6 +87,13 @@ fun Input.readUUID(): UUID {
 fun Output.writeUUID(uniqueId: UUID) {
     writeLong(uniqueId.mostSignificantBits)
     writeLong(uniqueId.leastSignificantBits)
+}
+
+fun <T> Output.writeCollection(collection: Collection<T>, serializer: (Output, T) -> Unit) {
+    writeVarInt(collection.size)
+    collection.forEach {
+        serializer(this, it)
+    }
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
