@@ -98,7 +98,6 @@ class KarbonServer : NetworkServer() {
                 }
             }
         })
-        session.send(ClientboundGameBlockBreakingProgressPacket(0, intVector3Of(7, -64, 4), 6))
     }
 
     private fun createGameJoinPacket() = ClientboundGameJoinPacket(
