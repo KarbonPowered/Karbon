@@ -27,11 +27,16 @@ class KarbonServer : NetworkServer() {
     val players: Collection<Player> get() = playersMap.values
     val world = KarbonWorld()
 
-    override fun newSession(connection: Connection): Session = KarbonSession(
-        connection, HandshakeProtocol(true)
-    )
+    override fun newSession(connection: Connection): Session {
+        val session = KarbonSession(
+            connection, HandshakeProtocol(true)
+        )
+        println("Connected: $session")
+        return session
+    }
 
     override fun sessionInactivated(session: Session) {
+        Logger.info("Disconnected: $session")
         playersMap.remove(session)?.let {
             (it as? KarbonPlayer)?.let { player ->
                 KarbonScheduler.removeTickManager(player)
@@ -41,7 +46,7 @@ class KarbonServer : NetworkServer() {
     }
 
     suspend fun addPlayer(gameProfile: GameProfile, session: KarbonSession) {
-        Logger.info("Connected: $gameProfile")
+        Logger.info("Connected: $session")
         val network = KarbonPlayerNetworkComponent(session)
         val player = KarbonPlayer(session, gameProfile, object : ServerLocation, BaseMutableDoubleVector3() {
             override val world: ServerWorld = this@KarbonServer.world

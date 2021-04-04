@@ -1,6 +1,5 @@
 package com.karbonpowered.network
 
-import com.karbonpowered.network.pipeline.ConnectionHandler
 import io.ktor.network.selector.*
 import io.ktor.network.sockets.*
 import io.ktor.util.*
@@ -14,15 +13,23 @@ abstract class NetworkServer(
     val context = Job()
     lateinit var serverSocket: ServerSocket
         private set
-    val connectionHandler = ConnectionHandler(this@NetworkServer)
 
     @OptIn(InternalAPI::class)
     fun bind(localAddress: NetworkAddress): Job {
         serverSocket = aSocket(SelectorManager(context)).tcp().bind(localAddress)
         return GlobalScope.launch(context) {
+            println("Server started at $localAddress")
             while (true) {
                 val clientConnection = serverSocket.accept().connection()
-                connectionHandler.connectionActive(clientConnection)
+                val session = newSession(clientConnection)
+                session.onReady()
+                launch {
+                    while (!clientConnection.input.isClosedForRead) {
+                        delay(1)
+                    }
+                    session.onDisconnect()
+                    sessionInactivated(session)
+                }
             }
         }
     }

@@ -17,10 +17,9 @@ allprojects {
     }
 
     kotlin {
-        targets {
-            jvm()
+        jvm {
+            withJava()
         }
-
         sourceSets {
             val commonMain by getting {
                 dependencies {
@@ -48,4 +47,20 @@ allprojects {
             }
         }
     }
+}
+
+kotlin {
+    sourceSets {
+        val jvmMain by getting {
+            dependencies {
+                subprojects {
+                    implementation(this)
+                }
+            }
+        }
+    }
+}
+
+application {
+    mainClass.set("com.karbonpowered.engine.MainKt")
 }

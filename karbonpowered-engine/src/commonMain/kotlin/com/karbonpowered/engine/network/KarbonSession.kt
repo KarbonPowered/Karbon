@@ -26,7 +26,6 @@ class KarbonSession(
     val context = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     override suspend fun <T : Message> messageReceived(message: T) {
-//        println("IN : $message")
         (protocol as MinecraftProtocol).handlerLookupService[message::class]?.handle(this, message)
     }
 
@@ -43,7 +42,9 @@ class KarbonSession(
             connection.output.writeVarInt(packet.remaining.toInt())
             connection.output.writePacket(packet)
         }
-        connection.output.flush()
+        if (!connection.socket.isClosed) {
+            connection.output.flush()
+        }
     }
 
     override fun disconnect() {
@@ -69,7 +70,6 @@ class KarbonSession(
                 }
             } catch (e: ClosedReceiveChannelException) {
             }
-            Engine.server.connectionHandler.connectionInactive(connection)
         }
     }
 
@@ -91,4 +91,6 @@ class KarbonSession(
         } while (read and 128.toByte() != 0.toByte())
         return result
     }
+
+    override fun toString(): String = "KarbonSession(connection=${connection.socket.remoteAddress})"
 }
