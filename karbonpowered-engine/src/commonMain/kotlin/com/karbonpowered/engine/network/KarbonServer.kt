@@ -16,8 +16,7 @@ import com.karbonpowered.minecraft.text.LiteralText
 import com.karbonpowered.nbt.NBT
 import com.karbonpowered.network.NetworkServer
 import com.karbonpowered.network.Session
-import com.karbonpowered.protocol.packet.clientbound.game.ClientboundGameJoinPacket
-import com.karbonpowered.protocol.packet.clientbound.game.ClientboundPlayChunkData
+import com.karbonpowered.protocol.packet.clientbound.game.*
 import io.ktor.network.sockets.*
 import kotlin.random.Random
 
@@ -53,7 +52,18 @@ class KarbonServer : NetworkServer() {
         })
         KarbonScheduler.addTickManager(player)
         playersMap[session] = player
-        players.forEach { it.sendMessage(LiteralText("§e${player.profile.name} joined the game")) }
+        players.forEach {
+            it.sendMessage(LiteralText("§e${player.profile.name} joined the game"))
+            (it as? KarbonPlayer)?.session?.send(ClientboundGamePlayerListPacket(
+                PlayerListAction.ADD_PLAYER,
+                players.map { serverPlayer -> PlayerListEntry(
+                    serverPlayer.profile,
+                    0, // TODO: Ping
+                    GameModes.CREATIVE, // TODO: Gamemode
+                    LiteralText(serverPlayer.profile.name ?: "")
+                ) }
+            ))
+        }
         session.send(createGameJoinPacket())
         player.addComponent(network)
         network.sendPositionUpdates(doubleVector3of(), doubleVector3of())

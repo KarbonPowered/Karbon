@@ -49,6 +49,7 @@ class GameProtocol(isServer: Boolean) : MinecraftProtocol("game", isServer) {
             ClientboundGamePlayerPositionRotationPacket::class,
             ClientboundGamePlayerPositionRotationPacket
         )
+        clientbound(0x35, ClientboundGamePlayerListPacket::class, ClientboundGamePlayerListPacket)
 
         serverbound(0x03, ServerboundChatPacket::class, ServerboundChatPacket, ChatHandler)
     }

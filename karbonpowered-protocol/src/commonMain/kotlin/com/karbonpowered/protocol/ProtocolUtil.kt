@@ -7,6 +7,7 @@ import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
 import kotlin.experimental.and
 import kotlin.experimental.or
+import kotlin.reflect.KClass
 
 fun Input.readVarInt(): Int {
     var numRead = 0
@@ -95,6 +96,10 @@ fun <T> Output.writeCollection(collection: Collection<T>, serializer: (Output, T
         serializer(this, it)
     }
 }
+
+fun <E : Enum<E>> Output.writeEnum(enum: Enum<E>) = writeVarInt(enum.ordinal)
+
+inline fun <reified E : Enum<E>> Input.readEnum() = enumValues<E>()[readVarInt()]
 
 @OptIn(ExperimentalUnsignedTypes::class)
 suspend fun ByteReadChannel.readUShort(): UShort = readShort().toUShort()
