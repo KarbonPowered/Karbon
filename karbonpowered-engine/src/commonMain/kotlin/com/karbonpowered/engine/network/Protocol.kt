@@ -54,6 +54,15 @@ class GameProtocol(isServer: Boolean) : MinecraftProtocol("game", isServer) {
         clientbound(0x09, ClientboundGameBlockBreakingProgressPacket::class, ClientboundGameBlockBreakingProgressPacket)
 
 
+        serverbound(0x00, ServerboundAcceptTeleportationPacket::class, ServerboundAcceptTeleportationPacket) { _, message ->
+            println(message)
+        }
+        serverbound(0x01, ServerboundBlockEntityTagQueryPacket::class, ServerboundBlockEntityTagQueryPacket) { _, message ->
+            println(message)
+        }
+        serverbound(0x02, ServerboundChangeDifficultyPacket::class, ServerboundChangeDifficultyPacket) { _, message ->
+            println(message)
+        }
         serverbound(0x03, ServerboundChatPacket::class, ServerboundChatPacket, ChatHandler)
         serverbound(17, ServerboundPlayerPositionPacket::class, ServerboundPlayerPositionPacket) { _, message ->
             println(message)
