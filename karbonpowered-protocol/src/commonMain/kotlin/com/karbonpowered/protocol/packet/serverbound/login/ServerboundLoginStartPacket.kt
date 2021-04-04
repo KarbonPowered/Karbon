@@ -1,5 +1,6 @@
 package com.karbonpowered.protocol.packet.serverbound.login
 
+import com.karbonpowered.api.profile.property.ProfileProperty
 import com.karbonpowered.protocol.MinecraftPacket
 import com.karbonpowered.protocol.readString
 import com.karbonpowered.protocol.writeString
