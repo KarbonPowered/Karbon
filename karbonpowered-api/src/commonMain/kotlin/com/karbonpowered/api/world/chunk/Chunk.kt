@@ -6,4 +6,6 @@ import com.karbonpowered.math.vector.IntVector3
 interface Chunk<P : Chunk<P>> : MutableBlockVolume<P> {
     val isEmpty: Boolean
     val chunkPosition: IntVector3
+
+    val isLoaded: Boolean
 }

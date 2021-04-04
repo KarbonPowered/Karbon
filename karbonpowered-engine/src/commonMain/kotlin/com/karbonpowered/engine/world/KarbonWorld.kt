@@ -34,4 +34,8 @@ class KarbonWorld : BaseComponentOwner(), ServerWorld {
     fun startTick() {
 
     }
+
+    fun queueChunksForGeneration(chunks: Collection<IntVector3>) {
+
+    }
 }

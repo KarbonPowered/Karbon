@@ -1,11 +1,16 @@
 package com.karbonpowered.engine.world
 
 import com.karbonpowered.api.block.BlockState
+import com.karbonpowered.api.entity.Entity
 import com.karbonpowered.api.world.chunk.Chunk
+import com.karbonpowered.engine.entity.KarbonEntity
+import com.karbonpowered.engine.entity.KarbonPlayer
 import com.karbonpowered.engine.util.BitSize
 import com.karbonpowered.math.vector.IntVector3
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
+import kotlinx.atomicfu.locks.reentrantLock
+import kotlinx.atomicfu.locks.withLock
 
 class KarbonChunk(
     val world: KarbonWorld,
@@ -13,6 +18,11 @@ class KarbonChunk(
     val y: Int,
     val z: Int
 ) : Chunk<KarbonChunk> {
+    val observerLock = reentrantLock()
+    val observers = HashSet<KarbonEntity<*>>()
+    val playerObservers = HashSet<KarbonPlayer>()
+    override val isLoaded: Boolean = true
+
     companion object {
         val BLOCKS = BitSize(4)
     }
@@ -45,6 +55,28 @@ class KarbonChunk(
 
     fun cancelUnload() = SaveState.cancelUnload(saveState)
 
+    fun refreshObserver(entity: Entity<*>): Boolean {
+        observerLock.withLock {
+            val wasEmpty = observers.isEmpty()
+            if (observers.add(entity as KarbonEntity<*>) && entity is KarbonPlayer) {
+                playerObservers.add(entity)
+            }
+        }
+        return true
+    }
+
+    fun removeObserver(entity: Entity<*>) {
+        observerLock.withLock {
+            if (observers.remove(entity) && entity is KarbonPlayer) {
+                playerObservers.remove(entity)
+            }
+            if (observers.isEmpty()) {
+                TODO()
+            }
+        }
+    }
+
+
     enum class SaveState {
         UNLOAD_SAVE,
         UNLOAD,
@@ -75,4 +107,5 @@ class KarbonChunk(
             }
         }
     }
+
 }
