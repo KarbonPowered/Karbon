@@ -10,3 +10,4 @@ open class FloatVector3(
     override fun toArray(): FloatArray = floatArrayOf(x, y, z)
 }
 
+fun floatVector3of(x: Float = 0f, y: Float = 0f, z: Float = 0f): FloatVector3 = FloatVector3(x, y, z)

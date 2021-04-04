@@ -71,7 +71,7 @@ class KarbonChunk(
                 playerObservers.remove(entity)
             }
             if (observers.isEmpty()) {
-                TODO()
+                // TODO: Unload chunk
             }
         }
     }

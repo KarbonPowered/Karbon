@@ -3,16 +3,11 @@ package com.karbonpowered.engine.network
 import com.karbonpowered.api.entity.living.player.GameModes
 import com.karbonpowered.api.entity.living.player.Player
 import com.karbonpowered.api.profile.GameProfile
-import com.karbonpowered.api.world.server.ServerLocation
-import com.karbonpowered.api.world.server.ServerWorld
-import com.karbonpowered.engine.component.KarbonPlayerNetworkComponent
 import com.karbonpowered.engine.entity.KarbonPlayer
 import com.karbonpowered.engine.scheduler.KarbonScheduler
 import com.karbonpowered.engine.world.KarbonWorld
 import com.karbonpowered.logging.Logger
-import com.karbonpowered.math.vector.BaseMutableDoubleVector3
 import com.karbonpowered.math.vector.doubleVector3of
-import com.karbonpowered.math.vector.intVector3Of
 import com.karbonpowered.minecraft.text.LiteralText
 import com.karbonpowered.nbt.NBT
 import com.karbonpowered.network.NetworkServer
@@ -66,10 +61,7 @@ class KarbonServer : NetworkServer() {
 
     suspend fun addPlayer(gameProfile: GameProfile, session: KarbonSession) {
         Logger.info("Connected: $session")
-        val network = KarbonPlayerNetworkComponent(session)
-        val player = KarbonPlayer(session, gameProfile, object : ServerLocation, BaseMutableDoubleVector3() {
-            override val world: ServerWorld = this@KarbonServer.world
-        })
+        val player = KarbonPlayer(session, gameProfile, world)
         KarbonScheduler.addTickManager(player)
         playersMap[session] = player
         players.forEach {
@@ -87,8 +79,8 @@ class KarbonServer : NetworkServer() {
             ))
         }
         session.send(createGameJoinPacket())
-        player.addComponent(network)
-        network.sendPositionUpdates(doubleVector3of(), doubleVector3of())
+        player.network.forceSync()
+        player.network.sendPositionUpdates(doubleVector3of(), doubleVector3of())
         session.send(ClientboundPlayChunkData(0, 0).apply {
             chunks[0] = ClientboundPlayChunkData.ChunkData().also { chunk ->
                 repeat(16) { dx ->

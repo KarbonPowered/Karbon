@@ -8,7 +8,7 @@ open class BaseSession(
     override var protocol: Protocol
 ) : Session {
 
-    override suspend fun <T : Message> messageReceived(message: T) {
+    override fun <T : Message> messageReceived(message: T) {
     }
 
     override suspend fun send(vararg messages: Message) {
