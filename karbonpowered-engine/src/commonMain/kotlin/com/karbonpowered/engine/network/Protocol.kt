@@ -52,7 +52,9 @@ class GameProtocol(isServer: Boolean) : MinecraftProtocol("game", isServer) {
         )
         clientbound(0x35, ClientboundGamePlayerListPacket::class, ClientboundGamePlayerListPacket)
         clientbound(0x09, ClientboundGameBlockBreakingProgressPacket::class, ClientboundGameBlockBreakingProgressPacket)
-
+        clientbound(0x4C, ClientboundScoreboardDisplayPacket::class, ClientboundScoreboardDisplayPacket)
+        clientbound(0x53, ClientboundSetScoreboardObjectivePacket::class, ClientboundSetScoreboardObjectivePacket)
+        clientbound(0x55, ClientboundSetPlayerTeamPacket::class, ClientboundSetPlayerTeamPacket)
 
         serverbound(0x03, ServerboundChatPacket::class, ServerboundChatPacket, ChatHandler)
         serverbound(17, ServerboundPlayerPositionPacket::class, ServerboundPlayerPositionPacket) { _, message ->
