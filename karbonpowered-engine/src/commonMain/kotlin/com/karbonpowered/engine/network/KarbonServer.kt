@@ -12,12 +12,15 @@ import com.karbonpowered.engine.world.KarbonWorld
 import com.karbonpowered.logging.Logger
 import com.karbonpowered.math.vector.BaseMutableDoubleVector3
 import com.karbonpowered.math.vector.doubleVector3of
+import com.karbonpowered.math.vector.intVector3Of
 import com.karbonpowered.minecraft.text.LiteralText
 import com.karbonpowered.nbt.NBT
 import com.karbonpowered.network.NetworkServer
 import com.karbonpowered.network.Session
 import com.karbonpowered.protocol.packet.clientbound.game.*
 import io.ktor.network.sockets.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class KarbonServer : NetworkServer() {
@@ -39,7 +42,24 @@ class KarbonServer : NetworkServer() {
         playersMap.remove(session)?.let {
             (it as? KarbonPlayer)?.let { player ->
                 KarbonScheduler.removeTickManager(player)
-                players.forEach { it.sendMessage(LiteralText("§e${player.profile.name} left the game")) }
+                players.forEach {
+                    it.sendMessage(LiteralText("§e${player.profile.name} left the game"))
+                    GlobalScope.launch {
+                        (it as? KarbonPlayer)?.session?.send(
+                            ClientboundGamePlayerListPacket(
+                                PlayerListAction.REMOVE_PLAYER,
+                                listOf(
+                                    PlayerListEntry(
+                                        player.profile,
+                                        0,
+                                        null,
+                                        null
+                                    )
+                                )
+                            )
+                        )
+                    }
+                }
             }
         }
     }
@@ -56,12 +76,14 @@ class KarbonServer : NetworkServer() {
             it.sendMessage(LiteralText("§e${player.profile.name} joined the game"))
             (it as? KarbonPlayer)?.session?.send(ClientboundGamePlayerListPacket(
                 PlayerListAction.ADD_PLAYER,
-                players.map { serverPlayer -> PlayerListEntry(
-                    serverPlayer.profile,
-                    0, // TODO: Ping
-                    GameModes.CREATIVE, // TODO: Gamemode
-                    LiteralText(serverPlayer.profile.name ?: "")
-                ) }
+                players.map { serverPlayer ->
+                    PlayerListEntry(
+                        serverPlayer.profile,
+                        0, // TODO: Ping
+                        GameModes.CREATIVE, // TODO: Gamemode
+                        LiteralText(serverPlayer.profile.name ?: "")
+                    )
+                }
             ))
         }
         session.send(createGameJoinPacket())
