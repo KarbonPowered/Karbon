@@ -1,9 +1,11 @@
 package com.karbonpowered.protocol.packet.clientbound.game
 
 import com.karbonpowered.api.entity.living.player.GameMode
+import com.karbonpowered.api.entity.living.player.GameModes
 import com.karbonpowered.api.entity.living.player.Player
 import com.karbonpowered.api.profile.GameProfile
 import com.karbonpowered.api.profile.property.ProfileProperty
+import com.karbonpowered.common.UUID
 import com.karbonpowered.io.Codec
 import com.karbonpowered.minecraft.text.LiteralText
 import com.karbonpowered.minecraft.text.Text
@@ -13,42 +15,39 @@ import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
 data class ClientboundGamePlayerListPacket(
-    val action: Action,
-    val players: List<GameProfile>
+    val action: PlayerListAction,
+    val entries: List<PlayerListEntry>
 ) : MinecraftPacket {
-    val entries = mutableListOf<PlayerListEntry>()
-
-    init {
-        players.forEach {
-            entries.add(
-                PlayerListEntry(
-                    0, // TODO: Player ping
-
-                )
-            )
-        }
-    }
 
     companion object : MessageCodec<ClientboundGamePlayerListPacket> {
         override val messageType: KClass<ClientboundGamePlayerListPacket>
             get() = ClientboundGamePlayerListPacket::class
 
         override fun decode(input: Input): ClientboundGamePlayerListPacket {
+            val action = input.readEnum<PlayerListAction>()
 
+            val entriesSize = input.readVarInt()
+            val entries = mutableListOf<PlayerListEntry>()
+            for (i in 0 until entriesSize) {
+                entries.add(action.decode(input))
+            }
+
+            return ClientboundGamePlayerListPacket(action, entries)
         }
 
         override fun encode(output: Output, data: ClientboundGamePlayerListPacket) {
-            TODO("Not yet implemented")
+            output.writeEnum(data.action)
+            output.writeCollection(data.entries, data.action::encode)
         }
     }
 }
 
-enum class Action : Codec<PlayerListEntry> {
+enum class PlayerListAction : Codec<PlayerListEntry> {
     ADD_PLAYER {
         override fun encode(output: Output, data: PlayerListEntry) {
-            output.writeUUID(data.uniqueId)
-            output.writeString(data.username)
-            output.writeCollection(data.profileProperties) { out, property ->
+            output.writeUUID(data.profile.uniqueId)
+            output.writeString(data.profile.name ?: "")
+            output.writeCollection(data.profile.properties) { out, property ->
                 out.writeString(property.name)
                 out.writeString(property.value)
                 if (property.signature != null) {
@@ -58,7 +57,7 @@ enum class Action : Codec<PlayerListEntry> {
                     out.writeBoolean(false)
                 }
             }
-            output.writeVarInt(MagicValues.value<Byte>(data.gameMode).toInt())
+            output.writeVarInt(MagicValues.value<Byte>(data.gameMode ?: GameModes.SURVIVAL).toInt())
             output.writeVarInt(data.latency)
             output.writeOptionalText(data.displayName)
         }
@@ -83,22 +82,81 @@ enum class Action : Codec<PlayerListEntry> {
 
             val gameMode = MagicValues.key<GameMode>(input.readVarInt().toByte())
             val latency = input.readInt()
-            val text = input.readOptionalText()
-
+            val displayName = input.readOptionalText()
+            return PlayerListEntry(
+                object : GameProfile {
+                    override val uniqueId = uuid
+                    override val name = username
+                    override val properties = properties
+                },
+                latency,
+                gameMode,
+                displayName
+            )
         }
     },
     UPDATE_GAME_MODE {
         override fun encode(output: Output, data: PlayerListEntry) {
-            TODO("Not yet implemented")
+            output.writeUUID(data.profile.uniqueId)
+            output.writeVarInt(MagicValues.value<Byte>(data.gameMode ?: GameModes.SURVIVAL).toInt())
         }
 
         override fun decode(input: Input): PlayerListEntry {
-            TODO("Not yet implemented")
+            val profile = object : GameProfile {
+                override val uniqueId = input.readUUID()
+                override val name = null
+                override val properties = emptyList<ProfileProperty>()
+            }
+            val gameMode = MagicValues.key<GameMode>(input.readVarInt().toByte())
+            return PlayerListEntry(profile, 0, gameMode, null)
         }
     },
-    UPDATE_LATENCY,
-    UPDATE_DISPLAY_NAME,
-    REMOVE_PLAYER;
+    UPDATE_LATENCY {
+        override fun encode(output: Output, data: PlayerListEntry) {
+            output.writeUUID(data.profile.uniqueId)
+            output.writeVarInt(data.latency)
+        }
+
+        override fun decode(input: Input): PlayerListEntry {
+            val profile = object : GameProfile {
+                override val uniqueId = input.readUUID()
+                override val name = null
+                override val properties = emptyList<ProfileProperty>()
+            }
+            val latency = input.readInt()
+            return PlayerListEntry(profile, latency, null, null)
+        }
+    },
+    UPDATE_DISPLAY_NAME {
+        override fun encode(output: Output, data: PlayerListEntry) {
+            output.writeUUID(data.profile.uniqueId)
+            output.writeString(data.displayName.toString())
+        }
+
+        override fun decode(input: Input): PlayerListEntry {
+            val profile = object : GameProfile {
+                override val uniqueId = input.readUUID()
+                override val name = null
+                override val properties = emptyList<ProfileProperty>()
+            }
+            val displayName = LiteralText(input.readString())
+            return PlayerListEntry(profile, 0, null, displayName)
+        }
+    },
+    REMOVE_PLAYER {
+        override fun encode(output: Output, data: PlayerListEntry) {
+            output.writeUUID(data.profile.uniqueId)
+        }
+
+        override fun decode(input: Input): PlayerListEntry {
+            val profile = object : GameProfile {
+                override val uniqueId = input.readUUID()
+                override val name = null
+                override val properties = emptyList<ProfileProperty>()
+            }
+            return PlayerListEntry(profile, 0, null, null)
+        }
+    };
 
     fun Output.writeOptionalText(text: Text?) {
         if (text != null) {
@@ -115,7 +173,6 @@ enum class Action : Codec<PlayerListEntry> {
 data class PlayerListEntry(
     val profile: GameProfile,
     val latency: Int,
-    val gameMode: GameMode,
-    val profileProperties: List<ProfileProperty>,
+    val gameMode: GameMode?,
     val displayName: Text?
 )
