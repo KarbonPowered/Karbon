@@ -14,7 +14,7 @@ data class ClientboundSetPlayerTeamPacket(
     val players: Collection<String>,
     val team: SerializableTeam?
 ) : MinecraftPacket {
-    fun containsPlayers() = Companion.containsPlayers(packetType)
+    fun containsPlayers() = containsPlayers(packetType)
 
     fun containsTeamsInfo() = containsTeamsInfo(packetType)
 
