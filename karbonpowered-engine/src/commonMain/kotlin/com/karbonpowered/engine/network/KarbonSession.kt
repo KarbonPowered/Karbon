@@ -1,6 +1,5 @@
 package com.karbonpowered.engine.network
 
-import com.karbonpowered.engine.Engine
 import com.karbonpowered.network.Message
 import com.karbonpowered.network.MessageCodec
 import com.karbonpowered.network.Session
@@ -25,7 +24,7 @@ class KarbonSession(
 ) : Session {
     val context = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    override suspend fun <T : Message> messageReceived(message: T) {
+    override fun <T : Message> messageReceived(message: T) {
         (protocol as MinecraftProtocol).handlerLookupService[message::class]?.handle(this, message)
     }
 

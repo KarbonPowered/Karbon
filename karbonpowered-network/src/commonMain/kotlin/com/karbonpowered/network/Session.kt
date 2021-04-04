@@ -23,7 +23,7 @@ interface Session {
      *
      * @param message message to be processed
      */
-    suspend fun <T : Message> messageReceived(message: T)
+    fun <T : Message> messageReceived(message: T)
 
     /**
      * Sends a message across the network.

@@ -7,7 +7,7 @@ import com.karbonpowered.network.Session
 import com.karbonpowered.protocol.packet.serverbound.handshake.ServerboundHandshakePacket
 
 object HandshakeHandler : MessageHandler<Session, ServerboundHandshakePacket> {
-    override suspend fun handle(session: Session, message: ServerboundHandshakePacket) {
+    override fun handle(session: Session, message: ServerboundHandshakePacket) {
         when (message.nextState) {
             1 -> {
                 session.protocol = StatusProtocol(true)

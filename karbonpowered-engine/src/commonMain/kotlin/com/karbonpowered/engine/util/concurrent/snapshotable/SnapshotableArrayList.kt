@@ -5,8 +5,8 @@ import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 
 class SnapshotableArrayList<T>(
-    override val snapshotManager: SnapshotManager
-) : Snapshotable<List<T>>, List<T> {
+        val snapshotManager: SnapshotManager
+) : Snapshotable, List<T> {
     init {
         snapshotManager.add(this)
     }
@@ -15,9 +15,9 @@ class SnapshotableArrayList<T>(
     private val _dirty = atomic(false)
     private val _live = arrayListOf<T>()
     private val _snapshot = arrayListOf<T>()
-    override val live: List<T> get() = _live
-    override val snapshot: List<T> get() = _snapshot
-    override var isDirty: Boolean
+    val live: List<T> get() = _live
+    val snapshot: List<T> get() = _snapshot
+    var isDirty: Boolean
         get() = _dirty.value
         set(value) {
             _dirty.getAndSet(value)

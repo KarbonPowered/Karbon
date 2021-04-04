@@ -1,7 +1,7 @@
 package com.karbonpowered.protocol
 
-import com.karbonpowered.network.MessageCodec
 import com.karbonpowered.network.Message
+import com.karbonpowered.network.MessageCodec
 import com.karbonpowered.network.MessageHandler
 import com.karbonpowered.network.protocol.AbstractProtocol
 import com.karbonpowered.network.service.CodecLookupService

@@ -9,18 +9,21 @@ import com.karbonpowered.engine.profile.KarbonGameProfile
 import com.karbonpowered.network.MessageHandler
 import com.karbonpowered.protocol.packet.clientbound.login.ClientboundLoginSuccessPacket
 import com.karbonpowered.protocol.packet.serverbound.login.ServerboundLoginStartPacket
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 object LoginStartHandler : MessageHandler<KarbonSession, ServerboundLoginStartPacket> {
-    override suspend fun handle(session: KarbonSession, message: ServerboundLoginStartPacket) {
-        val gameProfile = KarbonGameProfile(message.username, uuid3Of(UUID(0, 0), message.username), emptyList())
-        session.send(
-            ClientboundLoginSuccessPacket(
-                gameProfile.uniqueId,
-                message.username
+    override fun handle(session: KarbonSession, message: ServerboundLoginStartPacket) {
+        GlobalScope.launch {
+            val gameProfile = KarbonGameProfile(message.username, uuid3Of(UUID(0, 0), message.username), emptyList())
+            session.send(
+                    ClientboundLoginSuccessPacket(
+                            gameProfile.uniqueId,
+                            message.username
+                    )
             )
-        )
-        session.protocol = GameProtocol(true)
-        Engine.server.addPlayer(gameProfile, session)
+            session.protocol = GameProtocol(true)
+            Engine.server.addPlayer(gameProfile, session)
+        }
     }
 }

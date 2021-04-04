@@ -7,7 +7,7 @@ import com.karbonpowered.protocol.packet.clientbound.login.ClientboundLoginPlugi
 import com.karbonpowered.protocol.packet.clientbound.login.ClientboundLoginSuccessPacket
 import com.karbonpowered.protocol.packet.clientbound.status.ClientboundStatusPongPacket
 import com.karbonpowered.protocol.packet.clientbound.status.ClientboundStatusResponsePacket
-import com.karbonpowered.protocol.packet.serverbound.game.ServerboundChatPacket
+import com.karbonpowered.protocol.packet.serverbound.game.*
 import com.karbonpowered.protocol.packet.serverbound.handshake.ServerboundHandshakePacket
 import com.karbonpowered.protocol.packet.serverbound.login.ServerboundLoginStartPacket
 import com.karbonpowered.protocol.packet.serverbound.status.ServerboundStatusPingPacket
@@ -40,17 +40,31 @@ class StatusProtocol(isServer: Boolean) : MinecraftProtocol("status", isServer) 
 
 class GameProtocol(isServer: Boolean) : MinecraftProtocol("game", isServer) {
     init {
+        clientbound(0x04, ClientboundSpawnPlayerPacket::class, ClientboundSpawnPlayerPacket)
         clientbound(0x0f, ClientboundMessagePacket::class, ClientboundMessagePacket)
         clientbound(0x21, ClientboundKeepAlivePacket::class, ClientboundKeepAlivePacket)
         clientbound(0x22, ClientboundPlayChunkData::class, ClientboundPlayChunkData)
         clientbound(0x26, ClientboundGameJoinPacket::class, ClientboundGameJoinPacket)
         clientbound(
-            0x37,
-            ClientboundGamePlayerPositionRotationPacket::class,
-            ClientboundGamePlayerPositionRotationPacket
+                0x37,
+                ClientboundGamePlayerPositionRotationPacket::class,
+                ClientboundGamePlayerPositionRotationPacket
         )
         clientbound(0x35, ClientboundGamePlayerListPacket::class, ClientboundGamePlayerListPacket)
 
+
         serverbound(0x03, ServerboundChatPacket::class, ServerboundChatPacket, ChatHandler)
+        serverbound(17, ServerboundPlayerPositionPacket::class, ServerboundPlayerPositionPacket) { _, message ->
+            println(message)
+        }
+        serverbound(18, ServerboundPlayerPositionRotationPacket::class, ServerboundPlayerPositionRotationPacket) { _, message ->
+            println(message)
+        }
+        serverbound(19, ServerboundPlayerRotationPacket::class, ServerboundPlayerRotationPacket) { _, message ->
+            println(message)
+        }
+        serverbound(20, ServerboundPlayerOnGroundPacket::class, ServerboundPlayerOnGroundPacket) { _, message ->
+            println(message)
+        }
     }
 }
