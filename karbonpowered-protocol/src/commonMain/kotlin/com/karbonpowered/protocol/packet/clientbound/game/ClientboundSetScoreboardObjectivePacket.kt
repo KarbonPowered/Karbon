@@ -1,5 +1,6 @@
 package com.karbonpowered.protocol.packet.clientbound.game
 
+import com.karbonpowered.api.scoreboard.ObjectiveCriteria
 import com.karbonpowered.minecraft.text.LiteralText
 import com.karbonpowered.minecraft.text.Text
 import com.karbonpowered.network.MessageCodec
@@ -9,7 +10,7 @@ import io.ktor.utils.io.core.*
 data class ClientboundSetScoreboardObjectivePacket(
     val name: String,
     val displayName: Text,
-    val scoreboardRenderType: ScoreboardRenderType,
+    val scoreboardRenderType: ObjectiveCriteria.RenderType,
     val mode: Int
 ) : MinecraftPacket {
     companion object : MessageCodec<ClientboundSetScoreboardObjectivePacket> {
@@ -19,7 +20,7 @@ data class ClientboundSetScoreboardObjectivePacket(
             val name = input.readString(16)
             val mode = input.readByte().toInt()
             val (displayName, scoreboardRenderType) = if (mode != 0 && mode != 2) {
-                Pair(LiteralText(""), ScoreboardRenderType.INTEGER)
+                Pair(LiteralText(""), ObjectiveCriteria.RenderType.INTEGER)
             } else Pair(LiteralText(input.readString()), input.readEnum())
             return ClientboundSetScoreboardObjectivePacket(name, displayName, scoreboardRenderType, mode)
         }
@@ -33,9 +34,4 @@ data class ClientboundSetScoreboardObjectivePacket(
             }
         }
     }
-}
-
-enum class ScoreboardRenderType { // TODO: do scoreboard objective and other classes
-    INTEGER,
-    HEARTS
 }
