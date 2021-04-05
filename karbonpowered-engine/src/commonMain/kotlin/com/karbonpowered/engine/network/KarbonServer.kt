@@ -3,6 +3,7 @@ package com.karbonpowered.engine.network
 import com.karbonpowered.api.entity.living.player.GameModes
 import com.karbonpowered.api.entity.living.player.Player
 import com.karbonpowered.api.profile.GameProfile
+import com.karbonpowered.api.scoreboard.Scoreboard
 import com.karbonpowered.engine.entity.KarbonPlayer
 import com.karbonpowered.engine.scheduler.KarbonScheduler
 import com.karbonpowered.engine.world.KarbonWorld

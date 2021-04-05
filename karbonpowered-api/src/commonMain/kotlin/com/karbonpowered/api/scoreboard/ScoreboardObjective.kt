@@ -2,6 +2,7 @@ package com.karbonpowered.api.scoreboard
 
 interface ScoreboardObjective {
     val scores: ArrayList<Score>
+    val teams: Iterable<Team>
 
     fun hasPlayerScore(name: String)
 
@@ -12,5 +13,4 @@ interface ScoreboardObjective {
     fun setPlayerScore(name: String, value: Int)
 
     fun getPlayers(): ArrayList<String>
-
 }
