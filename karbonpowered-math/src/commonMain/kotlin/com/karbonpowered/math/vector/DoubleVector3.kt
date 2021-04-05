@@ -9,6 +9,12 @@ interface DoubleVector3 : DoubleVector2 {
     fun sub(x: Double, y: Double, z: Double): DoubleVector3
     fun mul(x: Double, y: Double, z: Double): DoubleVector3
     fun div(x: Double, y: Double, z: Double): DoubleVector3
+    fun distanceSquared(x: Double, y: Double, z: Double): Double {
+        val dx = this.x - x
+        val dy = this.y - y
+        val dz = this.z - z
+        return dx * dx + dy * dy + dz * dz
+    }
 
     override fun toDoubleArray(): DoubleArray = doubleArrayOf(x, y, z)
 }
@@ -20,9 +26,9 @@ interface MutableDoubleVector3 : DoubleVector3 {
 }
 
 open class BaseDoubleVector3(
-    override val x: Double,
-    override val y: Double,
-    override val z: Double
+        override val x: Double,
+        override val y: Double,
+        override val z: Double
 ) : DoubleVector3 {
     private val hashCode by lazy {
         var result = x.hashCode()
@@ -32,16 +38,16 @@ open class BaseDoubleVector3(
     }
 
     override fun add(x: Double, y: Double, z: Double): DoubleVector3 =
-        mutableDoubleVector3of(this).add(x, y, z)
+            mutableDoubleVector3of(this).add(x, y, z)
 
     override fun sub(x: Double, y: Double, z: Double): DoubleVector3 =
-        mutableDoubleVector3of(this).sub(x, y, z)
+            mutableDoubleVector3of(this).sub(x, y, z)
 
     override fun mul(x: Double, y: Double, z: Double): DoubleVector3 =
-        mutableDoubleVector3of(this).mul(x, y, z)
+            mutableDoubleVector3of(this).mul(x, y, z)
 
     override fun div(x: Double, y: Double, z: Double): DoubleVector3 =
-        mutableDoubleVector3of(this).div(x, y, z)
+            mutableDoubleVector3of(this).div(x, y, z)
 
     override fun toString(): String = "($x, $y, $z)"
 
@@ -58,9 +64,9 @@ open class BaseDoubleVector3(
 }
 
 open class BaseMutableDoubleVector3(
-    override var x: Double = 0.0,
-    override var y: Double = 0.0,
-    override var z: Double = 0.0
+        override var x: Double = 0.0,
+        override var y: Double = 0.0,
+        override var z: Double = 0.0
 ) : BaseDoubleVector3(x, y, z), MutableDoubleVector3 {
     override fun add(x: Double, y: Double, z: Double): DoubleVector3 = apply {
         this.x += x
@@ -98,21 +104,21 @@ open class BaseMutableDoubleVector3(
 }
 
 fun doubleVector3of(
-    vector: DoubleVector3
+        vector: DoubleVector3
 ): DoubleVector3 = BaseDoubleVector3(vector.x, vector.y, vector.z)
 
 fun doubleVector3of(
-    x: Double = 0.0,
-    y: Double = 0.0,
-    z: Double = 0.0
+        x: Double = 0.0,
+        y: Double = 0.0,
+        z: Double = 0.0
 ): DoubleVector3 = BaseDoubleVector3(x, y, z)
 
 fun mutableDoubleVector3of(
-    vector: DoubleVector3
+        vector: DoubleVector3
 ): MutableDoubleVector3 = BaseMutableDoubleVector3(vector.x, vector.y, vector.z)
 
 fun mutableDoubleVector3of(
-    x: Double = 0.0,
-    y: Double = 0.0,
-    z: Double = 0.0
+        x: Double = 0.0,
+        y: Double = 0.0,
+        z: Double = 0.0
 ): MutableDoubleVector3 = BaseMutableDoubleVector3(x, y, z)

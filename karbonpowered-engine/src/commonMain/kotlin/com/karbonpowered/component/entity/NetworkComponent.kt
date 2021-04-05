@@ -1,7 +1,6 @@
 package com.karbonpowered.component.entity
 
 import com.karbonpowered.api.world.WorldLoadOption
-import com.karbonpowered.api.world.chunk.Chunk
 import com.karbonpowered.engine.util.OutwardIterator
 import com.karbonpowered.engine.world.KarbonChunk
 import com.karbonpowered.engine.world.KarbonWorld
@@ -13,7 +12,7 @@ import kotlin.time.ExperimentalTime
 open class NetworkComponent : EntityComponent() {
     override fun canTick(): Boolean = false
     val syncDistance = 10
-    val observingChunks = HashSet<Chunk<*>>()
+    val observingChunks = HashSet<KarbonChunk>()
 
     var observer: Boolean = false
     var observeChunksFailed = true
@@ -31,7 +30,7 @@ open class NetworkComponent : EntityComponent() {
         val cy = location.chunkPosition.y
         val cz = location.chunkPosition.z
 
-        val observing = HashSet<Chunk<*>>((syncDistance * syncDistance * syncDistance * 3) / 2)
+        val observing = HashSet<KarbonChunk>((syncDistance * syncDistance * syncDistance * 3) / 2)
         val ungeneratedChunks = ArrayList<IntVector3>()
         val iterator = OutwardIterator(cx, cy, cz, syncDistance)
         observeChunksFailed = false
@@ -48,14 +47,14 @@ open class NetworkComponent : EntityComponent() {
         }
         observingChunks.removeAll(observing)
         observingChunks.forEach { chunk ->
-            if (chunk.isLoaded) {
-                (chunk as KarbonChunk).removeObserver(owner)
-            }
+//            if (chunk.isLoaded) {
+//                (chunk as KarbonChunk).removeObserver(owner)
+//            }
         }
         observingChunks.clear()
         observingChunks.addAll(observing)
         if (!ungeneratedChunks.isEmpty()) {
-            world.queueChunksForGeneration(ungeneratedChunks)
+//            world.queueChunksForGeneration(ungeneratedChunks)
         }
     }
 

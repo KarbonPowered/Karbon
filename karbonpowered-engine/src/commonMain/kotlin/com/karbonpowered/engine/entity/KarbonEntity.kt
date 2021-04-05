@@ -1,7 +1,7 @@
 package com.karbonpowered.engine.entity
 
 import com.karbonpowered.api.entity.Entity
-import com.karbonpowered.api.world.Location
+import com.karbonpowered.api.world.location.Location
 import com.karbonpowered.component.BaseComponentOwner
 import com.karbonpowered.component.entity.PhysicsComponent
 import com.karbonpowered.engine.scheduler.TickManager

@@ -1,5 +1,5 @@
 package com.karbonpowered.api.block
 
-interface BlockType {
+import com.karbonpowered.api.registry.DefaultedRegistryValue
 
-}
+interface BlockType : DefaultedRegistryValue

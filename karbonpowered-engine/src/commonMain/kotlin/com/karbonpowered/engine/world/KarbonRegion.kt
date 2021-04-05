@@ -1,8 +1,9 @@
 package com.karbonpowered.engine.world
 
 import com.karbonpowered.api.block.BlockState
+import com.karbonpowered.api.fluid.FluidState
 import com.karbonpowered.api.world.WorldLoadOption
-import com.karbonpowered.api.world.chunk.Chunk
+import com.karbonpowered.api.world.chunk.ProtoChunk
 import com.karbonpowered.api.world.region.Region
 import com.karbonpowered.engine.scheduler.TickManager
 import com.karbonpowered.engine.util.BitSize
@@ -36,7 +37,7 @@ class KarbonRegion(
         }
     }
 
-    override fun chunk(x: Int, y: Int, z: Int, loadOption: WorldLoadOption): Chunk<*>? {
+    override fun chunk(x: Int, y: Int, z: Int, loadOption: WorldLoadOption): ProtoChunk<*>? {
         val dx = x and CHUNKS.mask
         val dy = y and CHUNKS.mask
         val dz = z and CHUNKS.mask
@@ -66,7 +67,19 @@ class KarbonRegion(
         return null
     }
 
+    override fun chunkAtBlock(x: Int, y: Int, z: Int, loadOption: WorldLoadOption): ProtoChunk<*>? {
+        TODO("Not yet implemented")
+    }
+
     override fun block(x: Int, y: Int, z: Int): BlockState {
+        TODO("Not yet implemented")
+    }
+
+    override fun fluid(x: Int, y: Int, z: Int): FluidState {
+        TODO("Not yet implemented")
+    }
+
+    override fun highestYAt(x: Int, z: Int): Int {
         TODO("Not yet implemented")
     }
 
@@ -85,6 +98,10 @@ class KarbonRegion(
         TODO("Not yet implemented")
     }
 
+    override fun isAreaAvailable(x: Int, y: Int, z: Int): Boolean {
+        TODO("Not yet implemented")
+    }
+
     private fun checkChunkLoaded(chunk: KarbonChunk, loadOption: WorldLoadOption) =
-        check(!loadOption.load || chunk.cancelUnload()) { "Unloaded chunk returned" }
+            check(!loadOption.load || chunk.cancelUnload()) { "Unloaded chunk returned" }
 }

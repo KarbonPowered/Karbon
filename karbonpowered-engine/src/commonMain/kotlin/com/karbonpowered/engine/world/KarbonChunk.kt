@@ -1,11 +1,25 @@
 package com.karbonpowered.engine.world
 
 import com.karbonpowered.api.block.BlockState
+import com.karbonpowered.api.block.BlockType
+import com.karbonpowered.api.block.entity.BlockEntity
 import com.karbonpowered.api.entity.Entity
+import com.karbonpowered.api.entity.EntityType
+import com.karbonpowered.api.entity.living.player.Player
+import com.karbonpowered.api.fluid.FluidState
+import com.karbonpowered.api.fluid.FluidType
+import com.karbonpowered.api.scheduler.ScheduledUpdateList
+import com.karbonpowered.api.world.biome.Biome
 import com.karbonpowered.api.world.chunk.Chunk
+import com.karbonpowered.api.world.chunk.ChunkState
+import com.karbonpowered.api.world.height.HeightType
+import com.karbonpowered.api.world.volume.sequence.SequenceOptions
+import com.karbonpowered.api.world.volume.sequence.VolumeSequence
+import com.karbonpowered.common.UUID
 import com.karbonpowered.engine.entity.KarbonEntity
 import com.karbonpowered.engine.entity.KarbonPlayer
 import com.karbonpowered.engine.util.BitSize
+import com.karbonpowered.math.vector.DoubleVector3
 import com.karbonpowered.math.vector.IntVector3
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
@@ -13,26 +27,51 @@ import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 
 class KarbonChunk(
-    val world: KarbonWorld,
-    val x: Int,
-    val y: Int,
-    val z: Int
-) : Chunk<KarbonChunk> {
+        override val world: KarbonWorld,
+        val x: Int,
+        val y: Int,
+        val z: Int
+) : Chunk {
     val observerLock = reentrantLock()
     val observers = HashSet<KarbonEntity<*>>()
     val playerObservers = HashSet<KarbonPlayer>()
-    override val isLoaded: Boolean = true
 
     companion object {
         val BLOCKS = BitSize(4)
     }
 
     protected val saveState = atomic(SaveState.NONE)
-
-    override val isEmpty: Boolean
+    override val state: ChunkState
         get() = TODO("Not yet implemented")
     override val chunkPosition: IntVector3
         get() = TODO("Not yet implemented")
+    override val regionalDifficultyFactor: Double
+        get() = TODO("Not yet implemented")
+    override val regionalDifficultyPercentage: Double
+        get() = TODO("Not yet implemented")
+    override var inhabitedTime: Double
+        get() = TODO("Not yet implemented")
+        set(value) {}
+    override val blockMin: IntVector3
+        get() = TODO("Not yet implemented")
+    override val blockMax: IntVector3
+        get() = TODO("Not yet implemented")
+    override val blockSize: IntVector3
+        get() = TODO("Not yet implemented")
+    override val scheduledBlockUpdates: ScheduledUpdateList<BlockType>
+        get() = TODO("Not yet implemented")
+    override val scheduledFluidUpdates: ScheduledUpdateList<FluidType>
+        get() = TODO("Not yet implemented")
+    override val blockEntities: Collection<BlockEntity>
+        get() = TODO("Not yet implemented")
+
+    override fun addEntity(entity: Entity<*>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun isEmpty(): Boolean {
+        TODO("Not yet implemented")
+    }
 
     override fun setBlock(x: Int, y: Int, z: Int, blockState: BlockState): Boolean {
         return true
@@ -42,14 +81,85 @@ class KarbonChunk(
         return true
     }
 
-    override val blockMin: IntVector3
-        get() = TODO("Not yet implemented")
-    override val blockMax: IntVector3
-        get() = TODO("Not yet implemented")
-    override val blockSize: IntVector3
-        get() = TODO("Not yet implemented")
 
     override fun containsBlock(x: Int, y: Int, z: Int): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun isAreaAvailable(x: Int, y: Int, z: Int): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun addBlockEntity(x: Int, y: Int, z: Int, blockEntity: BlockEntity) {
+        TODO("Not yet implemented")
+    }
+
+    override fun removeBlockEntity(x: Int, y: Int, z: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun blockEntitySequence(min: IntVector3, max: IntVector3, options: SequenceOptions): VolumeSequence<Chunk, BlockEntity> {
+        TODO("Not yet implemented")
+    }
+
+
+    override fun blockEntity(x: Int, y: Int, z: Int): BlockEntity? {
+        TODO("Not yet implemented")
+    }
+
+    override fun block(x: Int, y: Int, z: Int): BlockState {
+        TODO("Not yet implemented")
+    }
+
+    override fun fluid(x: Int, y: Int, z: Int): FluidState {
+        TODO("Not yet implemented")
+    }
+
+    override fun highestYAt(x: Int, z: Int): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun setBiome(x: Int, y: Int, z: Int, biome: Biome): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun biomeSequence(min: IntVector3, max: IntVector3, option: SequenceOptions): VolumeSequence<Chunk, Biome> {
+        TODO("Not yet implemented")
+    }
+
+    override fun biome(x: Int, y: Int, z: Int): Biome {
+        TODO("Not yet implemented")
+    }
+
+
+    override fun height(type: HeightType, x: Int, z: Int): Int {
+        TODO("Not yet implemented")
+    }
+
+    override fun <E : Entity<E>> createEntity(type: EntityType<E>, position: DoubleVector3): E {
+        TODO("Not yet implemented")
+    }
+
+    override fun <E : Entity<E>> createEntityNaturally(type: EntityType<E>, position: DoubleVector3): E {
+        TODO("Not yet implemented")
+    }
+
+    override fun spawnEntity(entity: Entity<*>): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun spawnEntities(entities: Iterable<Entity<*>>): Collection<Entity<*>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun entitySequence(min: IntVector3, max: IntVector3, options: SequenceOptions): VolumeSequence<Chunk, Entity<*>> {
+        TODO("Not yet implemented")
+    }
+
+    override val players: Collection<Player>
+        get() = TODO("Not yet implemented")
+
+    override fun entity(uuid: UUID): Entity<*>? {
         TODO("Not yet implemented")
     }
 

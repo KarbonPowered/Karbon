@@ -1,5 +1,6 @@
-package com.karbonpowered.api.world
+package com.karbonpowered.api.world.location
 
+import com.karbonpowered.api.world.World
 import com.karbonpowered.math.vector.DoubleVector3
 import com.karbonpowered.math.vector.IntVector3
 import kotlin.math.roundToInt

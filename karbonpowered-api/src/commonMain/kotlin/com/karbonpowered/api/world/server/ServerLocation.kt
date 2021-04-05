@@ -1,6 +1,5 @@
 package com.karbonpowered.api.world.server
 
-import com.karbonpowered.api.world.Location
+import com.karbonpowered.api.world.location.Location
 
-interface ServerLocation : Location<ServerWorld, ServerLocation> {
-}
+interface ServerLocation : Location<ServerWorld, ServerLocation>

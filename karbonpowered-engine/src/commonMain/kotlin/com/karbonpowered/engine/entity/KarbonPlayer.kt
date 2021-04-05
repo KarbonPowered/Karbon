@@ -8,6 +8,7 @@ import com.karbonpowered.common.UUID
 import com.karbonpowered.engine.component.KarbonPlayerNetworkComponent
 import com.karbonpowered.engine.network.KarbonSession
 import com.karbonpowered.engine.world.KarbonWorld
+import com.karbonpowered.math.vector.DoubleVector3
 import com.karbonpowered.minecraft.text.Text
 import com.karbonpowered.protocol.packet.clientbound.game.ClientboundMessagePacket
 import kotlinx.coroutines.GlobalScope
@@ -21,6 +22,11 @@ class KarbonPlayer(
     val network = addComponent(KarbonPlayerNetworkComponent(session))
 
     override val type: EntityType<Player> = EntityType.PLAYER
+    override var position: DoubleVector3
+        get() = physics.position
+        set(value) {
+            physics.position = value
+        }
 
     override fun sendMessage(source: UUID, message: Text, messageType: MessageType) {
         GlobalScope.launch {
