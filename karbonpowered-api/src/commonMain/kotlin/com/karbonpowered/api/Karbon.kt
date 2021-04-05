@@ -7,4 +7,8 @@ object Karbon {
 
     val game: Game get() = engine.game
     private val scoreboards = mutableListOf<Scoreboard>() // хз куда пихать поэтому пока здесь
+
+    fun createScoreboard() {
+        TODO("Not implemented")
+    }
 }

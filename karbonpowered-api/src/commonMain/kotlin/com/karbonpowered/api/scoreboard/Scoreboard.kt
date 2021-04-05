@@ -5,5 +5,5 @@ interface Scoreboard {
 
     fun createObjective(): ScoreboardObjective
 
-    fun removeObjective(scoreboardObjective: ScoreboardObjective): Boolean
+    fun removeObjective(objective: ScoreboardObjective): Boolean
 }
