@@ -1,6 +1,9 @@
 package com.karbonpowered.engine.network
 
 import com.karbonpowered.engine.network.handler.*
+import com.karbonpowered.network.Message
+import com.karbonpowered.network.MessageHandler
+import com.karbonpowered.network.Session
 import com.karbonpowered.protocol.MinecraftProtocol
 import com.karbonpowered.protocol.packet.clientbound.game.*
 import com.karbonpowered.protocol.packet.clientbound.login.ClientboundLoginPluginRequestPacket
@@ -12,6 +15,10 @@ import com.karbonpowered.protocol.packet.serverbound.handshake.ServerboundHandsh
 import com.karbonpowered.protocol.packet.serverbound.login.ServerboundLoginStartPacket
 import com.karbonpowered.protocol.packet.serverbound.status.ServerboundStatusPingPacket
 import com.karbonpowered.protocol.packet.serverbound.status.ServerboundStatusRequestPacket
+
+val PRINT_PACKET_HANDLER: (Session, Message) -> Unit = { session, message ->
+    println("$session -> $message")
+}
 
 class HandshakeProtocol(isServer: Boolean) : MinecraftProtocol("handshake", isServer) {
     init {
@@ -57,27 +64,13 @@ class GameProtocol(isServer: Boolean) : MinecraftProtocol("game", isServer) {
         clientbound(0x54, ClientboundSetPlayerTeamPacket::class, ClientboundSetPlayerTeamPacket)
         clientbound(0x55, ClientboundGameScoreboardScorePacket::class, ClientboundGameScoreboardScorePacket)
 
-        serverbound(0x00, ServerboundAcceptTeleportationPacket::class, ServerboundAcceptTeleportationPacket) { _, message ->
-            println(message)
-        }
-        serverbound(0x01, ServerboundBlockEntityTagQueryPacket::class, ServerboundBlockEntityTagQueryPacket) { _, message ->
-            println(message)
-        }
-        serverbound(0x02, ServerboundChangeDifficultyPacket::class, ServerboundChangeDifficultyPacket) { _, message ->
-            println(message)
-        }
+        serverbound(0x00, ServerboundAcceptTeleportationPacket::class, ServerboundAcceptTeleportationPacket, PRINT_PACKET_HANDLER)
+        serverbound(0x01, ServerboundBlockEntityTagQueryPacket::class, ServerboundBlockEntityTagQueryPacket, PRINT_PACKET_HANDLER)
+        serverbound(0x02, ServerboundChangeDifficultyPacket::class, ServerboundChangeDifficultyPacket, PRINT_PACKET_HANDLER)
         serverbound(0x03, ServerboundChatPacket::class, ServerboundChatPacket, ChatHandler)
-        serverbound(17, ServerboundPlayerPositionPacket::class, ServerboundPlayerPositionPacket) { _, message ->
-            println(message)
-        }
-        serverbound(18, ServerboundPlayerPositionRotationPacket::class, ServerboundPlayerPositionRotationPacket) { _, message ->
-            println(message)
-        }
-        serverbound(19, ServerboundPlayerRotationPacket::class, ServerboundPlayerRotationPacket) { _, message ->
-            println(message)
-        }
-        serverbound(20, ServerboundPlayerOnGroundPacket::class, ServerboundPlayerOnGroundPacket) { _, message ->
-            println(message)
-        }
+        serverbound(17, ServerboundPlayerPositionPacket::class, ServerboundPlayerPositionPacket, PRINT_PACKET_HANDLER)
+        serverbound(18, ServerboundPlayerPositionRotationPacket::class, ServerboundPlayerPositionRotationPacket, PRINT_PACKET_HANDLER)
+        serverbound(19, ServerboundPlayerRotationPacket::class, ServerboundPlayerRotationPacket, PRINT_PACKET_HANDLER)
+        serverbound(20, ServerboundPlayerOnGroundPacket::class, ServerboundPlayerOnGroundPacket, PRINT_PACKET_HANDLER)
     }
 }
