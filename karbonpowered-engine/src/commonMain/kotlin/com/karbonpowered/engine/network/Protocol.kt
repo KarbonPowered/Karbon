@@ -68,6 +68,11 @@ class GameProtocol(isServer: Boolean) : MinecraftProtocol("game", isServer) {
         serverbound(0x01, ServerboundBlockEntityTagQueryPacket::class, ServerboundBlockEntityTagQueryPacket, PRINT_PACKET_HANDLER)
         serverbound(0x02, ServerboundChangeDifficultyPacket::class, ServerboundChangeDifficultyPacket, PRINT_PACKET_HANDLER)
         serverbound(0x03, ServerboundChatPacket::class, ServerboundChatPacket, ChatHandler)
+        serverbound(0x04, ServerboundClientCommandPacket::class, ServerboundClientCommandPacket, PRINT_PACKET_HANDLER)
+        serverbound(0x05, ServerboundClientInformationPacket::class, ServerboundClientInformationPacket, PRINT_PACKET_HANDLER)
+        serverbound(0x06, ServerboundCommandSuggestionPacket::class, ServerboundCommandSuggestionPacket, PRINT_PACKET_HANDLER)
+        serverbound(0x07, ServerboundContainerButtonClickPacket::class, ServerboundContainerButtonClickPacket, PRINT_PACKET_HANDLER)
+
         serverbound(17, ServerboundPlayerPositionPacket::class, ServerboundPlayerPositionPacket, PRINT_PACKET_HANDLER)
         serverbound(18, ServerboundPlayerPositionRotationPacket::class, ServerboundPlayerPositionRotationPacket, PRINT_PACKET_HANDLER)
         serverbound(19, ServerboundPlayerRotationPacket::class, ServerboundPlayerRotationPacket, PRINT_PACKET_HANDLER)
