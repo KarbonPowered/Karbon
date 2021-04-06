@@ -11,4 +11,10 @@ abstract class Scoreboard(open val name: String) {
     abstract fun createTeam(name: String): PlayerTeam
 
     abstract fun removeTeam(name: String)
+
+    enum class Position {
+        LIST,
+        SIDEBAR,
+        BELOW_NAME
+    }
 }
