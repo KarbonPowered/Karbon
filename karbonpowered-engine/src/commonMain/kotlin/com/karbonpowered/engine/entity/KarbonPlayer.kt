@@ -51,7 +51,7 @@ class KarbonPlayer(
         GlobalScope.launch {
             session.send(
                 ClientboundScoreboardDisplayPacket(
-                    0, // TODO
+                    0,
                     ""
                 )
             )
