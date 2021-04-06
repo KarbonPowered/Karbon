@@ -1,6 +1,6 @@
 package com.karbonpowered.api.scoreboard
 
-abstract class Scoreboard {
+abstract class Scoreboard(open val name: String) {
     abstract val objectives: List<ScoreboardObjective>
     protected abstract val teams: List<PlayerTeam>
 

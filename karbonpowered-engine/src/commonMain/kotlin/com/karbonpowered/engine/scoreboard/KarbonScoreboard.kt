@@ -3,9 +3,14 @@ package com.karbonpowered.engine.scoreboard
 import com.karbonpowered.api.scoreboard.PlayerTeam
 import com.karbonpowered.api.scoreboard.Scoreboard
 import com.karbonpowered.api.scoreboard.ScoreboardObjective
-import com.karbonpowered.api.scoreboard.Team
 
-class KarbonScoreboard : Scoreboard() {
+class KarbonScoreboard(override val name: String) : Scoreboard(name) {
+    init {
+        if (name.length > 16) {
+            throw IllegalArgumentException("Name length cannot be more than 16")
+        }
+    }
+
     override val objectives = mutableListOf<KarbonObjective>()
     override val teams = mutableListOf<KarbonTeam>()
 
