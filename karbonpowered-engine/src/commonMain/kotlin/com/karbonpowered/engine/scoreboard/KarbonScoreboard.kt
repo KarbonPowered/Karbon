@@ -5,7 +5,7 @@ import com.karbonpowered.api.scoreboard.Scoreboard
 import com.karbonpowered.api.scoreboard.ScoreboardObjective
 import com.karbonpowered.api.scoreboard.Team
 
-class KarbonScoreboard : Scoreboard {
+class KarbonScoreboard : Scoreboard() {
     override val objectives = mutableListOf<KarbonObjective>()
     override val teams = mutableListOf<KarbonTeam>()
 

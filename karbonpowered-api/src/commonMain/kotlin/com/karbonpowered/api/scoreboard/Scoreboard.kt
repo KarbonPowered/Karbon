@@ -1,14 +1,14 @@
 package com.karbonpowered.api.scoreboard
 
-interface Scoreboard {
-    val objectives: List<ScoreboardObjective>
-    val teams: List<PlayerTeam>
+abstract class Scoreboard {
+    abstract val objectives: List<ScoreboardObjective>
+    protected abstract val teams: List<PlayerTeam>
 
-    fun createObjective(name: String): ScoreboardObjective
+    abstract fun createObjective(name: String): ScoreboardObjective
 
-    fun removeObjective(objective: ScoreboardObjective): Boolean
+    abstract fun removeObjective(objective: ScoreboardObjective): Boolean
 
-    fun createTeam(name: String): Team
+    abstract fun createTeam(name: String): PlayerTeam
 
-    fun removeTeam(name: String)
+    abstract fun removeTeam(name: String)
 }
