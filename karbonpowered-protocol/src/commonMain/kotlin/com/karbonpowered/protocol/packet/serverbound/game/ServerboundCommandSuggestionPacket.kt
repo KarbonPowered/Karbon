@@ -1,12 +1,9 @@
 package com.karbonpowered.protocol.packet.serverbound.game
 
 import com.karbonpowered.network.MessageCodec
-import com.karbonpowered.protocol.MinecraftPacket
-import com.karbonpowered.protocol.readVarInt
-import com.karbonpowered.protocol.writeString
-import com.karbonpowered.protocol.writeVarInt
-import io.ktor.utils.io.core.*
-import kotlin.reflect.KClass
+import com.karbonpowered.protocol.*
+import io.ktor.utils.io.core.Input
+import io.ktor.utils.io.core.Output
 
 data class ServerboundCommandSuggestionPacket(
     val id: Int,
@@ -17,7 +14,7 @@ data class ServerboundCommandSuggestionPacket(
 
         override fun decode(input: Input): ServerboundCommandSuggestionPacket {
             val id = input.readVarInt()
-            val command = input.readUTF8Line(limit = 32500) ?: ""
+            val command = input.readString(32500)
             return ServerboundCommandSuggestionPacket(id, command)
         }
 

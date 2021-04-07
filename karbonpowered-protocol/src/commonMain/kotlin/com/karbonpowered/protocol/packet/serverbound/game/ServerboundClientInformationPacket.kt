@@ -4,7 +4,10 @@ import com.karbonpowered.api.entity.living.HumanoidArm
 import com.karbonpowered.api.entity.living.player.ChatVisibility
 import com.karbonpowered.network.MessageCodec
 import com.karbonpowered.protocol.*
-import io.ktor.utils.io.core.*
+import io.ktor.utils.io.core.Input
+import io.ktor.utils.io.core.Output
+import io.ktor.utils.io.core.readUByte
+import io.ktor.utils.io.core.writeUByte
 
 data class ServerboundClientInformationPacket(
     val language: String,
@@ -19,7 +22,7 @@ data class ServerboundClientInformationPacket(
         override val messageType = ServerboundClientInformationPacket::class
 
         override fun decode(input: Input): ServerboundClientInformationPacket {
-            val language = input.readUTF8Line() ?: "en-EN"
+            val language = input.readString(16)
             val viewDistance = input.readByte().toInt()
             val chatVisibility = input.readEnum<ChatVisibility>()
             val chatColors = input.readBoolean()
@@ -34,7 +37,7 @@ data class ServerboundClientInformationPacket(
             output.writeByte(data.viewDistance.toByte())
             output.writeEnum(data.chatVisibility)
             output.writeBoolean(data.chatColors)
-            output.writeInt(data.modelCustomisation)
+            output.writeUByte(data.modelCustomisation.toUByte())
             output.writeEnum(data.mainHand)
             output.writeBoolean(data.textFilteringEnabled)
         }
