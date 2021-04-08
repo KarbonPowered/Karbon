@@ -2,12 +2,14 @@ package com.karbonpowered.api.scoreboard
 
 import com.karbonpowered.api.entity.living.player.Player
 import com.karbonpowered.common.UUID
+import com.karbonpowered.minecraft.text.Text
 
 interface ScoreboardObjective {
     val scores: ArrayList<Score>
     val players: List<String>
     val whoCanSee: List<Player>
     val name: String
+    var displayName: Text
 
     fun hasPlayerScore(name: String): Boolean
 

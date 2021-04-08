@@ -1,6 +1,6 @@
 package com.karbonpowered.api.scoreboard
 
-abstract class Scoreboard {
+abstract class Scoreboard(open val name: String) {
     abstract val objectives: List<ScoreboardObjective>
     protected abstract val teams: List<PlayerTeam>
 
@@ -11,4 +11,10 @@ abstract class Scoreboard {
     abstract fun createTeam(name: String): PlayerTeam
 
     abstract fun removeTeam(name: String)
+
+    enum class Position {
+        LIST,
+        SIDEBAR,
+        BELOW_NAME
+    }
 }

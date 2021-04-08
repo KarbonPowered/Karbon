@@ -5,6 +5,8 @@ import com.karbonpowered.api.scoreboard.ScoreboardObjective
 import com.karbonpowered.api.scoreboard.Team
 import com.karbonpowered.common.UUID
 import com.karbonpowered.engine.entity.KarbonPlayer
+import com.karbonpowered.minecraft.text.LiteralText
+import com.karbonpowered.minecraft.text.Text
 import com.karbonpowered.protocol.packet.clientbound.game.ClientboundGameScoreboardScorePacket
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -12,6 +14,7 @@ import kotlinx.coroutines.launch
 data class KarbonObjective(override val name: String) : ScoreboardObjective {
     override val scores = arrayListOf<Score>()
     override val whoCanSee = mutableListOf<KarbonPlayer>()
+    override var displayName: Text = LiteralText(name)
     override val players: List<String>
         get() = scores.map { it.name }
 
