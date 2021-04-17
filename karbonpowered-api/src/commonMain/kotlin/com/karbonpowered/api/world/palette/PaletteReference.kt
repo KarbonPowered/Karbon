@@ -4,7 +4,7 @@ import com.karbonpowered.api.registry.RegistryHolder
 import com.karbonpowered.api.registry.RegistryType
 import com.karbonpowered.api.registry.factory
 
-interface PaletteReference<T, R> {
+interface PaletteReference<T : Any, R : Any> {
     val registry: RegistryType<R>
 
     val value: String
@@ -13,13 +13,13 @@ interface PaletteReference<T, R> {
             type.resolver(value, holder.registry(registry))
 
     companion object {
-        operator fun <T, R> get(registryType: RegistryType<R>, value: String): PaletteReference<T, R> {
+        operator fun <T : Any, R : Any> get(registryType: RegistryType<R>, value: String): PaletteReference<T, R> {
             require(value.isNotEmpty())
             return factory<Factory>().create(registryType, value)
         }
     }
 
     interface Factory {
-        fun <T, R> create(type: RegistryType<R>, value: String): PaletteReference<T, R>
+        fun <T : Any, R : Any> create(type: RegistryType<R>, value: String): PaletteReference<T, R>
     }
 }

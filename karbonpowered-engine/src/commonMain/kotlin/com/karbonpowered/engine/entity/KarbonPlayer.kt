@@ -3,14 +3,14 @@ package com.karbonpowered.engine.entity
 import com.karbonpowered.api.audience.MessageType
 import com.karbonpowered.api.entity.EntityType
 import com.karbonpowered.api.entity.living.player.Player
-import com.karbonpowered.api.profile.GameProfile
 import com.karbonpowered.common.UUID
 import com.karbonpowered.engine.component.KarbonPlayerNetworkComponent
 import com.karbonpowered.engine.network.KarbonSession
 import com.karbonpowered.engine.world.KarbonWorld
 import com.karbonpowered.math.vector.DoubleVector3
-import com.karbonpowered.minecraft.text.Text
+import com.karbonpowered.profile.GameProfile
 import com.karbonpowered.protocol.packet.clientbound.game.ClientboundMessagePacket
+import com.karbonpowered.text.Text
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

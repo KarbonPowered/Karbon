@@ -32,7 +32,11 @@ object StatusRequestHandler : MessageHandler<Session, ServerboundStatusRequestPa
             "players": {
                 "max": ${Engine.server.maxPlayers},
                 "online": ${Engine.server.players.size},
-                "sample": []
+                "sample": [${
+        Engine.server.players.joinToString { player ->
+            """{"name":"${player.profile.name}","id":"${player.profile.uniqueId}"}""".trimIndent()
+        }
+    }]
             },
             "description": {
                 "text": "$MOTD"

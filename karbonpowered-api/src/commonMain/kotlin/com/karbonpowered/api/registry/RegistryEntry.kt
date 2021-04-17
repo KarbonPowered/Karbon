@@ -1,17 +1,17 @@
 package com.karbonpowered.api.registry
 
-import com.karbonpowered.api.Identifier
+import com.karbonpowered.api.ResourceKey
 
 /**
  * An entry within a [Registry].
  *
  * @param T The type of the registry
  */
-interface RegistryEntry<T> {
+interface RegistryEntry<T : Any> {
     /**
-     * Gets the [Identifier] this entry exists under in a [Registry].
+     * Gets the [ResourceKey] this entry exists under in a [Registry].
      */
-    val key: Identifier
+    val key: ResourceKey
 
     /**
      * Gets the [T] value this entry points to.

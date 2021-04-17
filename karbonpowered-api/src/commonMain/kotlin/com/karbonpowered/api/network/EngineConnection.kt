@@ -1,8 +1,11 @@
 package com.karbonpowered.api.network
 
-import com.karbonpowered.minecraft.text.Text
-import io.ktor.utils.io.core.*
+import com.karbonpowered.text.Text
 
-interface EngineConnection : Closeable {
+interface EngineConnection : RemoteConnection {
+    val side: EngineConnectionSide<out EngineConnection>
+
+    override fun close()
+
     fun close(reason: Text)
 }

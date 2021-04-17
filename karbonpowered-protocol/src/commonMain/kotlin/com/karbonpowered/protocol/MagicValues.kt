@@ -1,5 +1,6 @@
 package com.karbonpowered.protocol
 
+import com.karbonpowered.api.audience.MessageTypes
 import com.karbonpowered.api.entity.living.player.GameModes
 import kotlin.reflect.KClass
 
@@ -7,10 +8,14 @@ object MagicValues {
     val VALUES = mutableMapOf<Any, MutableList<Any>>()
 
     init {
-        register(GameModes.SURVIVAL, 0.toByte())
-        register(GameModes.CREATIVE, 1.toByte())
-        register(GameModes.ADVENTURE, 2.toByte())
-        register(GameModes.SPECTATOR, 3.toByte())
+        register(GameModes.SURVIVAL, 0)
+        register(GameModes.CREATIVE, 1)
+        register(GameModes.ADVENTURE, 2)
+        register(GameModes.SPECTATOR, 3)
+
+        register(MessageTypes.ACTION_BAR, 0)
+        register(MessageTypes.CHAT, 1)
+        register(MessageTypes.SYSTEM, 2)
     }
 
     private fun register(key: Any, value: Any) {

@@ -1,13 +1,13 @@
 package com.karbonpowered.engine.network.handler
 
-import com.karbonpowered.api.audience.MessageType
+import com.karbonpowered.api.audience.MessageTypes
 import com.karbonpowered.engine.Engine
 import com.karbonpowered.engine.entity.KarbonPlayer
 import com.karbonpowered.logging.Logger
-import com.karbonpowered.minecraft.text.LiteralText
 import com.karbonpowered.network.MessageHandler
 import com.karbonpowered.network.Session
 import com.karbonpowered.protocol.packet.serverbound.game.ServerboundChatPacket
+import com.karbonpowered.text.LiteralText
 
 object ChatHandler : MessageHandler<Session, ServerboundChatPacket> {
     override fun handle(session: Session, message: ServerboundChatPacket) {
@@ -18,7 +18,7 @@ object ChatHandler : MessageHandler<Session, ServerboundChatPacket> {
             it.sendMessage(
                     sender.profile.uniqueId,
                     LiteralText(chatMessage),
-                    MessageType.CHAT
+                    MessageTypes.CHAT
             )
         }
     }

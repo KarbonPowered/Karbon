@@ -72,7 +72,12 @@ interface BlockVolume : Volume {
 
     companion object {
         fun empty(min: IntVector3, max: IntVector3): Mutable<*> =
-                empty(PaletteTypes.BLOCK_STATE_PALETTE().create(Karbon.game.registries, RegistryTypes.BLOCK_TYPE), BlockTypes.AIR, min, max)
+                empty(
+                        PaletteTypes.BLOCK_STATE_PALETTE().create(Karbon.game.registries, RegistryTypes.BLOCK_TYPE),
+                        BlockTypes.AIR,
+                        min,
+                        max
+                )
 
         fun empty(
                 palette: Palette<BlockState, BlockType>,
@@ -93,19 +98,29 @@ interface BlockVolume : Volume {
          * @param options The options to construct the sequence
          * @return The volume sequence
          */
-        fun blockStateSequence(min: IntVector3, max: IntVector3, options: SequenceOptions): VolumeSequence<B, BlockState>
+        fun blockStateSequence(
+                min: IntVector3,
+                max: IntVector3,
+                options: SequenceOptions
+        ): VolumeSequence<B, BlockState>
     }
 
     interface Mutable<M : Mutable<M>> : MutableVolume {
         fun setBlock(x: Int, y: Int, z: Int, block: BlockState): Boolean
-        fun setBlock(position: IntVector3, block: BlockState): Boolean = setBlock(position.x, position.y, position.z, block)
+        fun setBlock(position: IntVector3, block: BlockState): Boolean =
+                setBlock(position.x, position.y, position.z, block)
 
         fun removeBlock(x: Int, y: Int, z: Int): Boolean
         fun removeBlock(position: IntVector3): Boolean = removeBlock(position.x, position.y, position.z)
     }
 
     interface Factory {
-        fun empty(palette: Palette<BlockState, BlockType>, defaultState: RegistryReference<BlockType>, min: IntVector3, max: IntVector3): Mutable<*>
+        fun empty(
+                palette: Palette<BlockState, BlockType>,
+                defaultState: RegistryReference<BlockType>,
+                min: IntVector3,
+                max: IntVector3
+        ): Mutable<*>
 
         fun copyFromRange(existing: Sequence<*>, newMin: IntVector3, newMax: IntVector3): Mutable<*>
 

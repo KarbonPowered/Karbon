@@ -248,4 +248,5 @@ interface BlockChangeFlag {
     }
 }
 
-inline operator fun BlockChangeFlag.Companion.invoke(builder: BlockChangeFlag.Builder.() -> Unit): BlockChangeFlag = builder().apply(builder).build()
+inline operator fun BlockChangeFlag.Companion.invoke(builder: BlockChangeFlag.Builder.() -> Unit): BlockChangeFlag =
+        builder().apply(builder).build()

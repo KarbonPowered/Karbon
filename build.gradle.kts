@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform") version "1.4.32"
+    kotlin("multiplatform") version "1.5.0-RC"
     application
     `maven-publish`
 }
@@ -26,6 +26,7 @@ allprojects {
                     implementation("org.jetbrains.kotlinx:atomicfu:0.15.1")
                     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
                     implementation("io.ktor:ktor-io:1.5.1")
+                    implementation("io.ktor:ktor-network:1.5.1")
                 }
             }
         }

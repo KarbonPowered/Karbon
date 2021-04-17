@@ -1,6 +1,5 @@
 package com.karbonpowered.protocol.packet.serverbound.login
 
-import com.karbonpowered.api.profile.property.ProfileProperty
 import com.karbonpowered.protocol.MinecraftPacket
 import com.karbonpowered.protocol.readString
 import com.karbonpowered.protocol.writeString
@@ -19,8 +18,8 @@ data class ServerboundLoginStartPacket(
             return ServerboundLoginStartPacket(username)
         }
 
-        override fun encode(output: Output, message: ServerboundLoginStartPacket) {
-            output.writeString(message.username)
+        override fun encode(output: Output, data: ServerboundLoginStartPacket) {
+            output.writeString(data.username)
         }
     }
 }

@@ -14,7 +14,11 @@ interface BlockEntityVolume : BlockVolume {
     fun blockEntity(position: IntVector3): BlockEntity? = blockEntity(position.x, position.y, position.z)
 
     interface Sequence<T : Sequence<T>> : BlockEntityVolume {
-        fun blockEntitySequence(min: IntVector3, max: IntVector3, options: SequenceOptions): VolumeSequence<T, BlockEntity>
+        fun blockEntitySequence(
+                min: IntVector3,
+                max: IntVector3,
+                options: SequenceOptions
+        ): VolumeSequence<T, BlockEntity>
     }
 
     interface Mutable<M : Mutable<M>> : Sequence<M>, BlockVolume.Mutable<M>, MutableVolume {

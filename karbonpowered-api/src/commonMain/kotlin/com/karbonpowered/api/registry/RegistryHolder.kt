@@ -1,6 +1,6 @@
 package com.karbonpowered.api.registry
 
-import com.karbonpowered.api.Identifier
+import com.karbonpowered.api.ResourceKey
 
 /**
  * A holder of [Registry].
@@ -18,7 +18,7 @@ interface RegistryHolder {
      * @param T The type
      * @return The registry
      */
-    fun <T> registry(type: RegistryType<T>): Registry<T>
+    fun <T : Any> registry(type: RegistryType<T>): Registry<T>
 
     /**
      * Gets the [Registry] by a [RegistryType], if found.
@@ -27,7 +27,7 @@ interface RegistryHolder {
      * @param T The type
      * @return The registry or null
      */
-    fun <T> findRegistry(type: RegistryType<T>): Registry<T>?
+    fun <T : Any> findRegistry(type: RegistryType<T>): Registry<T>?
 
     /**
      * Gets a [Sequence] of the [Registry] registries in this holder within a root.
@@ -35,5 +35,5 @@ interface RegistryHolder {
      * @param root The root to stream registries of
      * @return The stream
      */
-    fun sequence(root: Identifier): Sequence<Registry<*>>
+    fun sequence(root: ResourceKey): Sequence<Registry<*>>
 }

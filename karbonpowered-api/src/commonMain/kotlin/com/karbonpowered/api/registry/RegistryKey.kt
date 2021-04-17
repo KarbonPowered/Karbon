@@ -1,22 +1,24 @@
 package com.karbonpowered.api.registry
 
-import com.karbonpowered.api.Identifier
+import com.karbonpowered.api.ResourceKey
 
-interface RegistryKey<T> {
-    val registry: Registry<T>
-    val location: Identifier
+interface RegistryKey<T : Any> {
+    val registry: RegistryType<T>
+    val location: ResourceKey
 
     fun asReference(): RegistryReference<T>
 
     fun <V : T> asDefaultedReference(defaultHolder: () -> RegistryHolder): DefaultedRegistryReference<V>
 
     companion object {
-        fun <T> of(registry: RegistryType<T>, location: Identifier): RegistryKey<T> = factory<Factory>().create(registry, location)
+        fun <T : Any> of(registry: RegistryType<T>, location: ResourceKey): RegistryKey<T> =
+                factory<Factory>().create(registry, location)
     }
 
     interface Factory {
-        fun <T> create(registry: RegistryType<T>, location: Identifier): RegistryKey<T>
+        fun <T : Any> create(registry: RegistryType<T>, location: ResourceKey): RegistryKey<T>
     }
 }
 
-inline fun <T> RegistryKey(registry: RegistryType<T>, location: Identifier): RegistryKey<T> = RegistryKey.of(registry, location)
+inline fun <T : Any> RegistryKey(registry: RegistryType<T>, location: ResourceKey): RegistryKey<T> =
+        RegistryKey.of(registry, location)

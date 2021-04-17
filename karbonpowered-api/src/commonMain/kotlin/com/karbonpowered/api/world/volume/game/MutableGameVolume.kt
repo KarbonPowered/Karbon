@@ -7,10 +7,20 @@ import com.karbonpowered.api.world.block.BlockChangeFlags
 import com.karbonpowered.math.vector.IntVector3
 
 interface MutableGameVolume {
-    fun setBlock(position: IntVector3, state: BlockState, flag: BlockChangeFlag = BlockChangeFlags.DEFAULT_PLACEMENT): Boolean =
+    fun setBlock(
+            position: IntVector3,
+            state: BlockState,
+            flag: BlockChangeFlag = BlockChangeFlags.DEFAULT_PLACEMENT
+    ): Boolean =
             setBlock(position.x, position.y, position.z, state, flag)
 
-    fun setBlock(x: Int, y: Int, z: Int, state: BlockState, flag: BlockChangeFlag = BlockChangeFlags.DEFAULT_PLACEMENT): Boolean
+    fun setBlock(
+            x: Int,
+            y: Int,
+            z: Int,
+            state: BlockState,
+            flag: BlockChangeFlag = BlockChangeFlags.DEFAULT_PLACEMENT
+    ): Boolean
 
     fun spawnEntity(entity: Entity<*>): Boolean
 

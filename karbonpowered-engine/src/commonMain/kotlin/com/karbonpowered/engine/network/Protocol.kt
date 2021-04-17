@@ -52,9 +52,9 @@ class GameProtocol(isServer: Boolean) : MinecraftProtocol("game", isServer) {
         )
         clientbound(0x35, ClientboundGamePlayerListPacket::class, ClientboundGamePlayerListPacket)
         clientbound(0x09, ClientboundGameBlockBreakingProgressPacket::class, ClientboundGameBlockBreakingProgressPacket)
-        clientbound(0x4B, ClientboundScoreboardDisplayPacket::class, ClientboundScoreboardDisplayPacket)
-        clientbound(0x52, ClientboundSetScoreboardObjectivePacket::class, ClientboundSetScoreboardObjectivePacket)
-        clientbound(0x54, ClientboundSetPlayerTeamPacket::class, ClientboundSetPlayerTeamPacket)
+//        clientbound(0x4B, ClientboundScoreboardDisplayPacket::class, ClientboundScoreboardDisplayPacket)
+//        clientbound(0x52, ClientboundSetScoreboardObjectivePacket::class, ClientboundSetScoreboardObjectivePacket)
+//        clientbound(0x54, ClientboundSetPlayerTeamPacket::class, ClientboundSetPlayerTeamPacket)
         clientbound(0x55, ClientboundGameScoreboardScorePacket::class, ClientboundGameScoreboardScorePacket)
 
         serverbound(0x00, ServerboundAcceptTeleportationPacket::class, ServerboundAcceptTeleportationPacket) { _, message ->
@@ -68,16 +68,12 @@ class GameProtocol(isServer: Boolean) : MinecraftProtocol("game", isServer) {
         }
         serverbound(0x03, ServerboundChatPacket::class, ServerboundChatPacket, ChatHandler)
         serverbound(17, ServerboundPlayerPositionPacket::class, ServerboundPlayerPositionPacket) { _, message ->
-            println(message)
         }
         serverbound(18, ServerboundPlayerPositionRotationPacket::class, ServerboundPlayerPositionRotationPacket) { _, message ->
-            println(message)
         }
         serverbound(19, ServerboundPlayerRotationPacket::class, ServerboundPlayerRotationPacket) { _, message ->
-            println(message)
         }
         serverbound(20, ServerboundPlayerOnGroundPacket::class, ServerboundPlayerOnGroundPacket) { _, message ->
-            println(message)
         }
     }
 }

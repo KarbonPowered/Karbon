@@ -1,7 +1,10 @@
 package com.karbonpowered.api.network
 
-import com.karbonpowered.api.profile.GameProfile
+import com.karbonpowered.profile.GameProfile
 
 interface ServerSideConnection : EngineConnection {
+    override val side
+        get() = EngineConnectionSide.SERVER
+
     val profile: GameProfile
 }

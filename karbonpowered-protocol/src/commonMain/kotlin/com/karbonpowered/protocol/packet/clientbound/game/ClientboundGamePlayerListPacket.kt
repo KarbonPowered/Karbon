@@ -2,21 +2,19 @@ package com.karbonpowered.protocol.packet.clientbound.game
 
 import com.karbonpowered.api.entity.living.player.GameMode
 import com.karbonpowered.api.entity.living.player.GameModes
-import com.karbonpowered.api.entity.living.player.Player
-import com.karbonpowered.api.profile.GameProfile
-import com.karbonpowered.api.profile.property.ProfileProperty
-import com.karbonpowered.common.UUID
 import com.karbonpowered.io.Codec
-import com.karbonpowered.minecraft.text.LiteralText
-import com.karbonpowered.minecraft.text.Text
 import com.karbonpowered.network.MessageCodec
+import com.karbonpowered.profile.GameProfile
+import com.karbonpowered.profile.property.ProfileProperty
 import com.karbonpowered.protocol.*
+import com.karbonpowered.text.LiteralText
+import com.karbonpowered.text.Text
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
 data class ClientboundGamePlayerListPacket(
-    val action: PlayerListAction,
-    val entries: List<PlayerListEntry>
+        val action: PlayerListAction,
+        val entries: List<PlayerListEntry>
 ) : MinecraftPacket {
 
     companion object : MessageCodec<ClientboundGamePlayerListPacket> {
@@ -73,25 +71,17 @@ enum class PlayerListAction : Codec<PlayerListEntry> {
                 val signature = if (input.readBoolean()) {
                     input.readString()
                 } else null
-                properties.add(object : ProfileProperty {
-                    override val name = name
-                    override val value = value
-                    override val signature = signature
-                })
+                properties.add(ProfileProperty(name, value, signature))
             }
 
             val gameMode = MagicValues.key<GameMode>(input.readVarInt().toByte())
             val latency = input.readInt()
             val displayName = input.readOptionalText()
             return PlayerListEntry(
-                object : GameProfile {
-                    override val uniqueId = uuid
-                    override val name = username
-                    override val properties = properties
-                },
-                latency,
-                gameMode,
-                displayName
+                    GameProfile(uuid, username, properties),
+                    latency,
+                    gameMode,
+                    displayName
             )
         }
     },
@@ -102,11 +92,7 @@ enum class PlayerListAction : Codec<PlayerListEntry> {
         }
 
         override fun decode(input: Input): PlayerListEntry {
-            val profile = object : GameProfile {
-                override val uniqueId = input.readUUID()
-                override val name = null
-                override val properties = emptyList<ProfileProperty>()
-            }
+            val profile = GameProfile(input.readUUID())
             val gameMode = MagicValues.key<GameMode>(input.readVarInt().toByte())
             return PlayerListEntry(profile, 0, gameMode, null)
         }
@@ -118,11 +104,7 @@ enum class PlayerListAction : Codec<PlayerListEntry> {
         }
 
         override fun decode(input: Input): PlayerListEntry {
-            val profile = object : GameProfile {
-                override val uniqueId = input.readUUID()
-                override val name = null
-                override val properties = emptyList<ProfileProperty>()
-            }
+            val profile = GameProfile(input.readUUID())
             val latency = input.readInt()
             return PlayerListEntry(profile, latency, null, null)
         }
@@ -134,11 +116,7 @@ enum class PlayerListAction : Codec<PlayerListEntry> {
         }
 
         override fun decode(input: Input): PlayerListEntry {
-            val profile = object : GameProfile {
-                override val uniqueId = input.readUUID()
-                override val name = null
-                override val properties = emptyList<ProfileProperty>()
-            }
+            val profile = GameProfile(input.readUUID())
             val displayName = LiteralText(input.readString())
             return PlayerListEntry(profile, 0, null, displayName)
         }
@@ -149,11 +127,7 @@ enum class PlayerListAction : Codec<PlayerListEntry> {
         }
 
         override fun decode(input: Input): PlayerListEntry {
-            val profile = object : GameProfile {
-                override val uniqueId = input.readUUID()
-                override val name = null
-                override val properties = emptyList<ProfileProperty>()
-            }
+            val profile = GameProfile(input.readUUID())
             return PlayerListEntry(profile, 0, null, null)
         }
     };
@@ -171,8 +145,8 @@ enum class PlayerListAction : Codec<PlayerListEntry> {
 }
 
 data class PlayerListEntry(
-    val profile: GameProfile,
-    val latency: Int,
-    val gameMode: GameMode?,
-    val displayName: Text?
+        val profile: GameProfile,
+        val latency: Int,
+        val gameMode: GameMode?,
+        val displayName: Text?
 )

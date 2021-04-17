@@ -17,7 +17,13 @@ interface EntityVolume : Volume {
 
     fun entity(uuid: UUID): Entity<*>?
 
-    fun nearestPlayer(x: Double, y: Double, z: Double, distance: Double, predicate: (Player) -> Boolean = { true }): Player? {
+    fun nearestPlayer(
+            x: Double,
+            y: Double,
+            z: Double,
+            distance: Double,
+            predicate: (Player) -> Boolean = { true }
+    ): Player? {
         var nearest: Player? = null
         var closest = -1.0
         val distanceSquared = distance * distance

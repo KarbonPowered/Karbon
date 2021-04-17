@@ -91,5 +91,5 @@ class KarbonSession(
         return result
     }
 
-    override fun toString(): String = "KarbonSession(connection=${connection.socket.remoteAddress})"
+    override fun toString(): String = "KarbonSession(connection=${connection.socket.remoteAddress})@${hashCode()}"
 }

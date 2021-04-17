@@ -11,7 +11,7 @@ import com.karbonpowered.api.registry.RegistryHolder
  * @param T The type this palette will maintain
  * @param R The type of registry used to build this palette
  */
-interface Palette<T, R> : Iterable<T> {
+interface Palette<T : Any, R : Any> : Iterable<T> {
     val type: PaletteType<T, R>
     val highestId: Int
 
@@ -43,7 +43,7 @@ interface Palette<T, R> : Iterable<T> {
     fun asMutable(registryHolder: RegistryHolder): Mutable<T, R>
     fun asImmutable(): Palette<T, R> = this
 
-    interface Mutable<M, MR> : Palette<M, MR> {
+    interface Mutable<M : Any, MR : Any> : Palette<M, MR> {
         /**
          * Gets the identifier for the given `type` [T] from the mapping. If the
          * `type` [T] is not yet registered in the mapping then it is registered and

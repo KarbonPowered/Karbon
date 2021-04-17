@@ -2,17 +2,17 @@ package com.karbonpowered.engine.network
 
 import com.karbonpowered.api.entity.living.player.GameModes
 import com.karbonpowered.api.entity.living.player.Player
-import com.karbonpowered.api.profile.GameProfile
 import com.karbonpowered.engine.entity.KarbonPlayer
 import com.karbonpowered.engine.scheduler.KarbonScheduler
 import com.karbonpowered.engine.world.KarbonWorld
 import com.karbonpowered.logging.Logger
 import com.karbonpowered.math.vector.doubleVector3of
-import com.karbonpowered.minecraft.text.LiteralText
 import com.karbonpowered.nbt.NBT
 import com.karbonpowered.network.NetworkServer
 import com.karbonpowered.network.Session
+import com.karbonpowered.profile.GameProfile
 import com.karbonpowered.protocol.packet.clientbound.game.*
+import com.karbonpowered.text.LiteralText
 import io.ktor.network.sockets.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -33,7 +33,7 @@ class KarbonServer : NetworkServer() {
     }
 
     override fun sessionInactivated(session: Session) {
-        Logger.info("Disconnected: $session")
+        Logger.info("Disconnected: $session. $playersMap")
         playersMap.remove(session)?.let {
             (it as? KarbonPlayer)?.let { player ->
                 KarbonScheduler.removeTickManager(player)
@@ -85,7 +85,9 @@ class KarbonServer : NetworkServer() {
             chunks[0] = ClientboundPlayChunkData.ChunkData().also { chunk ->
                 repeat(16) { dx ->
                     repeat(16) { dz ->
-                        chunk[dx, 0, dz] = Random.nextInt(1, 16)
+                        repeat(16) { dy ->
+                            chunk[dx, dy, dz] = Random.nextInt(1, 16)
+                        }
                     }
                 }
             }

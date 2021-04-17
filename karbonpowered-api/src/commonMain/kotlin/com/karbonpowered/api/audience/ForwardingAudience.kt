@@ -1,8 +1,8 @@
 package com.karbonpowered.api.audience
 
 import com.karbonpowered.common.UUID
-import com.karbonpowered.minecraft.text.Text
-import com.karbonpowered.minecraft.text.TextRepresentable
+import com.karbonpowered.text.Text
+import com.karbonpowered.text.TextRepresentable
 
 interface ForwardingAudience : Audience {
     val audiences: Iterable<Audience>

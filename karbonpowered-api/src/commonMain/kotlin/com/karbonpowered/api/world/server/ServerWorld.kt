@@ -1,5 +1,6 @@
 package com.karbonpowered.api.world.server
 
+import com.karbonpowered.api.ResourceKey
 import com.karbonpowered.api.entity.Entity
 import com.karbonpowered.api.entity.living.player.server.ServerPlayer
 import com.karbonpowered.api.world.World
@@ -12,4 +13,6 @@ interface ServerWorld : World<ServerWorld, ServerLocation>,
         WeatherUniverse.Mutable {
     override val players: Collection<ServerPlayer>
     val entities: Collection<Entity<*>>
+
+    val key: ResourceKey
 }

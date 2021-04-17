@@ -2,13 +2,11 @@ package com.karbonpowered.protocol
 
 import com.karbonpowered.common.UUID
 import com.karbonpowered.math.asLong
-import com.karbonpowered.minecraft.text.Text
 import com.karbonpowered.nbt.NBT
 import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
 import kotlin.experimental.and
 import kotlin.experimental.or
-import kotlin.reflect.KClass
 
 fun Input.readVarInt(): Int {
     var numRead = 0

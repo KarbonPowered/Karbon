@@ -1,12 +1,10 @@
 package com.karbonpowered.engine.network.handler
 
-import com.karbonpowered.common.UUID
-import com.karbonpowered.common.uuid3Of
 import com.karbonpowered.engine.Engine
 import com.karbonpowered.engine.network.GameProtocol
 import com.karbonpowered.engine.network.KarbonSession
-import com.karbonpowered.engine.profile.KarbonGameProfile
 import com.karbonpowered.network.MessageHandler
+import com.karbonpowered.profile.GameProfile
 import com.karbonpowered.protocol.packet.clientbound.login.ClientboundLoginSuccessPacket
 import com.karbonpowered.protocol.packet.serverbound.login.ServerboundLoginStartPacket
 import kotlinx.coroutines.GlobalScope
@@ -15,7 +13,7 @@ import kotlinx.coroutines.launch
 object LoginStartHandler : MessageHandler<KarbonSession, ServerboundLoginStartPacket> {
     override fun handle(session: KarbonSession, message: ServerboundLoginStartPacket) {
         GlobalScope.launch {
-            val gameProfile = KarbonGameProfile(message.username, uuid3Of(UUID(0, 0), message.username), emptyList())
+            val gameProfile = GameProfile(GameProfile.offlineUniqueId(message.username), message.username)
             session.send(
                     ClientboundLoginSuccessPacket(
                             gameProfile.uniqueId,
