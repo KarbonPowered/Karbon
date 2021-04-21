@@ -18,11 +18,11 @@ interface EntityVolume : Volume {
     fun entity(uuid: UUID): Entity<*>?
 
     fun nearestPlayer(
-            x: Double,
-            y: Double,
-            z: Double,
-            distance: Double,
-            predicate: (Player) -> Boolean = { true }
+        x: Double,
+        y: Double,
+        z: Double,
+        distance: Double,
+        predicate: (Player) -> Boolean = { true }
     ): Player? {
         var nearest: Player? = null
         var closest = -1.0
@@ -45,12 +45,12 @@ interface EntityVolume : Volume {
 
     interface Mutable<M : Mutable<M>> : Sequence<M>, MutableVolume, BlockVolume.Mutable<M> {
         fun <E : Entity<E>> createEntity(type: EntityType<E>, position: IntVector3): E =
-                createEntity(type, position.toDouble())
+            createEntity(type, position.toDouble())
 
         fun <E : Entity<E>> createEntity(type: EntityType<E>, position: DoubleVector3): E
 
         fun <E : Entity<E>> createEntityNaturally(type: EntityType<E>, position: IntVector3): E =
-                createEntityNaturally(type, position.toDouble())
+            createEntityNaturally(type, position.toDouble())
 
         fun <E : Entity<E>> createEntityNaturally(type: EntityType<E>, position: DoubleVector3): E
 

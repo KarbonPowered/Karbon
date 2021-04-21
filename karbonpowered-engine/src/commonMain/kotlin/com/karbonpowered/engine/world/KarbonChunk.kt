@@ -23,10 +23,10 @@ import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 
 class KarbonChunk(
-        override val world: KarbonWorld,
-        val x: Int,
-        val y: Int,
-        val z: Int
+    override val world: KarbonWorld,
+    val x: Int,
+    val y: Int,
+    val z: Int
 ) : Chunk {
     val observerLock = reentrantLock()
     val observers = HashSet<KarbonEntity<*>>()
@@ -73,7 +73,11 @@ class KarbonChunk(
         TODO("Not yet implemented")
     }
 
-    override fun blockEntitySequence(min: IntVector3, max: IntVector3, options: SequenceOptions): VolumeSequence<Chunk, BlockEntity> {
+    override fun blockEntitySequence(
+        min: IntVector3,
+        max: IntVector3,
+        options: SequenceOptions
+    ): VolumeSequence<Chunk, BlockEntity> {
         TODO("Not yet implemented")
     }
 
@@ -101,7 +105,11 @@ class KarbonChunk(
         TODO("Not yet implemented")
     }
 
-    override fun biomeSequence(min: IntVector3, max: IntVector3, option: SequenceOptions): VolumeSequence<Chunk, Biome> {
+    override fun biomeSequence(
+        min: IntVector3,
+        max: IntVector3,
+        option: SequenceOptions
+    ): VolumeSequence<Chunk, Biome> {
         TODO("Not yet implemented")
     }
 
@@ -125,7 +133,11 @@ class KarbonChunk(
         TODO("Not yet implemented")
     }
 
-    override fun entitySequence(min: IntVector3, max: IntVector3, options: SequenceOptions): VolumeSequence<Chunk, Entity<*>> {
+    override fun entitySequence(
+        min: IntVector3,
+        max: IntVector3,
+        options: SequenceOptions
+    ): VolumeSequence<Chunk, Entity<*>> {
         TODO("Not yet implemented")
     }
 

@@ -13,8 +13,8 @@ import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
 data class ClientboundGamePlayerListPacket(
-        val action: PlayerListAction,
-        val entries: List<PlayerListEntry>
+    val action: PlayerListAction,
+    val entries: List<PlayerListEntry>
 ) : MinecraftPacket {
 
     companion object : MessageCodec<ClientboundGamePlayerListPacket> {
@@ -78,10 +78,10 @@ enum class PlayerListAction : Codec<PlayerListEntry> {
             val latency = input.readInt()
             val displayName = input.readOptionalText()
             return PlayerListEntry(
-                    GameProfile(uuid, username, properties),
-                    latency,
-                    gameMode,
-                    displayName
+                GameProfile(uuid, username, properties),
+                latency,
+                gameMode,
+                displayName
             )
         }
     },
@@ -145,8 +145,8 @@ enum class PlayerListAction : Codec<PlayerListEntry> {
 }
 
 data class PlayerListEntry(
-        val profile: GameProfile,
-        val latency: Int,
-        val gameMode: GameMode?,
-        val displayName: Text?
+    val profile: GameProfile,
+    val latency: Int,
+    val gameMode: GameMode?,
+    val displayName: Text?
 )

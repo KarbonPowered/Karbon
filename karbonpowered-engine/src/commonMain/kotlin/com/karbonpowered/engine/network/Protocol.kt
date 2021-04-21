@@ -46,9 +46,9 @@ class GameProtocol(isServer: Boolean) : MinecraftProtocol("game", isServer) {
         clientbound(0x22, ClientboundPlayChunkData::class, ClientboundPlayChunkData)
         clientbound(0x26, ClientboundGameJoinPacket::class, ClientboundGameJoinPacket)
         clientbound(
-                0x37,
-                ClientboundGamePlayerPositionRotationPacket::class,
-                ClientboundGamePlayerPositionRotationPacket
+            0x37,
+            ClientboundGamePlayerPositionRotationPacket::class,
+            ClientboundGamePlayerPositionRotationPacket
         )
         clientbound(0x35, ClientboundGamePlayerListPacket::class, ClientboundGamePlayerListPacket)
         clientbound(0x09, ClientboundGameBlockBreakingProgressPacket::class, ClientboundGameBlockBreakingProgressPacket)
@@ -57,10 +57,18 @@ class GameProtocol(isServer: Boolean) : MinecraftProtocol("game", isServer) {
 //        clientbound(0x54, ClientboundSetPlayerTeamPacket::class, ClientboundSetPlayerTeamPacket)
         clientbound(0x55, ClientboundGameScoreboardScorePacket::class, ClientboundGameScoreboardScorePacket)
 
-        serverbound(0x00, ServerboundAcceptTeleportationPacket::class, ServerboundAcceptTeleportationPacket) { _, message ->
+        serverbound(
+            0x00,
+            ServerboundAcceptTeleportationPacket::class,
+            ServerboundAcceptTeleportationPacket
+        ) { _, message ->
             println(message)
         }
-        serverbound(0x01, ServerboundBlockEntityTagQueryPacket::class, ServerboundBlockEntityTagQueryPacket) { _, message ->
+        serverbound(
+            0x01,
+            ServerboundBlockEntityTagQueryPacket::class,
+            ServerboundBlockEntityTagQueryPacket
+        ) { _, message ->
             println(message)
         }
         serverbound(0x02, ServerboundChangeDifficultyPacket::class, ServerboundChangeDifficultyPacket) { _, message ->
@@ -69,7 +77,11 @@ class GameProtocol(isServer: Boolean) : MinecraftProtocol("game", isServer) {
         serverbound(0x03, ServerboundChatPacket::class, ServerboundChatPacket, ChatHandler)
         serverbound(17, ServerboundPlayerPositionPacket::class, ServerboundPlayerPositionPacket) { _, message ->
         }
-        serverbound(18, ServerboundPlayerPositionRotationPacket::class, ServerboundPlayerPositionRotationPacket) { _, message ->
+        serverbound(
+            18,
+            ServerboundPlayerPositionRotationPacket::class,
+            ServerboundPlayerPositionRotationPacket
+        ) { _, message ->
         }
         serverbound(19, ServerboundPlayerRotationPacket::class, ServerboundPlayerRotationPacket) { _, message ->
         }

@@ -8,10 +8,10 @@ import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
 data class ServerboundPlayerPositionPacket(
-        val x: Double = 0.0,
-        val y: Double = 0.0,
-        val z: Double = 0.0,
-        val onGround: Boolean = true
+    val x: Double = 0.0,
+    val y: Double = 0.0,
+    val z: Double = 0.0,
+    val onGround: Boolean = true
 ) : MinecraftPacket {
     companion object : MessageCodec<ServerboundPlayerPositionPacket> {
         override val messageType: KClass<ServerboundPlayerPositionPacket>

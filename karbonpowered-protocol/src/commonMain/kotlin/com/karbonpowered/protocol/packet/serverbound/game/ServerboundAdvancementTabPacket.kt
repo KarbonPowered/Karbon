@@ -25,6 +25,7 @@ data class ServerboundAdvancementTabPacket(
             output.writeString(data.tabToOpen?.toString() ?: "")
         }
     }
+
     enum class Action {
         TAB_OPENED,
         CLOSED_SCREEN

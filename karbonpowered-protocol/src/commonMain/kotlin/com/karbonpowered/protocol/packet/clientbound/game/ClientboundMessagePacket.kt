@@ -10,9 +10,9 @@ import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
 data class ClientboundMessagePacket(
-        val message: Text,
-        val messageType: MessageType,
-        val sender: UUID
+    val message: Text,
+    val messageType: MessageType,
+    val sender: UUID
 ) : MinecraftPacket {
     companion object : MessageCodec<ClientboundMessagePacket> {
         override val messageType: KClass<ClientboundMessagePacket>

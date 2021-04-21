@@ -47,16 +47,24 @@ interface GameProfile : Identifiable, DataSerializable {
             return uuidOf(md5bytes)
         }
 
-        fun of(uniqueId: UUID, name: String? = null, properties: Collection<ProfileProperty> = emptyList()): GameProfile = factory.create(uniqueId, name, properties)
+        fun of(
+            uniqueId: UUID,
+            name: String? = null,
+            properties: Collection<ProfileProperty> = emptyList()
+        ): GameProfile = factory.create(uniqueId, name, properties)
     }
 }
 
-inline fun GameProfile(uniqueId: UUID, name: String? = null, properties: Collection<ProfileProperty> = emptyList()): GameProfile = GameProfile.of(uniqueId, name, properties)
+inline fun GameProfile(
+    uniqueId: UUID,
+    name: String? = null,
+    properties: Collection<ProfileProperty> = emptyList()
+): GameProfile = GameProfile.of(uniqueId, name, properties)
 
 data class KarbonGameProfile(
-        override val uniqueId: UUID,
-        override val name: String? = null,
-        override val properties: Collection<ProfileProperty> = emptyList()
+    override val uniqueId: UUID,
+    override val name: String? = null,
+    override val properties: Collection<ProfileProperty> = emptyList()
 ) : GameProfile {
     override fun toContainer(): DataContainer = DataContainer {
         set(UUID, uniqueId)
@@ -67,34 +75,35 @@ data class KarbonGameProfile(
     }
 
     override fun withName(name: String?): GameProfile =
-            KarbonGameProfile(uniqueId, name, properties)
+        KarbonGameProfile(uniqueId, name, properties)
 
     override fun withProperty(property: ProfileProperty): GameProfile =
-            KarbonGameProfile(uniqueId, name, properties + property)
+        KarbonGameProfile(uniqueId, name, properties + property)
 
     override fun withProperties(vararg properties: ProfileProperty): GameProfile =
-            KarbonGameProfile(uniqueId, name, this.properties + properties)
+        KarbonGameProfile(uniqueId, name, this.properties + properties)
 
     override fun withProperties(properties: Iterable<ProfileProperty>): GameProfile =
-            KarbonGameProfile(uniqueId, name, this.properties + properties)
+        KarbonGameProfile(uniqueId, name, this.properties + properties)
 
     override fun withoutProperties(): GameProfile =
-            KarbonGameProfile(uniqueId, name)
+        KarbonGameProfile(uniqueId, name)
 
     override fun withoutProperties(vararg properties: ProfileProperty): GameProfile =
-            KarbonGameProfile(uniqueId, name, this.properties.filter { !this.properties.contains(it) })
+        KarbonGameProfile(uniqueId, name, this.properties.filter { !this.properties.contains(it) })
 
     override fun withoutProperties(properties: Iterable<ProfileProperty>): GameProfile =
-            KarbonGameProfile(uniqueId, name, this.properties.filter { !this.properties.contains(it) })
+        KarbonGameProfile(uniqueId, name, this.properties.filter { !this.properties.contains(it) })
 
     override fun withoutProperties(filter: (ProfileProperty) -> Boolean): GameProfile =
-            KarbonGameProfile(uniqueId, name, this.properties.filter(filter))
+        KarbonGameProfile(uniqueId, name, this.properties.filter(filter))
 
     companion object : GameProfile.Factory {
         val UUID = DataQuery("UUID")
         val NAME = DataQuery("Name")
         val PROPERTIES = DataQuery("Properties")
 
-        override fun create(uniqueId: UUID, name: String?, properties: Collection<ProfileProperty>): GameProfile = KarbonGameProfile(uniqueId, name, properties)
+        override fun create(uniqueId: UUID, name: String?, properties: Collection<ProfileProperty>): GameProfile =
+            KarbonGameProfile(uniqueId, name, properties)
     }
 }

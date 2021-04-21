@@ -6,10 +6,10 @@ import com.karbonpowered.math.vector.DoubleVector3
 import com.karbonpowered.math.vector.IntVector3
 
 class KarbonServerLocation(
-        override val world: ServerWorld?,
-        override val x: Double,
-        override val y: Double,
-        override val z: Double
+    override val world: ServerWorld?,
+    override val x: Double,
+    override val y: Double,
+    override val z: Double
 ) : ServerLocation {
     override val blockPosition: IntVector3
         get() = TODO("Not yet implemented")

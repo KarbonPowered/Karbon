@@ -1,8 +1,8 @@
 package com.karbonpowered.api.world
 
 enum class WorldLoadOption(
-        val load: Boolean,
-        val generate: Boolean
+    val load: Boolean,
+    val generate: Boolean
 ) {
     /**
      * Do not load or generate chunk/region if not currently loaded

@@ -15,19 +15,19 @@ interface BlockEntityVolume : BlockVolume {
 
     interface Sequence<T : Sequence<T>> : BlockEntityVolume {
         fun blockEntitySequence(
-                min: IntVector3,
-                max: IntVector3,
-                options: SequenceOptions
+            min: IntVector3,
+            max: IntVector3,
+            options: SequenceOptions
         ): VolumeSequence<T, BlockEntity>
     }
 
     interface Mutable<M : Mutable<M>> : Sequence<M>, BlockVolume.Mutable<M>, MutableVolume {
         fun addBlockEntity(x: Int, y: Int, z: Int, blockEntity: BlockEntity)
         fun addBlockEntity(position: IntVector3, blockEntity: BlockEntity) =
-                addBlockEntity(position.x, position.y, position.z, blockEntity)
+            addBlockEntity(position.x, position.y, position.z, blockEntity)
 
         fun removeBlockEntity(x: Int, y: Int, z: Int)
         fun removeBlockEntity(position: IntVector3) =
-                removeBlockEntity(position.x, position.y, position.z)
+            removeBlockEntity(position.x, position.y, position.z)
     }
 }

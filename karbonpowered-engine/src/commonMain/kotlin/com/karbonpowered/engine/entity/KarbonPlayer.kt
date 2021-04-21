@@ -15,9 +15,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class KarbonPlayer(
-        val session: KarbonSession,
-        override val profile: GameProfile,
-        override val world: KarbonWorld
+    val session: KarbonSession,
+    override val profile: GameProfile,
+    override val world: KarbonWorld
 ) : KarbonHumanoid<Player>(), Player {
     val network = addComponent(KarbonPlayerNetworkComponent(session))
 

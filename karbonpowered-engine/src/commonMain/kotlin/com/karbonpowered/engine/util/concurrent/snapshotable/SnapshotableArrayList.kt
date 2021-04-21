@@ -5,7 +5,7 @@ import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 
 class SnapshotableArrayList<T>(
-        val snapshotManager: SnapshotManager
+    val snapshotManager: SnapshotManager
 ) : Snapshotable, List<T> {
     init {
         snapshotManager.add(this)

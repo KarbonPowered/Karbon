@@ -6,5 +6,5 @@ interface DefaultedRegistryValue {
     fun <T : Any> findKey(type: DefaultedRegistryType<T>) = type.find()?.findValueKey(this as T)
 
     fun <T : Any> asDefaultedReference(type: DefaultedRegistryType<T>): DefaultedRegistryReference<T> =
-            RegistryKey(type, key(type)).asDefaultedReference(type.defaultHolder)
+        RegistryKey(type, key(type)).asDefaultedReference(type.defaultHolder)
 }

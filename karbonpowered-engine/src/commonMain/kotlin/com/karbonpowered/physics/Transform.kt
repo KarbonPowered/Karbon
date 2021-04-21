@@ -9,8 +9,8 @@ import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 
 class Transform(
-        position: DoubleVector3 = doubleVector3of(),
-        rotation: FloatVector3 = floatVector3of()
+    position: DoubleVector3 = doubleVector3of(),
+    rotation: FloatVector3 = floatVector3of()
 ) {
     private val lock = reentrantLock()
 

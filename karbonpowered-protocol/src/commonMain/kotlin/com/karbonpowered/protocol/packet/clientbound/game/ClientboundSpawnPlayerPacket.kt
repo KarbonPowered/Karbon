@@ -9,19 +9,19 @@ import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
 data class ClientboundSpawnPlayerPacket(
-        val entityId: Int,
-        val uuid: UUID,
-        val x: Double,
-        val y: Double,
-        val z: Double,
-        val yaw: Float,
-        val pitch: Float
+    val entityId: Int,
+    val uuid: UUID,
+    val x: Double,
+    val y: Double,
+    val z: Double,
+    val yaw: Float,
+    val pitch: Float
 ) : MinecraftPacket {
     constructor(
-            entityId: Int,
-            uuid: UUID,
-            position: DoubleVector3,
-            rotation: FloatVector2
+        entityId: Int,
+        uuid: UUID,
+        position: DoubleVector3,
+        rotation: FloatVector2
     ) : this(entityId, uuid, position.x, position.y, position.z, rotation.x, rotation.y)
 
     companion object : MessageCodec<ClientboundSpawnPlayerPacket> {

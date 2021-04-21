@@ -1,8 +1,5 @@
 package com.karbonpowered.api.world.block
 
-import com.karbonpowered.api.registry.builder
-import com.karbonpowered.common.builder.Builder
-
 /**
  * A flag of sorts that determines whether a block change will perform various
  * interactions, such as notifying neighboring blocks, performing block physics
@@ -214,10 +211,6 @@ interface BlockChangeFlag {
      */
     fun andNotFlag(flag: BlockChangeFlag): BlockChangeFlag
 
-    companion object {
-        fun builder(): Builder = builder<Builder>()
-    }
-
     interface Factory {
         /**
          * Provides a [BlockChangeFlag] where all flags are `false`.
@@ -247,6 +240,3 @@ interface BlockChangeFlag {
         var ignoreRender: Boolean
     }
 }
-
-inline operator fun BlockChangeFlag.Companion.invoke(builder: BlockChangeFlag.Builder.() -> Unit): BlockChangeFlag =
-        builder().apply(builder).build()

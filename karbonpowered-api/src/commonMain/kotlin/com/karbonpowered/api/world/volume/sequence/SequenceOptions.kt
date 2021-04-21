@@ -22,21 +22,6 @@ interface SequenceOptions {
      */
     val loadingStyle: LoadingStyle
 
-    companion object {
-        fun builder(): Builder = TODO()
-        fun builder(builder: Builder.() -> Unit): SequenceOptions = builder().apply(builder).build()
-
-        fun lazily(): SequenceOptions = builder {
-            carbonCopy = false
-            loadingStyle = LoadingStyle.LAZILY_UNGENERATED
-        }
-
-        fun forceLoadedAndCopied(): SequenceOptions = builder {
-            carbonCopy = true
-            loadingStyle = LoadingStyle.FORCED_GENERATED
-        }
-    }
-
     interface Builder {
         var carbonCopy: Boolean
         var loadingStyle: LoadingStyle
@@ -53,8 +38,8 @@ interface SequenceOptions {
     }
 
     enum class LoadingStyle(
-            val generateArea: Boolean,
-            val immediateLoading: Boolean
+        val generateArea: Boolean,
+        val immediateLoading: Boolean
     ) {
         /**
          * Forces the loading of the entire area to calculate the exact

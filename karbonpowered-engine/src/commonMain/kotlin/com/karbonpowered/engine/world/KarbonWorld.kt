@@ -82,7 +82,11 @@ class KarbonWorld : BaseComponentOwner(), ServerWorld {
         TODO("Not yet implemented")
     }
 
-    override fun biomeSequence(min: IntVector3, max: IntVector3, option: SequenceOptions): VolumeSequence<ServerWorld, Biome> {
+    override fun biomeSequence(
+        min: IntVector3,
+        max: IntVector3,
+        option: SequenceOptions
+    ): VolumeSequence<ServerWorld, Biome> {
         TODO("Not yet implemented")
     }
 
@@ -118,7 +122,11 @@ class KarbonWorld : BaseComponentOwner(), ServerWorld {
         TODO("Not yet implemented")
     }
 
-    override fun entitySequence(min: IntVector3, max: IntVector3, options: SequenceOptions): VolumeSequence<ServerWorld, Entity<*>> {
+    override fun entitySequence(
+        min: IntVector3,
+        max: IntVector3,
+        options: SequenceOptions
+    ): VolumeSequence<ServerWorld, Entity<*>> {
         TODO("Not yet implemented")
     }
 
@@ -134,7 +142,11 @@ class KarbonWorld : BaseComponentOwner(), ServerWorld {
         TODO("Not yet implemented")
     }
 
-    override fun blockEntitySequence(min: IntVector3, max: IntVector3, options: SequenceOptions): VolumeSequence<ServerWorld, BlockEntity> {
+    override fun blockEntitySequence(
+        min: IntVector3,
+        max: IntVector3,
+        options: SequenceOptions
+    ): VolumeSequence<ServerWorld, BlockEntity> {
         TODO("Not yet implemented")
     }
 

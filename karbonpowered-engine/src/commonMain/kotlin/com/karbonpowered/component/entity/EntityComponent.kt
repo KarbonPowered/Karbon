@@ -4,7 +4,7 @@ import com.karbonpowered.api.entity.Entity
 import com.karbonpowered.api.component.Component
 import com.karbonpowered.api.component.ComponentOwner
 
-abstract class EntityComponent: Component {
+abstract class EntityComponent : Component {
     override lateinit var owner: Entity<*>
 
     override fun attachTo(owner: ComponentOwner): Boolean {

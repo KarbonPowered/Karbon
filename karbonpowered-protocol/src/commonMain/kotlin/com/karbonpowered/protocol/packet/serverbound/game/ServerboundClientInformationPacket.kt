@@ -29,7 +29,15 @@ data class ServerboundClientInformationPacket(
             val modelCustomisation = input.readUByte().toInt()
             val mainHand = input.readEnum<HumanoidArm>()
             val textFilteringEnabled = input.readBoolean()
-            return ServerboundClientInformationPacket(language, viewDistance, chatVisibility, chatColors, modelCustomisation, mainHand, textFilteringEnabled)
+            return ServerboundClientInformationPacket(
+                language,
+                viewDistance,
+                chatVisibility,
+                chatColors,
+                modelCustomisation,
+                mainHand,
+                textFilteringEnabled
+            )
         }
 
         override fun encode(output: Output, data: ServerboundClientInformationPacket) {

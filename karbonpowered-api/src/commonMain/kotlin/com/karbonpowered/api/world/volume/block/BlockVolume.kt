@@ -1,15 +1,10 @@
 package com.karbonpowered.api.world.volume.block
 
-import com.karbonpowered.api.Karbon
 import com.karbonpowered.api.block.BlockState
 import com.karbonpowered.api.block.BlockType
-import com.karbonpowered.api.block.BlockTypes
 import com.karbonpowered.api.fluid.FluidState
 import com.karbonpowered.api.registry.RegistryReference
-import com.karbonpowered.api.registry.RegistryTypes
-import com.karbonpowered.api.registry.factory
 import com.karbonpowered.api.world.palette.Palette
-import com.karbonpowered.api.world.palette.PaletteTypes
 import com.karbonpowered.api.world.volume.MutableVolume
 import com.karbonpowered.api.world.volume.Volume
 import com.karbonpowered.api.world.volume.sequence.SequenceOptions
@@ -70,23 +65,6 @@ interface BlockVolume : Volume {
     fun highestPositionAt(x: Int, y: Int, z: Int): IntVector3 = intVector3Of(x, this.highestYAt(x, z), z)
     fun highestPositionAt(position: IntVector3): IntVector3 = highestPositionAt(position.x, position.y, position.z)
 
-    companion object {
-        fun empty(min: IntVector3, max: IntVector3): Mutable<*> =
-                empty(
-                        PaletteTypes.BLOCK_STATE_PALETTE().create(Karbon.game.registries, RegistryTypes.BLOCK_TYPE),
-                        BlockTypes.AIR,
-                        min,
-                        max
-                )
-
-        fun empty(
-                palette: Palette<BlockState, BlockType>,
-                defaultState: RegistryReference<BlockType>,
-                min: IntVector3,
-                max: IntVector3
-        ): Mutable<*> = factory<Factory>().empty(palette, defaultState, min, max)
-    }
-
     interface Sequence<B : Sequence<B>> : BlockVolume {
         /**
          * Gets a [VolumeSequence]<`B, `[BlockState]>
@@ -99,16 +77,16 @@ interface BlockVolume : Volume {
          * @return The volume sequence
          */
         fun blockStateSequence(
-                min: IntVector3,
-                max: IntVector3,
-                options: SequenceOptions
+            min: IntVector3,
+            max: IntVector3,
+            options: SequenceOptions
         ): VolumeSequence<B, BlockState>
     }
 
     interface Mutable<M : Mutable<M>> : MutableVolume {
         fun setBlock(x: Int, y: Int, z: Int, block: BlockState): Boolean
         fun setBlock(position: IntVector3, block: BlockState): Boolean =
-                setBlock(position.x, position.y, position.z, block)
+            setBlock(position.x, position.y, position.z, block)
 
         fun removeBlock(x: Int, y: Int, z: Int): Boolean
         fun removeBlock(position: IntVector3): Boolean = removeBlock(position.x, position.y, position.z)
@@ -116,10 +94,10 @@ interface BlockVolume : Volume {
 
     interface Factory {
         fun empty(
-                palette: Palette<BlockState, BlockType>,
-                defaultState: RegistryReference<BlockType>,
-                min: IntVector3,
-                max: IntVector3
+            palette: Palette<BlockState, BlockType>,
+            defaultState: RegistryReference<BlockType>,
+            min: IntVector3,
+            max: IntVector3
         ): Mutable<*>
 
         fun copyFromRange(existing: Sequence<*>, newMin: IntVector3, newMax: IntVector3): Mutable<*>

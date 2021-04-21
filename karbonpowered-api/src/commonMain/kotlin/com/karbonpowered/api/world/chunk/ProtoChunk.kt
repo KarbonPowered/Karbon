@@ -11,12 +11,12 @@ import com.karbonpowered.api.world.volume.game.UpdatableVolume
 import com.karbonpowered.math.vector.IntVector3
 
 interface ProtoChunk<P : ProtoChunk<P>> :
-        BlockVolume.Mutable<P>,
-        BlockEntityVolume.Mutable<P>,
-        BiomeVolume.Mutable<P>,
-        UpdatableVolume,
-        LocationBaseDataHolder.Mutable,
-        HeightAwareVolume {
+    BlockVolume.Mutable<P>,
+    BlockEntityVolume.Mutable<P>,
+    BiomeVolume.Mutable<P>,
+    UpdatableVolume,
+    LocationBaseDataHolder.Mutable,
+    HeightAwareVolume {
 
     val state: ChunkState
     val chunkPosition: IntVector3

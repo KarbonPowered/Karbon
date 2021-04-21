@@ -11,7 +11,7 @@ interface DefaultedRegistryType<T : Any> : RegistryType<T> {
     fun find(): Registry<T>?
 
     fun defaultReferenced(key: ResourceKey): DefaultedRegistryReference<T> =
-            RegistryKey(this, key).asDefaultedReference(defaultHolder)
+        RegistryKey(this, key).asDefaultedReference(defaultHolder)
 
     operator fun getValue(thisRef: Any?, property: KProperty<*>): Registry<T> = get()
 

@@ -3,9 +3,9 @@ package com.karbonpowered.engine.util.concurrent
 import kotlinx.atomicfu.atomic
 
 class AtomicShortIntUniformBackingArray(
-        length: Int,
-        previous: AtomicShortIntBackingArray? = null,
-        initial: Int = previous?.let { it[0] } ?: 0
+    length: Int,
+    previous: AtomicShortIntBackingArray? = null,
+    initial: Int = previous?.let { it[0] } ?: 0
 ) : AtomicShortIntBackingArray(length) {
     constructor(previous: AtomicShortIntBackingArray) : this(previous.length, previous)
 

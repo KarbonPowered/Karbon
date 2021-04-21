@@ -1,7 +1,7 @@
 package com.karbonpowered.engine.util.concurrent
 
 abstract class AtomicShortIntBackingArray(
-        val length: Int
+    val length: Int
 ) {
     abstract operator fun get(index: Int): Int
 

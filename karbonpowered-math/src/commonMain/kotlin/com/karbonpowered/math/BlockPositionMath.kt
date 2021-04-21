@@ -70,7 +70,7 @@ fun log2DeBruijn(value: Int): Int {
 fun asLong(x: Int, y: Int, z: Int): Long {
     var long = 0L
     long = long or (x.toLong() and BITS_X shl BIT_SHIFT_X)
-    long = long or  (y.toLong() and BITS_Y shl 0)
+    long = long or (y.toLong() and BITS_Y shl 0)
     long = long or (z.toLong() and BITS_Z shl BIT_SHIFT_Z)
     return long
 }

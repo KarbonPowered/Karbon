@@ -19,20 +19,22 @@ class KarbonRegion(
         val BLOCKS = BitSize(CHUNKS.bits + KarbonChunk.BLOCKS.bits)
     }
 
-    val chunks = Array(16) { dx ->
-        Array(16) { dy ->
-            Array(16) { dz ->
-                atomic<KarbonChunk?>(null)
+    val chunks =
+        Array(16) { dx ->
+            Array(16) { dy ->
+                Array(16) { dz ->
+                    atomic<KarbonChunk?>(null)
+                }
             }
         }
-    }
-    val neighbours = Array(16) { dx ->
-        Array(16) { dy ->
-            Array(16) { dz ->
-                atomic(world.region(x + dx - 1, y + dy - 1, z + dz - 1, WorldLoadOption.NO_LOAD))
+    val neighbours =
+        Array(16) { dx ->
+            Array(16) { dy ->
+                Array(16) { dz ->
+                    atomic(world.region(x + dx - 1, y + dy - 1, z + dz - 1, WorldLoadOption.NO_LOAD))
+                }
             }
         }
-    }
 
 //    override fun chunk(x: Int, y: Int, z: Int, loadOption: WorldLoadOption): ProtoChunk<*>? {
 //        val dx = x and CHUNKS.mask
@@ -81,5 +83,5 @@ class KarbonRegion(
     }
 
     private fun checkChunkLoaded(chunk: KarbonChunk, loadOption: WorldLoadOption) =
-            check(!loadOption.load || chunk.cancelUnload()) { "Unloaded chunk returned" }
+        check(!loadOption.load || chunk.cancelUnload()) { "Unloaded chunk returned" }
 }

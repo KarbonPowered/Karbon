@@ -15,7 +15,11 @@ actual interface Protocol : Named {
 
     actual suspend fun readHeader(input: ByteReadChannel): Pair<Int, MessageCodec<*>>
 
-    actual suspend fun writeHeader(output: ByteWriteChannel, codec: MessageCodec.CodecRegistration<*>, data: ByteReadPacket)
+    actual suspend fun writeHeader(
+        output: ByteWriteChannel,
+        codec: MessageCodec.CodecRegistration<*>,
+        data: ByteReadPacket
+    )
 
     actual fun <M : Message> getCodecRegistration(message: KClass<M>): MessageCodec.CodecRegistration<M>?
 
@@ -23,4 +27,5 @@ actual interface Protocol : Named {
         getCodecRegistration(message.kotlin)
 }
 
-operator fun <M : Message> Protocol.get(message: Class<M>): MessageCodec.CodecRegistration<M>? = getCodecRegistration(message)
+operator fun <M : Message> Protocol.get(message: Class<M>): MessageCodec.CodecRegistration<M>? =
+    getCodecRegistration(message)

@@ -1,7 +1,5 @@
 package com.karbonpowered.api.world.generation.config
 
-import com.karbonpowered.api.Karbon
-
 interface WorldGenerationConfig {
     val seed: Long
     val generateFeatures: Boolean
@@ -18,12 +16,6 @@ interface WorldGenerationConfig {
             var generateBonusChest: Boolean
 
             fun from(mutable: Mutable): Builder
-        }
-
-        companion object {
-            fun builder(): Builder = Karbon.game.builderProvider[Builder::class]
-
-            operator fun invoke(builder: Builder.() -> Unit): Mutable = builder().apply(builder).build()
         }
     }
 }

@@ -7,7 +7,7 @@ package com.karbonpowered.engine.util
  * significant bits. For example, `[1 5 8 15]` is stored as `[0x51 0xf8]`.
  */
 class NibbleArray(
-        private val rawData: ByteArray
+    private val rawData: ByteArray
 ) {
     val size: Int get() = 2 * rawData.size
     val byteSize: Int get() = rawData.size

@@ -22,7 +22,7 @@ fun DataQuery(vararg parts: String): DataQuery = DataQuery.of(*parts)
 fun DataQuery(parts: Iterable<String>): DataQuery = DataQuery.of(parts)
 
 data class KarbonDataQuery(
-        override val parts: List<String>
+    override val parts: List<String>
 ) : DataQuery {
     override val queryParts: List<DataQuery>
         get() = TODO("Not yet implemented")

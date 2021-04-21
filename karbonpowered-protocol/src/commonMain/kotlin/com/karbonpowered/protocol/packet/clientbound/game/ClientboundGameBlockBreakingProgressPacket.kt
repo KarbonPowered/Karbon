@@ -20,7 +20,14 @@ data class ClientboundGameBlockBreakingProgressPacket(
     val z: Int,
     val progress: Int
 ) : MinecraftPacket {
-    constructor(entityId: Int, blockPos: IntVector3, progress: Int) : this(entityId, blockPos.x, blockPos.y, blockPos.z, progress)
+    constructor(entityId: Int, blockPos: IntVector3, progress: Int) : this(
+        entityId,
+        blockPos.x,
+        blockPos.y,
+        blockPos.z,
+        progress
+    )
+
     companion object : MessageCodec<ClientboundGameBlockBreakingProgressPacket> {
         override val messageType = ClientboundGameBlockBreakingProgressPacket::class
 

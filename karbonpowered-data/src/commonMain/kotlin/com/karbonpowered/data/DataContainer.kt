@@ -15,5 +15,8 @@ interface DataContainer : DataView {
     }
 }
 
-fun DataContainer(safetyMode: DataView.SafetyMode = DataView.SafetyMode.ALL_DATA_CLONED, builder: DataContainer.() -> Unit = {}) =
-        DataContainer.factory.create(safetyMode).apply(builder)
+fun DataContainer(
+    safetyMode: DataView.SafetyMode = DataView.SafetyMode.ALL_DATA_CLONED,
+    builder: DataContainer.() -> Unit = {}
+) =
+    DataContainer.factory.create(safetyMode).apply(builder)

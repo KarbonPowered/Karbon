@@ -9,11 +9,11 @@ actual object Logger {
     }
 
     actual fun warn(message: String) {
-        println(ANSI_YELLOW+message)
+        println(ANSI_YELLOW + message)
     }
 
     actual fun error(message: String, throwable: Throwable?) {
-        System.err.println(ANSI_RED+message)
+        System.err.println(ANSI_RED + message)
         throwable?.printStackTrace(System.err)
     }
 }

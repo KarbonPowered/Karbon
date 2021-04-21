@@ -8,9 +8,9 @@ import com.karbonpowered.api.world.weather.WeatherUniverse
 import com.karbonpowered.common.Identifiable
 
 interface ServerWorld : World<ServerWorld, ServerLocation>,
-        Identifiable,
-        ServerLocationCreator,
-        WeatherUniverse.Mutable {
+    Identifiable,
+    ServerLocationCreator,
+    WeatherUniverse.Mutable {
     override val players: Collection<ServerPlayer>
     val entities: Collection<Entity<*>>
 

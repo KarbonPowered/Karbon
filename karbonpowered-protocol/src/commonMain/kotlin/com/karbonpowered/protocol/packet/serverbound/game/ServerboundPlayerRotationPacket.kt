@@ -8,9 +8,9 @@ import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
 data class ServerboundPlayerRotationPacket(
-        val yaw: Float = 0f,
-        val pitch: Float = 0f,
-        val onGround: Boolean = true
+    val yaw: Float = 0f,
+    val pitch: Float = 0f,
+    val onGround: Boolean = true
 ) : MinecraftPacket {
     companion object : MessageCodec<ServerboundPlayerRotationPacket> {
         override val messageType: KClass<ServerboundPlayerRotationPacket>

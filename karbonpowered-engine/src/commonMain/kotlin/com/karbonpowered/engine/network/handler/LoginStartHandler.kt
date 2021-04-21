@@ -15,10 +15,10 @@ object LoginStartHandler : MessageHandler<KarbonSession, ServerboundLoginStartPa
         GlobalScope.launch {
             val gameProfile = GameProfile(GameProfile.offlineUniqueId(message.username), message.username)
             session.send(
-                    ClientboundLoginSuccessPacket(
-                            gameProfile.uniqueId,
-                            message.username
-                    )
+                ClientboundLoginSuccessPacket(
+                    gameProfile.uniqueId,
+                    message.username
+                )
             )
             session.protocol = GameProtocol(true)
             Engine.server.addPlayer(gameProfile, session)

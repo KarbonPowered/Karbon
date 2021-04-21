@@ -3,9 +3,9 @@ package com.karbonpowered.math.vector
 import kotlin.math.*
 
 open class IntVector3(
-        override val x: Int = 0,
-        override val y: Int = 0,
-        open val z: Int = 0
+    override val x: Int = 0,
+    override val y: Int = 0,
+    open val z: Int = 0
 ) : IntVector2(x, y), Comparable<IntVector3> {
     private val hashCode by lazy {
         (x.hashCode() * 211 + y.hashCode()) * 97 + z.hashCode()
@@ -23,27 +23,27 @@ open class IntVector3(
     fun add(x: Double, y: Double, z: Double): IntVector3 = add(x.roundToInt(), y.roundToInt(), z.roundToInt())
     fun add(x: Float, y: Float, z: Float): IntVector3 = add(x.roundToInt(), y.roundToInt(), z.roundToInt())
     open fun add(x: Int, y: Int, z: Int): IntVector3 =
-            IntVector3(this.x + x, this.y + y, this.z + z)
+        IntVector3(this.x + x, this.y + y, this.z + z)
 
     fun sub(vector: IntVector3): IntVector3 = sub(vector.x, vector.y, vector.z)
     fun sub(x: Double, y: Double, z: Double): IntVector3 = sub(x.roundToInt(), y.roundToInt(), z.roundToInt())
     fun sub(x: Float, y: Float, z: Float): IntVector3 = sub(x.roundToInt(), y.roundToInt(), z.roundToInt())
     open fun sub(x: Int, y: Int, z: Int): IntVector3 =
-            IntVector3(this.x - x, this.y - y, this.z - z)
+        IntVector3(this.x - x, this.y - y, this.z - z)
 
     fun mul(a: Double): IntVector3 = mul(a.roundToInt(), a.roundToInt(), a.roundToInt())
     fun mul(a: Float): IntVector3 = mul(a.roundToInt(), a.roundToInt(), a.roundToInt())
     fun mul(a: Int): IntVector3 = mul(a, a, a)
     fun mul(vector: IntVector3): IntVector3 = mul(vector.x, vector.y, vector.z)
     open fun mul(x: Int, y: Int, z: Int): IntVector3 =
-            IntVector3(this.x * x, this.y * y, this.z * z)
+        IntVector3(this.x * x, this.y * y, this.z * z)
 
     fun div(a: Double): IntVector3 = div(a.roundToInt(), a.roundToInt(), a.roundToInt())
     fun div(a: Float): IntVector3 = div(a.roundToInt(), a.roundToInt(), a.roundToInt())
     fun div(a: Int): IntVector3 = div(a, a, a)
     fun div(vector: IntVector3): IntVector3 = div(vector.x, vector.y, vector.z)
     open fun div(x: Int, y: Int, z: Int): IntVector3 =
-            IntVector3(this.x / x, this.y / y, this.z / z)
+        IntVector3(this.x / x, this.y / y, this.z / z)
 
     fun dot(vector: IntVector3): Int = dot(vector.x, vector.y, vector.z)
     fun dot(x: Double, y: Double, z: Double): Int = dot(x.roundToInt(), y.roundToInt(), z.roundToInt())
@@ -67,28 +67,28 @@ open class IntVector3(
     fun cross(x: Double, y: Double, z: Double): IntVector3 = cross(x.roundToInt(), y.roundToInt(), z.roundToInt())
     fun cross(x: Float, y: Float, z: Float): IntVector3 = cross(x.roundToInt(), y.roundToInt(), z.roundToInt())
     fun cross(x: Int, y: Int, z: Int): IntVector3 =
-            IntVector3(
-                    this.y * z - this.z * y,
-                    this.z * x - this.x * z,
-                    this.x * y - this.y * x
-            )
+        IntVector3(
+            this.y * z - this.z * y,
+            this.z * x - this.x * z,
+            this.x * y - this.y * x
+        )
 
     fun pow(power: Double): IntVector3 =
-            IntVector3(
-                    y.toDouble().pow(power),
-                    y.toDouble().pow(power),
-                    z.toDouble().pow(power)
-            )
+        IntVector3(
+            y.toDouble().pow(power),
+            y.toDouble().pow(power),
+            z.toDouble().pow(power)
+        )
 
     fun pow(power: Float): IntVector3 =
-            IntVector3(y.toFloat().pow(power), y.toFloat().pow(power), z.toFloat().pow(power))
+        IntVector3(y.toFloat().pow(power), y.toFloat().pow(power), z.toFloat().pow(power))
 
     fun pow(power: Int): IntVector3 =
-            IntVector3(
-                    y.toDouble().pow(power),
-                    y.toDouble().pow(power),
-                    z.toDouble().pow(power)
-            )
+        IntVector3(
+            y.toDouble().pow(power),
+            y.toDouble().pow(power),
+            z.toDouble().pow(power)
+        )
 
     fun abs(): IntVector3 = IntVector3(x.absoluteValue, y.absoluteValue, z.absoluteValue)
     fun negate(): IntVector3 = IntVector3(-x, -y, -z)
@@ -97,7 +97,7 @@ open class IntVector3(
     fun min(x: Double, y: Double, z: Double): IntVector3 = min(x.roundToInt(), y.roundToInt(), z.roundToInt())
     fun min(x: Float, y: Float, z: Float): IntVector3 = min(x.roundToInt(), y.roundToInt(), z.roundToInt())
     fun min(x: Int, y: Int, z: Int): IntVector3 =
-            IntVector3(min(this.x, x), min(this.y, y), min(this.z, z))
+        IntVector3(min(this.x, x), min(this.y, y), min(this.z, z))
 
     fun max(vector: IntVector3): IntVector3 = max(vector.x, vector.y, vector.z)
     fun max(x: Double, y: Double, z: Double): IntVector3 = max(x.roundToInt(), y.roundToInt(), z.roundToInt())
@@ -106,10 +106,10 @@ open class IntVector3(
 
     fun distanceSquared(vector: IntVector3): Int = distanceSquared(vector.x, vector.y, vector.z)
     fun distanceSquared(x: Double, y: Double, z: Double): Int =
-            distanceSquared(x.roundToInt(), y.roundToInt(), z.roundToInt())
+        distanceSquared(x.roundToInt(), y.roundToInt(), z.roundToInt())
 
     fun distanceSquared(x: Float, y: Float, z: Float): Int =
-            distanceSquared(x.roundToInt(), y.roundToInt(), z.roundToInt())
+        distanceSquared(x.roundToInt(), y.roundToInt(), z.roundToInt())
 
     fun distanceSquared(x: Int, y: Int, z: Int): Int {
         val dx = this.x - x
@@ -176,9 +176,9 @@ open class IntVector3(
 }
 
 open class MutableIntVector3(
-        override var x: Int = 0,
-        override var y: Int = 0,
-        override var z: Int = 0
+    override var x: Int = 0,
+    override var y: Int = 0,
+    override var z: Int = 0
 ) : IntVector3(x, y, z) {
     override fun add(x: Int, y: Int, z: Int): IntVector3 = apply {
         this.x += x

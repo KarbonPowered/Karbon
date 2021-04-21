@@ -16,9 +16,9 @@ object ChatHandler : MessageHandler<Session, ServerboundChatPacket> {
         Logger.info("[Chat] $chatMessage")
         Engine.server.players.forEach {
             it.sendMessage(
-                    sender.profile.uniqueId,
-                    LiteralText(chatMessage),
-                    MessageTypes.CHAT
+                sender.profile.uniqueId,
+                LiteralText(chatMessage),
+                MessageTypes.CHAT
             )
         }
     }

@@ -14,7 +14,7 @@ import kotlin.time.seconds
 
 @OptIn(ExperimentalTime::class)
 class KarbonPlayerNetworkComponent(
-        val session: KarbonSession
+    val session: KarbonSession
 ) : NetworkComponent() {
     private var sync: Boolean = false
     var lastKeepAlive = TimeSource.Monotonic.markNow()

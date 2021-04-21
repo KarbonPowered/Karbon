@@ -20,17 +20,17 @@ interface ProfileProperty : DataSerializable {
         var factory: Factory = KarbonProfileProperty.Companion
 
         fun of(name: String, value: String, signature: String? = null): ProfileProperty =
-                factory.create(name, value, signature)
+            factory.create(name, value, signature)
     }
 }
 
 inline fun ProfileProperty(name: String, value: String, signature: String? = null): ProfileProperty =
-        ProfileProperty.of(name, value, signature)
+    ProfileProperty.of(name, value, signature)
 
 data class KarbonProfileProperty(
-        override val name: String,
-        override val value: String,
-        override val signature: String?
+    override val name: String,
+    override val value: String,
+    override val signature: String?
 ) : ProfileProperty {
     override fun toContainer(): DataContainer = DataContainer {
         set(NAME, name)
@@ -46,6 +46,6 @@ data class KarbonProfileProperty(
         val NAME = DataQuery("name")
 
         override fun create(name: String, value: String, signature: String?): ProfileProperty =
-                KarbonProfileProperty(name, value, signature)
+            KarbonProfileProperty(name, value, signature)
     }
 }

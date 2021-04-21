@@ -23,4 +23,5 @@ expect interface Protocol : Named {
 inline fun <reified M : Message> Protocol.getCodecRegistration(): MessageCodec.CodecRegistration<M>? =
     getCodecRegistration(M::class)
 
-operator fun <M : Message> Protocol.get(message: KClass<M>): MessageCodec.CodecRegistration<M>? = getCodecRegistration(message)
+operator fun <M : Message> Protocol.get(message: KClass<M>): MessageCodec.CodecRegistration<M>? =
+    getCodecRegistration(message)
