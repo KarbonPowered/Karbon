@@ -1,6 +1,6 @@
 package com.karbonpowered.api.registry
 
-import com.karbonpowered.api.ResourceKey
+import com.karbonpowered.data.ResourceKey
 
 interface Registry<T : Any> : Iterable<RegistryEntry<T>> {
     val type: RegistryType<T>

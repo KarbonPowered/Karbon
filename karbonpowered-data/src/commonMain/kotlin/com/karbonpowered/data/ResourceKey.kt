@@ -1,4 +1,4 @@
-package com.karbonpowered.api
+package com.karbonpowered.data
 
 interface ResourceKey {
     val namespace: String

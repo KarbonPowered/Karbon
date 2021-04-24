@@ -1,13 +1,11 @@
 package com.karbonpowered.api.world.block
 
-import com.karbonpowered.api.registry.factory
-
 object BlockChangeFlags {
 
     /**
      * All the available flags are applied through the OR operator.
      */
-    val ALL = factory<BlockChangeFlag.Factory>().none().inverse()
+    val ALL = BlockChangeFlag().inverse()
 
     /**
      * The default flags for a placement event, such as a player placing a block,
@@ -41,7 +39,7 @@ object BlockChangeFlags {
      *  * [BlockChangeFlag.notifyPathfinding] is `false`
      *
      */
-    val NONE = factory<BlockChangeFlag.Factory>().none()
+    val NONE = BlockChangeFlag()
 
     /**
      * Sends block changes to clients but does not trigger block updates or

@@ -1,7 +1,7 @@
 package com.karbonpowered.engine.world
 
 import com.karbonpowered.api.Engine
-import com.karbonpowered.api.ResourceKey
+import com.karbonpowered.data.ResourceKey
 import com.karbonpowered.api.block.BlockState
 import com.karbonpowered.api.block.entity.BlockEntity
 import com.karbonpowered.api.component.Component

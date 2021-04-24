@@ -12,6 +12,7 @@ include("karbonpowered-common")
 //include("karbonpowered-network")
 include("karbonpowered-api")
 include("karbonpowered-text")
+include("karbonpowered-audience")
 //include("karbonpowered-protocol")re
 //include("karbonpowered-engine")
 include("karbonpowered-nbt")

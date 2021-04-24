@@ -1,6 +1,6 @@
 package com.karbonpowered.api.advancement
 
-import com.karbonpowered.api.ResourceKey
+import com.karbonpowered.data.ResourceKey
 
 interface AdvancementTree {
     val rootAdvancement: Advancement

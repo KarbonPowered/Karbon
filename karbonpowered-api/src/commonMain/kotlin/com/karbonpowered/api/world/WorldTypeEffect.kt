@@ -1,6 +1,6 @@
 package com.karbonpowered.api.world
 
-import com.karbonpowered.api.ResourceKeyed
+import com.karbonpowered.data.ResourceKeyed
 
 interface WorldTypeEffect : ResourceKeyed {
     interface Factory {

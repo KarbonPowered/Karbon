@@ -1,4 +1,4 @@
-package com.karbonpowered.api.audience
+package com.karbonpowered.audience
 
 import com.karbonpowered.common.UUID
 import com.karbonpowered.text.Text

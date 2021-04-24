@@ -1,7 +1,7 @@
 package com.karbonpowered.api.world.server
 
-import com.karbonpowered.api.ResourceKey
 import com.karbonpowered.api.Server
+import com.karbonpowered.data.ResourceKey
 
 interface WorldManager {
     val server: Server

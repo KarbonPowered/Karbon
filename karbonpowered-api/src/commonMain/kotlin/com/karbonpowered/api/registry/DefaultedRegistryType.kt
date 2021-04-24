@@ -1,6 +1,6 @@
 package com.karbonpowered.api.registry
 
-import com.karbonpowered.api.ResourceKey
+import com.karbonpowered.data.ResourceKey
 import kotlin.reflect.KProperty
 
 interface DefaultedRegistryType<T : Any> : RegistryType<T> {

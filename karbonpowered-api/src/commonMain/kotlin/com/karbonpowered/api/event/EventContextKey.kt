@@ -1,6 +1,6 @@
 package com.karbonpowered.api.event
 
-import com.karbonpowered.api.ResourceKeyed
+import com.karbonpowered.data.ResourceKeyed
 import com.karbonpowered.api.util.ResourceKeyedBuilder
 import kotlin.reflect.KClass
 

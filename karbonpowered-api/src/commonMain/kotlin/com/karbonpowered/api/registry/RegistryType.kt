@@ -1,6 +1,7 @@
 package com.karbonpowered.api.registry
 
-import com.karbonpowered.api.ResourceKey
+import com.karbonpowered.data.ResourceKey
+
 
 interface RegistryType<T : Any> {
     val root: ResourceKey

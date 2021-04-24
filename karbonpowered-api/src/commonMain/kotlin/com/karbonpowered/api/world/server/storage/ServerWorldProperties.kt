@@ -1,6 +1,5 @@
 package com.karbonpowered.api.world.server.storage
 
-import com.karbonpowered.api.ResourceKey
 import com.karbonpowered.api.entity.living.player.GameMode
 import com.karbonpowered.api.world.WorldBorder
 import com.karbonpowered.api.world.WorldType
@@ -11,6 +10,7 @@ import com.karbonpowered.api.world.storage.WorldProperties
 import com.karbonpowered.api.world.weather.WeatherUniverse
 import com.karbonpowered.common.Identifiable
 import com.karbonpowered.common.UUID
+import com.karbonpowered.data.ResourceKey
 import com.karbonpowered.text.Text
 
 interface ServerWorldProperties : WorldProperties, Identifiable, ResourceKey, WeatherUniverse.Mutable {

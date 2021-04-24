@@ -1,8 +1,8 @@
 package com.karbonpowered.api.advancement.criteria.trigger
 
-import com.karbonpowered.api.ResourceKeyed
 import com.karbonpowered.api.entity.living.player.server.ServerPlayer
 import com.karbonpowered.api.registry.DefaultedRegistryValue
+import com.karbonpowered.data.ResourceKeyed
 import kotlin.reflect.KClass
 
 interface Trigger<C : FilteredTriggerConfiguration> : DefaultedRegistryValue, ResourceKeyed {

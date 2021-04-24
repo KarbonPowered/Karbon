@@ -1,6 +1,6 @@
 package com.karbonpowered.api.registry
 
-import com.karbonpowered.api.ResourceKey
+import com.karbonpowered.data.ResourceKey
 
 interface RegistryKey<T : Any> {
     val registry: RegistryType<T>
@@ -10,7 +10,9 @@ interface RegistryKey<T : Any> {
 
     fun <V : T> asDefaultedReference(defaultHolder: () -> RegistryHolder): DefaultedRegistryReference<V>
 
-    interface Factory {
-        fun <T : Any> create(registry: RegistryType<T>, location: ResourceKey): RegistryKey<T>
+    companion object {
+        lateinit var factory: (RegistryType<*>, ResourceKey) -> RegistryKey<*>
+
+        operator fun <T : Any> invoke(registry: RegistryType<T>, location: ResourceKey): RegistryKey<T> = factory(registry,location) as RegistryKey<T>
     }
 }

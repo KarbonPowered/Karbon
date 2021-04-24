@@ -1,7 +1,7 @@
 package com.karbonpowered.api.world
 
-import com.karbonpowered.api.audience.Audience
-import com.karbonpowered.api.audience.ForwardingAudience
+import com.karbonpowered.audience.Audience
+import com.karbonpowered.audience.ForwardingAudience
 import com.karbonpowered.api.context.ContextSource
 import com.karbonpowered.api.effect.Viewer
 import com.karbonpowered.api.entity.living.player.Player

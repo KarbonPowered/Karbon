@@ -211,22 +211,6 @@ interface BlockChangeFlag {
      */
     fun andNotFlag(flag: BlockChangeFlag): BlockChangeFlag
 
-    interface Factory {
-        /**
-         * Provides a [BlockChangeFlag] where all flags are `false`.
-         *
-         *  * [BlockChangeFlag.updateNeighbors] is `false`
-         *  * [BlockChangeFlag.notifyClients] is `false`
-         *  * [BlockChangeFlag.updateNeighboringShapes] is `false`
-         *  * [BlockChangeFlag.updateLighting] is `false`
-         *  * [BlockChangeFlag.performBlockPhysics] is `false`
-         *  * [BlockChangeFlag.notifyPathfinding] is `false`
-         *
-         * @return The all false change flag
-         */
-        fun none(): BlockChangeFlag
-    }
-
     interface Builder : com.karbonpowered.common.builder.Builder<BlockChangeFlag, Builder> {
         var updateNeighbors: Boolean
         var notifyClients: Boolean
@@ -238,5 +222,11 @@ interface BlockChangeFlag {
         var movingBlocks: Boolean
         var forceClientRerender: Boolean
         var ignoreRender: Boolean
+    }
+
+    companion object {
+        lateinit var builder: () -> Builder
+
+        operator fun invoke(builder: Builder.() -> Unit = {}) = this.builder().apply(builder).build()
     }
 }
