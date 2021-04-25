@@ -5,13 +5,12 @@ import com.karbonpowered.math.unpackLongY
 import com.karbonpowered.math.unpackLongZ
 import com.karbonpowered.math.vector.IntVector3
 import com.karbonpowered.math.vector.intVector3Of
-import com.karbonpowered.network.MessageCodec
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.MinecraftPacket
-import com.karbonpowered.protocol.readVarInt
-import com.karbonpowered.protocol.writeBlockPosition
-import com.karbonpowered.protocol.writeVarInt
+import com.karbonpowered.protocol.util.writeBlockPosition
+import com.karbonpowered.server.readVarInt
+import com.karbonpowered.server.writeVarInt
 import io.ktor.utils.io.core.*
-import kotlin.reflect.KClass
 
 data class ClientboundGameBlockBreakingProgressPacket(
     val entityId: Int,
@@ -28,8 +27,8 @@ data class ClientboundGameBlockBreakingProgressPacket(
         progress
     )
 
-    companion object : MessageCodec<ClientboundGameBlockBreakingProgressPacket> {
-        override val messageType = ClientboundGameBlockBreakingProgressPacket::class
+    companion object : PacketCodec<ClientboundGameBlockBreakingProgressPacket> {
+        override val packetType = ClientboundGameBlockBreakingProgressPacket::class
 
         override fun encode(output: Output, data: ClientboundGameBlockBreakingProgressPacket) {
             output.writeVarInt(data.entityId)

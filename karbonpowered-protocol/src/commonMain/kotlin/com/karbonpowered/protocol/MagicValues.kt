@@ -1,7 +1,7 @@
 package com.karbonpowered.protocol
 
-import com.karbonpowered.api.audience.MessageTypes
 import com.karbonpowered.api.entity.living.player.GameModes
+import com.karbonpowered.audience.MessageTypes
 import kotlin.reflect.KClass
 
 object MagicValues {
@@ -16,6 +16,11 @@ object MagicValues {
         register(MessageTypes.ACTION_BAR, 0)
         register(MessageTypes.CHAT, 1)
         register(MessageTypes.SYSTEM, 2)
+
+        register(MinecraftProtocol.SubProtocol.HANDSHAKE, 0)
+        register(MinecraftProtocol.SubProtocol.STATUS, 1)
+        register(MinecraftProtocol.SubProtocol.LOGIN, 2)
+        register(MinecraftProtocol.SubProtocol.GAME, 3)
     }
 
     private fun register(key: Any, value: Any) {

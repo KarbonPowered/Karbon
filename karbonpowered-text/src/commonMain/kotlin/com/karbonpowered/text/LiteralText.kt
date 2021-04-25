@@ -5,7 +5,7 @@ interface LiteralText : Text {
 }
 
 data class KarbonLiteralText(override val content: String) : LiteralText {
-    override fun toString(): String = content.replace("\"", "\\\"")
+    override fun toString(): String = "{\"text\":\"${content.replace("\"", "\\\"")}\"}"
 }
 
 fun LiteralText(content: String): LiteralText = KarbonLiteralText(content)

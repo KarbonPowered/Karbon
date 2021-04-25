@@ -1,6 +1,10 @@
 package com.karbonpowered.protocol.packet.serverbound.handshake
 
 import com.karbonpowered.protocol.*
+import com.karbonpowered.server.readString
+import com.karbonpowered.server.readVarInt
+import com.karbonpowered.server.writeString
+import com.karbonpowered.server.writeVarInt
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
@@ -8,18 +12,18 @@ data class ServerboundHandshakePacket(
     val protocolVersion: Int,
     val serverAddress: String,
     val port: Int,
-    val nextState: Int
+    val handshakeIntent: MinecraftProtocol.SubProtocol
 ) : MinecraftPacket {
     @OptIn(ExperimentalUnsignedTypes::class)
-    companion object : com.karbonpowered.network.MessageCodec<ServerboundHandshakePacket> {
-        override val messageType: KClass<ServerboundHandshakePacket>
+    companion object : com.karbonpowered.server.packet.PacketCodec<ServerboundHandshakePacket> {
+        override val packetType: KClass<ServerboundHandshakePacket>
             get() = ServerboundHandshakePacket::class
 
         override fun decode(input: Input): ServerboundHandshakePacket {
             val protocolVersion = input.readVarInt()
             val serverAddress = input.readString()
             val port = input.readUShort().toInt()
-            val nextState = input.readVarInt()
+            val nextState = MagicValues.key<MinecraftProtocol.SubProtocol>(input.readVarInt())
             return ServerboundHandshakePacket(protocolVersion, serverAddress, port, nextState)
         }
 
@@ -27,7 +31,7 @@ data class ServerboundHandshakePacket(
             output.writeVarInt(message.protocolVersion)
             output.writeString(message.serverAddress)
             output.writeShort(message.port.toShort())
-            output.writeVarInt(message.nextState)
+            output.writeVarInt(MagicValues.value(message.handshakeIntent))
         }
     }
 }

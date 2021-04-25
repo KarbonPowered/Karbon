@@ -1,16 +1,16 @@
 package com.karbonpowered.protocol.packet.serverbound.login
 
 import com.karbonpowered.protocol.MinecraftPacket
-import com.karbonpowered.protocol.readString
-import com.karbonpowered.protocol.writeString
+import com.karbonpowered.server.readString
+import com.karbonpowered.server.writeString
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
 data class ServerboundLoginStartPacket(
     val username: String
 ) : MinecraftPacket {
-    companion object : com.karbonpowered.network.MessageCodec<ServerboundLoginStartPacket> {
-        override val messageType: KClass<ServerboundLoginStartPacket>
+    companion object : com.karbonpowered.server.packet.PacketCodec<ServerboundLoginStartPacket> {
+        override val packetType: KClass<ServerboundLoginStartPacket>
             get() = ServerboundLoginStartPacket::class
 
         override fun decode(input: Input): ServerboundLoginStartPacket {

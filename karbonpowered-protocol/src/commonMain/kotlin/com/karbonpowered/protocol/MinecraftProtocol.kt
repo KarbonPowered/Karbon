@@ -1,88 +1,93 @@
 package com.karbonpowered.protocol
 
-import com.karbonpowered.network.Message
-import com.karbonpowered.network.MessageCodec
-import com.karbonpowered.network.MessageHandler
-import com.karbonpowered.network.protocol.AbstractProtocol
-import com.karbonpowered.network.service.CodecLookupService
-import com.karbonpowered.network.service.HandlerLookupService
-import io.ktor.utils.io.*
-import io.ktor.utils.io.core.*
-import kotlin.reflect.KClass
+import com.karbonpowered.api.MinecraftVersion
+import com.karbonpowered.api.MinecraftVersions
+import com.karbonpowered.server.Session
+import com.karbonpowered.server.packet.PacketCodec
+import com.karbonpowered.server.packet.PacketProtocol
 
-abstract class MinecraftProtocol(name: String, val isServer: Boolean) : AbstractProtocol(name) {
-    val clientboundCodecLookupService = CodecLookupService()
-    val serverboundCodecLookupService = CodecLookupService()
-    val handlerLookupService = HandlerLookupService()
+abstract class MinecraftProtocol(val version: MinecraftVersion, val isServer: Boolean) : PacketProtocol() {
+    var useDefaultListener: Boolean = true
+    private lateinit var handshakeBuilder: (ProtocolBuilder) -> Unit
+    private lateinit var statusBuilder: (ProtocolBuilder) -> Unit
+    private lateinit var loginBuilder: (ProtocolBuilder) -> Unit
+    private lateinit var gameBuilder: (ProtocolBuilder) -> Unit
+    private var newServerSessionBlock: (Session)->Unit = {}
 
-    override suspend fun readHeader(input: ByteReadChannel): Pair<Int, MessageCodec<*>> {
-        TODO()
-    }
-
-    override suspend fun writeHeader(
-        output: ByteWriteChannel,
-        codec: MessageCodec.CodecRegistration<*>,
-        data: ByteReadPacket
-    ) {
-        output.writePacket {
-            writeVarInt((buildPacket {
-                writeVarInt(codec.opcode)
-            }.remaining + data.remaining).toInt())
-            writeVarInt(codec.opcode)
-        }
-    }
-
-    override fun <M : Message> getCodecRegistration(message: KClass<M>): MessageCodec.CodecRegistration<M>? =
-        clientboundCodecLookupService[message] ?: serverboundCodecLookupService[message]
-
-    inline fun <reified M : MinecraftPacket> serverbound(
-        opcode: Int,
-        codec: MessageCodec<M>,
-        handler: MessageHandler<*, M>? = null
-    ) = serverbound(opcode, M::class, codec, handler)
-
-    fun <M : MinecraftPacket> serverbound(
-        opcode: Int,
-        packet: KClass<M>,
-        codec: MessageCodec<M>,
-        handler: MessageHandler<*, M>? = null
-    ) {
-        serverboundCodecLookupService.bind(packet, codec, opcode)
-        if (handler != null) {
-            handlerLookupService.bind(codec.messageType, handler)
-        }
-    }
-
-    inline fun <reified M : MinecraftPacket> clientbound(
-        opcode: Int,
-        codec: MessageCodec<M>,
-        handler: MessageHandler<*, M>? = null
-    ) = clientbound(opcode, M::class, codec, handler)
-
-    fun <M : MinecraftPacket> clientbound(
-        opcode: Int,
-        packet: KClass<M>,
-        codec: MessageCodec<M>,
-        handler: MessageHandler<*, M>? = null
-    ) {
-        clientboundCodecLookupService.bind(packet, codec, opcode)
-        if (handler != null) {
-            handlerLookupService.bind(codec.messageType, handler)
-        }
-    }
-
-    private suspend fun ByteReadChannel.readVarInt(decoder: VarIntByteDecoder): Int? {
-        while (true) {
-            if (!decoder.process(readByte().toInt())) {
-                break
+    var subProtocol: SubProtocol = SubProtocol.HANDSHAKE
+        set(value) {
+            field = value
+            clearPackets()
+            when (value) {
+                SubProtocol.HANDSHAKE -> handshakeBuilder(ProtocolBuilder())
+                SubProtocol.STATUS -> statusBuilder(ProtocolBuilder())
+                SubProtocol.LOGIN -> loginBuilder(ProtocolBuilder())
+                SubProtocol.GAME -> gameBuilder(ProtocolBuilder())
             }
         }
-        return if (decoder.result != VarIntByteDecoder.Result.SUCCESS) {
-            null
-        } else {
-            decoder.readVarInt
-        }
+
+    fun onNewServerSession(block: (Session)->Unit) {
+        newServerSessionBlock = block
     }
 
-    companion object
+    override fun newServerSession(session: Session) {
+        subProtocol = SubProtocol.HANDSHAKE
+        if (useDefaultListener) {
+            session.addListener(ServerListener())
+        }
+        newServerSessionBlock(session)
+    }
+
+    enum class SubProtocol {
+        HANDSHAKE,
+        STATUS,
+        LOGIN,
+        GAME;
+    }
+
+    fun handshake(block: ProtocolBuilder.() -> Unit) {
+        handshakeBuilder = block
+    }
+
+    fun status(block: ProtocolBuilder.() -> Unit) {
+        statusBuilder = block
+    }
+
+    fun login(block: ProtocolBuilder.() -> Unit) {
+        loginBuilder = block
+    }
+
+    fun game(block: ProtocolBuilder.() -> Unit) {
+        gameBuilder = block
+    }
+
+    inner class ProtocolBuilder internal constructor() {
+        fun clientbound(id: Int, codec: PacketCodec<out MinecraftPacket>) {
+            if (isServer) {
+                registerOutgoing(id, codec)
+            } else {
+                registerIncoming(id, codec)
+            }
+        }
+
+        fun serverbound(id: Int, codec: PacketCodec<out MinecraftPacket>) {
+            if (isServer) {
+                registerIncoming(id, codec)
+            } else {
+                registerOutgoing(id, codec)
+            }
+        }
+    }
+}
+
+fun MinecraftProtocol(
+    isServer: Boolean,
+    version: MinecraftVersion = MinecraftVersions.LATEST_RELEASE,
+    protocol: MinecraftProtocol.() -> Unit
+): () -> MinecraftProtocol = {
+    object : MinecraftProtocol(version, isServer) {
+        init {
+            apply(protocol)
+        }
+    }
 }

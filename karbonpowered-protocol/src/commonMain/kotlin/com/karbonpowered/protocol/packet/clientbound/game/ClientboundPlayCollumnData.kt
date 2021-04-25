@@ -2,9 +2,13 @@ package com.karbonpowered.protocol.packet.clientbound.game
 
 import com.karbonpowered.io.Codec
 import com.karbonpowered.nbt.NBT
-import com.karbonpowered.network.MessageCodec
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.*
 import com.karbonpowered.protocol.util.BitStorage
+import com.karbonpowered.protocol.util.readNBT
+import com.karbonpowered.protocol.util.writeNBT
+import com.karbonpowered.server.readVarInt
+import com.karbonpowered.server.writeVarInt
 import io.ktor.utils.io.core.*
 import io.ktor.utils.io.core.internal.*
 import kotlin.reflect.KClass
@@ -92,12 +96,12 @@ data class ClientboundPlayChunkData(
         }
     }
 
-    companion object : MessageCodec<ClientboundPlayChunkData> {
+    companion object : PacketCodec<ClientboundPlayChunkData> {
         private const val MAX_CHUNK_Y = 20
         private const val MIN_CHUNK_Y = -4
         private const val CHUNK_COUNT = MAX_CHUNK_Y - MIN_CHUNK_Y
         private const val BIOME_SIZE = 16 * 96
-        override val messageType: KClass<ClientboundPlayChunkData> = ClientboundPlayChunkData::class
+        override val packetType: KClass<ClientboundPlayChunkData> = ClientboundPlayChunkData::class
 
         override fun decode(input: Input): ClientboundPlayChunkData {
             val x = input.readInt()

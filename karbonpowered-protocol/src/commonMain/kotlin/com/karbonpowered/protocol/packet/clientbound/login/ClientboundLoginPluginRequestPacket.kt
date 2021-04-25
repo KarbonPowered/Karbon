@@ -1,20 +1,26 @@
 package com.karbonpowered.protocol.packet.clientbound.login
 
-import com.karbonpowered.api.Identifier
-import com.karbonpowered.network.MessageCodec
+import com.karbonpowered.data.ResourceKey
+import com.karbonpowered.data.ResourceKeyImpl
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.*
+import com.karbonpowered.server.readString
+import com.karbonpowered.server.readVarInt
+import com.karbonpowered.server.writeString
+import com.karbonpowered.server.writeVarInt
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
 data class ClientboundLoginPluginRequestPacket(
     val messageId: Int,
-    val identifier: Identifier,
+    val identifier: ResourceKey,
     val data: ByteReadPacket
 ) : MinecraftPacket {
-    companion object : MessageCodec<ClientboundLoginPluginRequestPacket> {
+    companion object : PacketCodec<ClientboundLoginPluginRequestPacket> {
         override fun decode(input: Input): ClientboundLoginPluginRequestPacket {
             val messageId = input.readVarInt()
-            val identifier = Identifier(input.readString())
+            val (namespace,value) = input.readString().split(":")
+            val identifier = ResourceKeyImpl(namespace,value)
             val data = buildPacket {
                 while (!input.endOfInput) {
                     writeByte(input.readByte())
@@ -23,13 +29,13 @@ data class ClientboundLoginPluginRequestPacket(
             return ClientboundLoginPluginRequestPacket(messageId, identifier, data)
         }
 
-        override fun encode(output: Output, message: ClientboundLoginPluginRequestPacket) {
-            output.writeVarInt(message.messageId)
-            output.writeString(message.identifier.toString())
-            output.writePacket(message.data)
+        override fun encode(output: Output, packet: ClientboundLoginPluginRequestPacket) {
+            output.writeVarInt(packet.messageId)
+            output.writeString(packet.identifier.toString())
+            output.writePacket(packet.data)
         }
 
-        override val messageType: KClass<ClientboundLoginPluginRequestPacket>
+        override val packetType: KClass<ClientboundLoginPluginRequestPacket>
             get() = ClientboundLoginPluginRequestPacket::class
     }
 }

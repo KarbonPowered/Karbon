@@ -1,9 +1,9 @@
 package com.karbonpowered.protocol.packet.serverbound.game
 
-import com.karbonpowered.network.MessageCodec
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.MinecraftPacket
-import com.karbonpowered.protocol.readBoolean
-import com.karbonpowered.protocol.writeBoolean
+import com.karbonpowered.server.readBoolean
+import com.karbonpowered.server.writeBoolean
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
@@ -13,8 +13,8 @@ data class ServerboundPlayerPositionPacket(
     val z: Double = 0.0,
     val onGround: Boolean = true
 ) : MinecraftPacket {
-    companion object : MessageCodec<ServerboundPlayerPositionPacket> {
-        override val messageType: KClass<ServerboundPlayerPositionPacket>
+    companion object : PacketCodec<ServerboundPlayerPositionPacket> {
+        override val packetType: KClass<ServerboundPlayerPositionPacket>
             get() = ServerboundPlayerPositionPacket::class
 
         override fun decode(input: Input): ServerboundPlayerPositionPacket {

@@ -1,6 +1,6 @@
 package com.karbonpowered.protocol.packet.clientbound.status
 
-import com.karbonpowered.network.MessageCodec
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.MinecraftPacket
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
@@ -8,8 +8,8 @@ import kotlin.reflect.KClass
 data class ClientboundStatusPongPacket(
     val payload: Long
 ) : MinecraftPacket {
-    companion object : MessageCodec<ClientboundStatusPongPacket> {
-        override val messageType: KClass<ClientboundStatusPongPacket>
+    companion object : PacketCodec<ClientboundStatusPongPacket> {
+        override val packetType: KClass<ClientboundStatusPongPacket>
             get() = ClientboundStatusPongPacket::class
 
         override fun decode(input: Input): ClientboundStatusPongPacket {

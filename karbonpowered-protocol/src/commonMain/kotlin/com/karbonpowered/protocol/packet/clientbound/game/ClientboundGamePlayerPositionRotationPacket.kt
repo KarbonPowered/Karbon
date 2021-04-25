@@ -2,8 +2,12 @@ package com.karbonpowered.protocol.packet.clientbound.game
 
 import com.karbonpowered.math.vector.DoubleVector2
 import com.karbonpowered.math.vector.DoubleVector3
-import com.karbonpowered.network.MessageCodec
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.*
+import com.karbonpowered.server.readBoolean
+import com.karbonpowered.server.readVarInt
+import com.karbonpowered.server.writeBoolean
+import com.karbonpowered.server.writeVarInt
 import io.ktor.utils.io.core.*
 import kotlin.experimental.and
 import kotlin.experimental.or
@@ -50,8 +54,8 @@ data class ClientboundGamePlayerPositionRotationPacket(
         }
     }
 
-    companion object : MessageCodec<ClientboundGamePlayerPositionRotationPacket> {
-        override val messageType: KClass<ClientboundGamePlayerPositionRotationPacket> =
+    companion object : PacketCodec<ClientboundGamePlayerPositionRotationPacket> {
+        override val packetType: KClass<ClientboundGamePlayerPositionRotationPacket> =
             ClientboundGamePlayerPositionRotationPacket::class
 
         override fun encode(output: Output, data: ClientboundGamePlayerPositionRotationPacket) {

@@ -1,7 +1,11 @@
 package com.karbonpowered.protocol.packet.serverbound.game
 
-import com.karbonpowered.network.MessageCodec
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.*
+import com.karbonpowered.server.readString
+import com.karbonpowered.server.readVarInt
+import com.karbonpowered.server.writeString
+import com.karbonpowered.server.writeVarInt
 import io.ktor.utils.io.core.Input
 import io.ktor.utils.io.core.Output
 
@@ -9,8 +13,8 @@ data class ServerboundCommandSuggestionPacket(
     val id: Int,
     val command: String
 ) : MinecraftPacket {
-    companion object : MessageCodec<ServerboundCommandSuggestionPacket> {
-        override val messageType = ServerboundCommandSuggestionPacket::class
+    companion object : PacketCodec<ServerboundCommandSuggestionPacket> {
+        override val packetType = ServerboundCommandSuggestionPacket::class
 
         override fun decode(input: Input): ServerboundCommandSuggestionPacket {
             val id = input.readVarInt()

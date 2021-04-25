@@ -9,11 +9,12 @@ pluginManagement {
 }
 
 include("karbonpowered-common")
-//include("karbonpowered-network")
+include("karbonpowered-network")
+include("karbonpowered-server")
 include("karbonpowered-api")
 include("karbonpowered-text")
 include("karbonpowered-audience")
-//include("karbonpowered-protocol")re
+include("karbonpowered-protocol")
 //include("karbonpowered-engine")
 include("karbonpowered-nbt")
 include("karbonpowered-io")
