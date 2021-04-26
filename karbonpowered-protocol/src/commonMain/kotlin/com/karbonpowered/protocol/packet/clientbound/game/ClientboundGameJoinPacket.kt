@@ -33,8 +33,8 @@ data class ClientboundGameJoinPacket(
         override fun encode(output: Output, data: ClientboundGameJoinPacket) {
             output.writeInt(data.entityId)
             output.writeBoolean(data.isHardcore)
-            output.writeByte(MagicValues.value(Byte::class, data.gameMode))
-            output.writeByte(MagicValues.value(Byte::class, data.previousGameMode))
+            output.writeByte(MagicValues.value(data.gameMode))
+            output.writeByte(MagicValues.value(data.previousGameMode))
             output.writeVarInt(data.worlds.size)
             data.worlds.forEach {
                 output.writeString(it)

@@ -26,13 +26,22 @@ suspend fun TcpSession.writePacket(packet: Packet, flush: Boolean = true) {
 }
 
 @OptIn(DangerousInternalIoApi::class, ExperimentalIoApi::class)
-suspend fun TcpServerSession.parsePacket(): Packet {
+suspend fun TcpServerSession.parsePacket(): Packet? {
     val length = connection.input.readVarInt()
     val lengthSize = packetProtocol.packetHeader.lengthSize(length)
     val packetId = connection.input.readVarInt()
-    val codec = packetProtocol.incomingCodec(packetId)
     val packetData = connection.input.readPacket(length-lengthSize)
-    val packet = codec.decode(packetData)
+    val codec = try {
+        packetProtocol.incomingCodec(packetId)
+    } catch (e: IllegalArgumentException) {
+        return null
+    }
+    val packet = try {
+        codec.decode(packetData)
+    } catch (t: Throwable) {
+        t.printStackTrace()
+        return null
+    }
     if (packetData.remaining > 0) {
         println("Some ${packetData.remaining} extra bytes after packet (length=$length,packetId=$packetId): $packet")
     }

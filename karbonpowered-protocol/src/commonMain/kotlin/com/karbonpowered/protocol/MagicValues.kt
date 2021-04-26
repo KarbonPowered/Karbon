@@ -12,6 +12,7 @@ object MagicValues {
         register(GameModes.CREATIVE, 1)
         register(GameModes.ADVENTURE, 2)
         register(GameModes.SPECTATOR, 3)
+        register(GameModes.NOT_SET, 4)
 
         register(MessageTypes.ACTION_BAR, 0)
         register(MessageTypes.CHAT, 1)
@@ -29,7 +30,7 @@ object MagicValues {
 
     fun <T : Any> key(keyType: KClass<T>, value: Any): T {
         for (key in VALUES.keys) {
-            if (keyType == key::class) {
+            if (keyType.isInstance(key)) {
                 for (v in VALUES[key] ?: throw UnmappedValueException(value, keyType)) {
                     if (v == value) {
                         return key as T
@@ -45,7 +46,18 @@ object MagicValues {
     fun <T : Any> value(valueType: KClass<T>, key: Any): T {
         if (VALUES.containsKey(key)) {
             for (value in VALUES[key] ?: throw UnmappedKeyException(key, valueType)) {
-                if (valueType == value::class) {
+                if (value is Number) {
+                    return when (valueType) {
+                        Byte::class -> value.toByte()
+                        Short::class -> value.toShort()
+                        Int::class -> value.toInt()
+                        Long::class -> value.toLong()
+                        Double::class -> value.toDouble()
+                        Float::class -> value.toFloat()
+                        Boolean::class -> value.toByte() == 1.toByte()
+                        else -> throw UnmappedKeyException(key, valueType)
+                    } as T
+                } else if (valueType.isInstance(value)) {
                     return value as T
                 }
             }

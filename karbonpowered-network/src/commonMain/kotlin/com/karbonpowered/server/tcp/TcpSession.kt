@@ -7,7 +7,6 @@ import com.karbonpowered.server.packet.PacketProtocol
 import com.karbonpowered.server.parsePacket
 import com.karbonpowered.server.writePacket
 import io.ktor.network.sockets.*
-import io.ktor.utils.io.*
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.launch
@@ -76,6 +75,7 @@ abstract class TcpSession(
     }
 
     override fun exceptionCaught(cause: Throwable) {
+        cause.printStackTrace()
         val message = cause.message.toString()
         disconnect(message, cause)
     }
@@ -91,8 +91,12 @@ class TcpServerSession(
             callEvent(ConnectedEventImpl(this@TcpServerSession))
             while (true) {
                 val packet = parsePacket()
-                callEvent(PacketReceivedEventImpl(this@TcpServerSession, packet))
+                if (packet != null) {
+                    callEvent(PacketReceivedEventImpl(this@TcpServerSession, packet))
+                }
             }
+        } catch (e: ClosedReceiveChannelException) {
+            coroutineContext.cancel()
         } catch (cause: Throwable) {
             exceptionCaught(cause)
         }

@@ -35,8 +35,7 @@ allprojects {
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
-            useIR = true
-            jvmTarget = "11"
+            jvmTarget = "16"
         }
     }
 
@@ -56,7 +55,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 subprojects {
-                    implementation(this)
+                    api(this)
                 }
             }
         }

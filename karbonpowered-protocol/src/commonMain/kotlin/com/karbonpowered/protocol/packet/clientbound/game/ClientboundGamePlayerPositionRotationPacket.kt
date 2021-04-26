@@ -54,6 +54,48 @@ data class ClientboundGamePlayerPositionRotationPacket(
         }
     }
 
+    object Codec754 : PacketCodec<ClientboundGamePlayerPositionRotationPacket> {
+        override val packetType: KClass<ClientboundGamePlayerPositionRotationPacket> =
+            ClientboundGamePlayerPositionRotationPacket::class
+
+        override fun encode(output: Output, data: ClientboundGamePlayerPositionRotationPacket) {
+            output.writeDouble(data.x)
+            output.writeDouble(data.y)
+            output.writeDouble(data.z)
+            output.writeFloat(data.yaw)
+            output.writeFloat(data.pitch)
+            var flags = 0.toByte()
+            data.relative.forEach { element ->
+                flags = flags or element.bit
+            }
+            output.writeByte(flags)
+            output.writeVarInt(data.teleportId)
+        }
+
+        override fun decode(input: Input): ClientboundGamePlayerPositionRotationPacket {
+            val x = input.readDouble()
+            val y = input.readDouble()
+            val z = input.readDouble()
+            val yaw = input.readFloat()
+            val pitch = input.readFloat()
+            val flags = input.readByte()
+            val relative = ArrayList<PositionElement>(PositionElement.VALUES.size)
+            PositionElement.forEach { element ->
+                if ((flags and element.bit) == element.bit) relative.add(element)
+            }
+            val teleportId = input.readVarInt()
+            return ClientboundGamePlayerPositionRotationPacket(
+                x,
+                y,
+                z,
+                yaw,
+                pitch,
+                relative,
+                teleportId
+            )
+        }
+    }
+
     companion object : PacketCodec<ClientboundGamePlayerPositionRotationPacket> {
         override val packetType: KClass<ClientboundGamePlayerPositionRotationPacket> =
             ClientboundGamePlayerPositionRotationPacket::class
