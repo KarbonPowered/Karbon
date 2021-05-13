@@ -1,4 +1,4 @@
-rootProject.name = "Karbon"
+rootProject.name = "KarbonPowered"
 
 pluginManagement {
     repositories {

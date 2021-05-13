@@ -11,12 +11,12 @@ import com.karbonpowered.protocol.packet.serverbound.handshake.ServerboundHandsh
 import com.karbonpowered.protocol.packet.serverbound.login.ServerboundLoginStartPacket
 import com.karbonpowered.protocol.packet.serverbound.status.ServerboundStatusPingPacket
 import com.karbonpowered.protocol.packet.serverbound.status.ServerboundStatusRequestPacket
-import com.karbonpowered.server.tcp.TcpServerSettings
-import com.karbonpowered.server.tcp.tcpServer
+import com.karbonpowered.server.cio.TcpServerSettings
+import com.karbonpowered.server.cio.cioTcpServer
 import kotlinx.coroutines.runBlocking
 
 fun main() = runBlocking {
-    tcpServer(TcpServerSettings(protocol = MinecraftProtocol(true) {
+    cioTcpServer(TcpServerSettings(protocol = MinecraftProtocol(true) {
         handshake {
             serverbound(0x00, ServerboundHandshakePacket)
         }

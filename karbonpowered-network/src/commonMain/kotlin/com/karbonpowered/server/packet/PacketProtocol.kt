@@ -1,9 +1,6 @@
 package com.karbonpowered.server.packet
 
-import com.karbonpowered.server.Server
 import com.karbonpowered.server.Session
-import com.karbonpowered.server.tcp.TcpServer
-import com.karbonpowered.server.tcp.TcpSession
 import kotlin.reflect.KClass
 
 abstract class PacketProtocol {

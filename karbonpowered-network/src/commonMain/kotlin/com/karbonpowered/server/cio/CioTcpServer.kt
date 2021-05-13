@@ -1,4 +1,4 @@
-package com.karbonpowered.server.tcp
+package com.karbonpowered.server.cio
 
 import com.karbonpowered.server.Server
 import com.karbonpowered.server.packet.PacketProtocol
@@ -9,7 +9,7 @@ import io.ktor.utils.io.core.*
 import kotlinx.coroutines.*
 
 
-class TcpServer(
+class CioTcpServer(
     val rootServerJob: Job,
     val acceptJob: Job,
     val serverSocket: Deferred<ServerSocket>
@@ -23,7 +23,7 @@ data class TcpServerSettings(
 )
 
 @OptIn(InternalAPI::class)
-fun CoroutineScope.tcpServer(
+fun CoroutineScope.cioTcpServer(
     settings: TcpServerSettings
 ) {
     val socket = CompletableDeferred<ServerSocket>()
@@ -49,14 +49,14 @@ fun CoroutineScope.tcpServer(
 
             try {
                 while (true) {
-                    val client = server.accept()
-                    val protocol = settings.protocol()
-                    val serverSession = TcpServerSession(client.connection(), protocol , connectionScope.coroutineContext)
-                    protocol.newServerSession(serverSession)
-                    val clientJob = serverSession.startChannelRead()
-                    clientJob.invokeOnCompletion {
-                        client.close()
-                    }
+//                    val client = server.accept()
+//                    val protocol = settings.protocol()
+//                    val serverSession = CioCioTcpServerSession(client.connection(), protocol , connectionScope.coroutineContext)
+//                    protocol.newServerSession(serverSession)
+//                    val clientJob = serverSession.startChannelRead()
+//                    clientJob.invokeOnCompletion {
+//                        client.close()
+//                    }
                 }
             } catch (e: Throwable) {
                 e.printStackTrace()
