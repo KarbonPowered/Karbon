@@ -63,17 +63,17 @@ open class ServerListener : SessionListener {
                 username = packet.username
                 GlobalScope.launch {
                     profile = userAuth()
-                    session.send(ClientboundLoginSuccessPacket(profile.uniqueId, username))
+                    session.sendPacket(ClientboundLoginSuccessPacket(profile.uniqueId, username))
                 }
             }
             is ServerboundStatusRequestPacket -> {
                 val builder = StatusResponse.builder()
                 serverInfoBuilder(builder, session)
                 val response = ClientboundStatusResponsePacket(builder.build())
-                session.send(response)
+                session.sendPacket(response)
             }
             is ServerboundStatusPingPacket -> {
-                session.send(ClientboundStatusPongPacket(packet.payload))
+                session.sendPacket(ClientboundStatusPongPacket(packet.payload))
             }
         }
     }
@@ -92,7 +92,7 @@ open class ServerListener : SessionListener {
 
     fun keepAliveJob(session: Session) = session.launch {
         while (session.isConnected) {
-            session.send(ClientboundKeepAlivePacket(0))
+            session.sendPacket(ClientboundKeepAlivePacket(0))
             delay(2000)
         }
     }

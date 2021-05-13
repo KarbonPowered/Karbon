@@ -10,6 +10,7 @@ pluginManagement {
 
 include("karbonpowered-common")
 include("karbonpowered-network")
+include("karbonpowered-network-netty")
 include("karbonpowered-server")
 include("karbonpowered-api")
 include("karbonpowered-text")

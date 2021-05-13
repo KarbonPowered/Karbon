@@ -13,8 +13,10 @@ interface Session : CoroutineScope {
 
     fun addListener(listener: SessionListener)
     fun removeListener(listener: SessionListener)
-    fun send(packet: Packet)
-    fun disconnect(reason: String? = null, cause: Throwable? = null)
+    fun sendPacket(packet: Packet, flush: Boolean = true)
+    fun sendPackets(vararg packets: Packet, flush: Boolean = true)
+    fun sendPackets(packets: Iterable<Packet>, flush: Boolean = true)
+    fun disconnect(reason: String = "Connection closed", cause: Throwable? = null)
     fun callEvent(event: SessionEvent)
     fun exceptionCaught(cause: Throwable)
 }
