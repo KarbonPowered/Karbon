@@ -1,5 +1,9 @@
 package com.karbonpowered.network.netty
 
+import io.ktor.utils.io.streams.*
+import io.netty.buffer.ByteBuf
+import io.netty.buffer.ByteBufInputStream
+import io.netty.buffer.ByteBufOutputStream
 import io.netty.channel.EventLoopGroup
 import io.netty.channel.epoll.Epoll
 import io.netty.channel.epoll.EpollEventLoopGroup
@@ -41,3 +45,8 @@ object Netty {
         NioServerSocketChannel::class.java
     }
 }
+
+fun ByteBuf.asInput() = ByteBufInputStream(this).asInput()
+fun ByteBuf.asOutput() = ByteBufOutputStream(this).asOutput()
+fun ByteBuf.readVarInt() = com.karbonpowered.server.readVarInt { readByte() }
+fun ByteBuf.writeVarInt(i: Int) = com.karbonpowered.server.writeVarInt(i) { writeByte(it.toInt()) }

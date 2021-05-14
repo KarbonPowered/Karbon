@@ -4,11 +4,7 @@ import com.karbonpowered.server.Session
 import com.karbonpowered.server.event.*
 import com.karbonpowered.server.packet.Packet
 import com.karbonpowered.server.packet.PacketProtocol
-import io.netty.channel.ChannelFuture
-import io.netty.channel.ChannelFutureListener
-import io.netty.channel.ChannelHandlerContext
-import io.netty.channel.SimpleChannelInboundHandler
-import io.netty.channel.Channel as NettyChannel
+import io.netty.channel.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -16,25 +12,27 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.net.ConnectException
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.coroutines.CoroutineContext
+import io.netty.channel.Channel as NettyChannel
 
-class NettyTcpSession : SimpleChannelInboundHandler<Packet>(), Session {
+open class NettyTcpSession(
+    override var packetProtocol: PacketProtocol
+) : SimpleChannelInboundHandler<Packet>(), Session {
     override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Default
     private val packetsQueue = Channel<Packet>(Channel.UNLIMITED)
-    lateinit var packetHandleJob: Job
+    private var packetHandleJob: Job? = null
     protected var disconnected = false
     override val isConnected: Boolean
         get() = !disconnected
-    override val packetProtocol: PacketProtocol
-        get() = TODO("Not yet implemented")
     private val _listeners = CopyOnWriteArrayList<SessionListener>()
     override val listeners: Collection<SessionListener>
         get() = _listeners
     var nettyChannel: NettyChannel? = null
 
     override fun channelActive(ctx: ChannelHandlerContext) {
-        if(disconnected || nettyChannel != null) {
+        if (disconnected || nettyChannel != null) {
             ctx.channel().close()
             return
         }
@@ -97,18 +95,34 @@ class NettyTcpSession : SimpleChannelInboundHandler<Packet>(), Session {
         val sendingEvent = PacketSendingEventImpl(this, packet)
         callEvent(sendingEvent)
 
-        if(!sendingEvent.isCancelled) {
+        if (!sendingEvent.isCancelled) {
             val toSend = sendingEvent.packet
             nettyChannel?.write(toSend)?.addListener(SendFutureListener(toSend))
         }
     }
 
     override fun disconnect(reason: String, cause: Throwable?) {
-        if(disconnected) {
+        if (disconnected) {
             return
         }
 
         disconnected = true
+
+        packetHandleJob?.let {
+            it.cancel()
+            packetHandleJob = null
+        }
+        val nettyChannel = nettyChannel.also {
+            nettyChannel = null
+        }
+        if (nettyChannel?.isOpen == true) {
+            val disconnectingEvent = DisconnectingEventImpl(this, reason, cause)
+            callEvent(disconnectingEvent)
+            nettyChannel.flush().close().addListener {
+                val disconnectedEvent = DisconnectedEventImpl(this, reason, cause)
+                callEvent(disconnectedEvent)
+            }
+        }
     }
 
     override fun callEvent(event: SessionEvent) {
@@ -122,11 +136,21 @@ class NettyTcpSession : SimpleChannelInboundHandler<Packet>(), Session {
     }
 
     override fun exceptionCaught(cause: Throwable) {
-        TODO("Not yet implemented")
+        val message = if (
+            cause is ConnectTimeoutException || cause is ConnectException &&
+            cause.message?.contains("connection timed out", true) == true
+        ) {
+            "Connection timed out."
+        } else {
+            cause.toString()
+        }
+        disconnect(message, cause)
     }
 
-    override fun channelRead0(ctx: ChannelHandlerContext?, msg: Packet?) {
-        TODO("Not yet implemented")
+    override fun channelRead0(ctx: ChannelHandlerContext, packet: Packet) {
+        launch {
+            packetsQueue.send(packet)
+        }
     }
 
     inner class SendFutureListener(

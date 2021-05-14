@@ -5,12 +5,14 @@ import io.ktor.utils.io.core.*
 import kotlin.experimental.and
 import kotlin.experimental.or
 
-fun Input.readVarInt(): Int {
+fun Input.readVarInt(): Int = readVarInt { readByte() }
+
+inline fun readVarInt(byte: ()->Byte): Int {
     var numRead = 0
     var result = 0
     var read: Byte
     do {
-        read = readByte()
+        read = byte()
         val value = (read and 127).toInt()
         result = result or (value shl 7 * numRead)
         numRead++
@@ -21,7 +23,7 @@ fun Input.readVarInt(): Int {
     return result
 }
 
-fun Output.writeVarInt(i: Int) {
+inline fun writeVarInt(i: Int, writeByte: (Byte)->Unit) {
     var value = i
     do {
         var temp = (value and 127).toByte()
@@ -32,6 +34,8 @@ fun Output.writeVarInt(i: Int) {
         writeByte(temp)
     } while (value != 0)
 }
+
+fun Output.writeVarInt(i: Int) = writeVarInt(i) { writeByte(it) }
 
 suspend fun ByteReadChannel.readVarInt(): Int {
     var numRead = 0

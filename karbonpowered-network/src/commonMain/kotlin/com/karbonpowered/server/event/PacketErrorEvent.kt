@@ -2,12 +2,12 @@ package com.karbonpowered.server.event
 
 import com.karbonpowered.server.Session
 
-data class DisconnectedEvent(
+data class PacketErrorEvent(
     override val session: Session,
-    val reason: String,
-    val cause: Throwable?
+    val cause: Throwable,
+    var shouldSuppress: Boolean = false
 ) : SessionEvent {
     override fun call(listener: SessionListener) {
-        listener.disconnected(this)
+        listener.packetError(this)
     }
 }

@@ -8,7 +8,7 @@ abstract class PacketProtocol {
     val outgoing = mutableMapOf<PacketCodec<out Packet>, Int>()
     val codecs = mutableMapOf<KClass<out Packet>, PacketCodec<out Packet>>()
 
-    val packetHeader: PacketHeader  = DefaultPacketHeader()
+    val packetHeader: PacketHeader = DefaultPacketHeader()
 
     abstract fun newServerSession(session: Session)
 
@@ -29,6 +29,8 @@ abstract class PacketProtocol {
 
     fun outgoingId(codec: PacketCodec<out Packet>) = outgoing[codec]
         ?: throw IllegalArgumentException("Unregistered outgoing packet: ${codec.packetType}")
+
+    fun <T : Packet> outgoingId(packetType: KClass<T>):Int = outgoingId(outgoingCodec(packetType))
 
     fun <T : Packet> outgoingCodec(packetType: KClass<T>): PacketCodec<T> = codecs[packetType] as? PacketCodec<T>
         ?: throw IllegalArgumentException("Unregistered outgoing packet: $packetType")

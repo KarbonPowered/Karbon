@@ -8,7 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 
 interface Session : CoroutineScope {
     val isConnected: Boolean
-    val packetProtocol: PacketProtocol
+    var packetProtocol: PacketProtocol
     val listeners: Collection<SessionListener>
 
     fun addListener(listener: SessionListener)

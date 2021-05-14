@@ -11,11 +11,10 @@ interface PacketHeader {
 
     fun lengthSize(length: Int): Int
 
-    suspend fun readLength(input: Input, available: Int): Int
-    suspend fun readPacketId(byteReadChannel: ByteReadChannel): Int
+    fun readLength(input: Input, available: Int): Int
 
-    suspend fun writeLength(byteWriteChannel: Output, length: Int)
-    suspend fun writePacketId(byteWriteChannel: Output, packetId: Int)
+    fun writeLength(byteWriteChannel: Output, length: Int)
+    fun writePacketId(byteWriteChannel: Output, packetId: Int)
 }
 
 class DefaultPacketHeader : PacketHeader {
@@ -30,17 +29,14 @@ class DefaultPacketHeader : PacketHeader {
         else -> 5
     }
 
-    override suspend fun readLength(input: Input, available: Int) =
+    override fun readLength(input: Input, available: Int) =
         input.readVarInt()
 
-    override suspend fun readPacketId(byteReadChannel: ByteReadChannel) =
-        byteReadChannel.readVarInt()
-
-    override suspend fun writeLength(byteWriteChannel: Output, length: Int) {
+    override fun writeLength(byteWriteChannel: Output, length: Int) {
         byteWriteChannel.writeVarInt(length)
     }
 
-    override suspend fun writePacketId(byteWriteChannel: Output, packetId: Int) {
+    override fun writePacketId(byteWriteChannel: Output, packetId: Int) {
         byteWriteChannel.writeVarInt(packetId)
     }
 }

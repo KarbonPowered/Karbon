@@ -3,11 +3,11 @@ package com.karbonpowered.server.event
 import com.karbonpowered.server.Session
 import com.karbonpowered.server.packet.Packet
 
-interface PacketSendingEvent : SessionEvent {
-    val session: Session
-    var packet: Packet
-    var isCancelled: Boolean
-
+data class PacketSendingEvent(
+    override val session: Session,
+    var packet: Packet,
+    var isCancelled: Boolean = false
+) : SessionEvent {
     fun <T : Packet> packet() = packet as? T
         ?: throw IllegalStateException("Tried to get packet as the wrong type. Actual type: ${packet::class}")
 
@@ -15,11 +15,4 @@ interface PacketSendingEvent : SessionEvent {
         listener.packetSending(this)
     }
 }
-
-
-data class PacketSendingEventImpl(
-    override val session: Session,
-    override var packet: Packet,
-    override var isCancelled: Boolean = false
-) : PacketSendingEvent
 
