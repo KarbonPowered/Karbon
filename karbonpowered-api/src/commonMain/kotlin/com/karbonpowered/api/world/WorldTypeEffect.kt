@@ -1,6 +1,6 @@
 package com.karbonpowered.api.world
 
-import com.karbonpowered.api.ResourceKeyed
+import com.karbonpowered.data.ResourceKeyed
 
 interface WorldTypeEffect : ResourceKeyed {
     interface Factory {
@@ -8,14 +8,4 @@ interface WorldTypeEffect : ResourceKeyed {
         fun nether(): WorldTypeEffect
         fun end(): WorldTypeEffect
     }
-
-    companion object {
-        lateinit var factory: Factory
-    }
-}
-
-object WorldTypeEffects {
-    val OVERWORLD = WorldTypeEffect.factory.overworld()
-    val NETHER = WorldTypeEffect.factory.nether()
-    val END = WorldTypeEffect.factory.end()
 }

@@ -1,20 +1,35 @@
 package com.karbonpowered.api.scoreboard
 
-abstract class Scoreboard(open val name: String) {
-    abstract val objectives: List<ScoreboardObjective>
-    protected abstract val teams: List<PlayerTeam>
+import com.karbonpowered.api.scoreboard.criteria.ObjectiveCriterion
+import com.karbonpowered.api.scoreboard.displayslot.DisplaySlot
+import com.karbonpowered.api.scoreboard.objective.Objective
+import com.karbonpowered.common.builder.Builder
+import com.karbonpowered.text.Text
 
-    abstract fun createObjective(name: String): ScoreboardObjective
+interface Scoreboard {
+    val objectives: Set<Objective>
+    val scores: Set<Score>
 
-    abstract fun removeObjective(objective: ScoreboardObjective): Boolean
+    fun objective(name: String): Objective?
 
-    abstract fun createTeam(name: String): PlayerTeam
+    fun objective(slot: DisplaySlot): Objective?
 
-    abstract fun removeTeam(name: String)
+    fun addObjective(objective: Objective)
 
-    enum class Position {
-        LIST,
-        SIDEBAR,
-        BELOW_NAME
+    fun updateDisplaySlot(objective: Objective?, displaySlot: DisplaySlot)
+
+    fun clearSlot(slot: DisplaySlot) = updateDisplaySlot(null, slot)
+
+    fun objectivesByCriterion(criterion: ObjectiveCriterion): Set<Objective>
+
+    fun removeObjective(objective: Objective)
+
+    fun scores(name: Text): Set<Score>
+
+    fun removeScores(name: Text)
+
+    interface Builder : com.karbonpowered.common.builder.Builder<Scoreboard, Builder> {
+        var objectives: MutableList<Objective>
+        var teams: MutableList<Team>
     }
 }

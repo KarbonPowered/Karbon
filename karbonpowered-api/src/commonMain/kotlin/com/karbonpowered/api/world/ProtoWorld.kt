@@ -17,27 +17,27 @@ import com.karbonpowered.common.RandomProvider
 import com.karbonpowered.math.vector.IntVector3
 
 interface ProtoWorld<P : ProtoWorld<P>> :
-        BiomeVolume.Mutable<P>,
-        BlockVolume.Mutable<P>,
-        EntityVolume.Mutable<P>,
-        BlockEntityVolume.Mutable<P>,
-        GenerationVolume.Mutable,
-        LocationBaseDataHolder.Mutable,
-        UpdatableVolume,
-        RandomProvider,
-        PhysicsAwareMutableBlockVolume<P>,
-        MutableGameVolume {
+    BiomeVolume.Mutable<P>,
+    BlockVolume.Mutable<P>,
+    EntityVolume.Mutable<P>,
+    BlockEntityVolume.Mutable<P>,
+    GenerationVolume.Mutable,
+    LocationBaseDataHolder.Mutable,
+    UpdatableVolume,
+    RandomProvider,
+    PhysicsAwareMutableBlockVolume<P>,
+    MutableGameVolume {
     val engine: Engine
     val seed: Long
     val difficulty: Difficulty
 
     override fun setBlock(position: IntVector3, state: BlockState, flag: BlockChangeFlag): Boolean =
-            setBlock(position.x, position.y, position.z, state, flag)
+        setBlock(position.x, position.y, position.z, state, flag)
 
     override fun setBlock(x: Int, y: Int, z: Int, state: BlockState, flag: BlockChangeFlag): Boolean
 
     override fun removeBlock(position: IntVector3): Boolean =
-            removeBlock(position.x, position.y, position.z)
+        removeBlock(position.x, position.y, position.z)
 
     override fun removeBlock(x: Int, y: Int, z: Int): Boolean
 }

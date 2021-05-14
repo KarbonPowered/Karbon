@@ -7,18 +7,18 @@ import com.karbonpowered.math.vector.IntVector3
 interface PhysicsAwareMutableBlockVolume<P : PhysicsAwareMutableBlockVolume<P>> : BlockVolume.Mutable<P> {
 
     fun setBlock(
-            position: IntVector3,
-            state: BlockState,
-            flag: BlockChangeFlag
+        position: IntVector3,
+        state: BlockState,
+        flag: BlockChangeFlag
     ): Boolean =
-            setBlock(position.x, position.y, position.z, state, flag)
+        setBlock(position.x, position.y, position.z, state, flag)
 
     fun setBlock(
-            x: Int,
-            y: Int,
-            z: Int,
-            state: BlockState,
-            flag: BlockChangeFlag
+        x: Int,
+        y: Int,
+        z: Int,
+        state: BlockState,
+        flag: BlockChangeFlag
     ): Boolean
 
 }

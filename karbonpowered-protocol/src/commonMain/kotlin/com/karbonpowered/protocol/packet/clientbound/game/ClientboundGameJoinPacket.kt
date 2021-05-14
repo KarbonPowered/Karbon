@@ -2,8 +2,11 @@ package com.karbonpowered.protocol.packet.clientbound.game
 
 import com.karbonpowered.api.entity.living.player.GameMode
 import com.karbonpowered.nbt.NBT
-import com.karbonpowered.network.MessageCodec
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.*
+import com.karbonpowered.protocol.util.readNBT
+import com.karbonpowered.protocol.util.writeNBT
+import com.karbonpowered.server.*
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
@@ -24,14 +27,14 @@ data class ClientboundGameJoinPacket(
     val isDebug: Boolean,
     val isFlat: Boolean
 ) : MinecraftPacket {
-    companion object : MessageCodec<ClientboundGameJoinPacket> {
-        override val messageType: KClass<ClientboundGameJoinPacket> = ClientboundGameJoinPacket::class
+    companion object : PacketCodec<ClientboundGameJoinPacket> {
+        override val packetType: KClass<ClientboundGameJoinPacket> = ClientboundGameJoinPacket::class
 
         override fun encode(output: Output, data: ClientboundGameJoinPacket) {
             output.writeInt(data.entityId)
             output.writeBoolean(data.isHardcore)
-            output.writeByte(MagicValues.value(Byte::class, data.gameMode))
-            output.writeByte(MagicValues.value(Byte::class, data.previousGameMode))
+            output.writeByte(MagicValues.value(data.gameMode))
+            output.writeByte(MagicValues.value(data.previousGameMode))
             output.writeVarInt(data.worlds.size)
             data.worlds.forEach {
                 output.writeString(it)

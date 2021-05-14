@@ -14,7 +14,8 @@ interface AdvancementCriterion : Named {
     infix fun or(criteria: AdvancementCriterion)
     infix fun or(criteria: Iterable<AdvancementCriterion>)
 
-    interface CriterionBuilder<T : AdvancementCriterion, B : CriterionBuilder<T, B>> : com.karbonpowered.common.builder.Builder<T, B> {
+    interface CriterionBuilder<T : AdvancementCriterion, B : CriterionBuilder<T, B>> :
+        com.karbonpowered.common.builder.Builder<T, B> {
         var trigger: FilteredTrigger<*>
         var name: String
     }

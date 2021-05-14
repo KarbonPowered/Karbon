@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform") version "1.5.0-RC"
+    kotlin("multiplatform") version "1.5.0"
     application
     `maven-publish`
 }
@@ -23,10 +23,11 @@ allprojects {
         sourceSets {
             val commonMain by getting {
                 dependencies {
-                    implementation("org.jetbrains.kotlinx:atomicfu:0.15.1")
-                    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
-                    implementation("io.ktor:ktor-io:1.5.1")
-                    implementation("io.ktor:ktor-network:1.5.1")
+                    api("org.jetbrains.kotlinx:atomicfu:0.16.1")
+                    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-RC")
+                    api("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.4")
+                    api("io.ktor:ktor-io:1.5.4")
+                    api("io.ktor:ktor-network:1.5.4")
                 }
             }
         }
@@ -34,8 +35,7 @@ allprojects {
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
-            useIR = true
-            jvmTarget = "11"
+            jvmTarget = "16"
         }
     }
 
@@ -55,7 +55,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 subprojects {
-                    implementation(this)
+                    api(this)
                 }
             }
         }

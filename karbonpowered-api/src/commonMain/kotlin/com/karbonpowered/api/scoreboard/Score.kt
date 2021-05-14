@@ -1,9 +1,11 @@
 package com.karbonpowered.api.scoreboard
 
-import com.karbonpowered.common.UUID
+import com.karbonpowered.api.scoreboard.objective.Objective
+import com.karbonpowered.text.Text
 
 interface Score {
-    val name: String
-    val owner: UUID? // Score owner player unique id (optional). This is Karbon feature
-    val value: Int
+    val name: Text
+    var score: Int
+    var isLocked: Boolean
+    val objectives: Set<Objective>
 }

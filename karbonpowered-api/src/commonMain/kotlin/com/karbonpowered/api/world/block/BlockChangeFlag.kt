@@ -1,8 +1,5 @@
 package com.karbonpowered.api.world.block
 
-import com.karbonpowered.api.registry.builder
-import com.karbonpowered.common.builder.Builder
-
 /**
  * A flag of sorts that determines whether a block change will perform various
  * interactions, such as notifying neighboring blocks, performing block physics
@@ -214,26 +211,6 @@ interface BlockChangeFlag {
      */
     fun andNotFlag(flag: BlockChangeFlag): BlockChangeFlag
 
-    companion object {
-        fun builder(): Builder = builder<Builder>()
-    }
-
-    interface Factory {
-        /**
-         * Provides a [BlockChangeFlag] where all flags are `false`.
-         *
-         *  * [BlockChangeFlag.updateNeighbors] is `false`
-         *  * [BlockChangeFlag.notifyClients] is `false`
-         *  * [BlockChangeFlag.updateNeighboringShapes] is `false`
-         *  * [BlockChangeFlag.updateLighting] is `false`
-         *  * [BlockChangeFlag.performBlockPhysics] is `false`
-         *  * [BlockChangeFlag.notifyPathfinding] is `false`
-         *
-         * @return The all false change flag
-         */
-        fun none(): BlockChangeFlag
-    }
-
     interface Builder : com.karbonpowered.common.builder.Builder<BlockChangeFlag, Builder> {
         var updateNeighbors: Boolean
         var notifyClients: Boolean
@@ -246,7 +223,10 @@ interface BlockChangeFlag {
         var forceClientRerender: Boolean
         var ignoreRender: Boolean
     }
-}
 
-inline operator fun BlockChangeFlag.Companion.invoke(builder: BlockChangeFlag.Builder.() -> Unit): BlockChangeFlag =
-        builder().apply(builder).build()
+    companion object {
+        lateinit var builder: () -> Builder
+
+        operator fun invoke(builder: Builder.() -> Unit = {}) = this.builder().apply(builder).build()
+    }
+}

@@ -1,17 +1,17 @@
 package com.karbonpowered.protocol.packet.serverbound.game
 
-import com.karbonpowered.network.MessageCodec
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.MinecraftPacket
-import com.karbonpowered.protocol.readString
-import com.karbonpowered.protocol.writeString
+import com.karbonpowered.server.readString
+import com.karbonpowered.server.writeString
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
 data class ServerboundChatPacket(
     val message: String
 ) : MinecraftPacket {
-    companion object : MessageCodec<ServerboundChatPacket> {
-        override val messageType: KClass<ServerboundChatPacket>
+    companion object : PacketCodec<ServerboundChatPacket> {
+        override val packetType: KClass<ServerboundChatPacket>
             get() = ServerboundChatPacket::class
 
         override fun decode(input: Input): ServerboundChatPacket {

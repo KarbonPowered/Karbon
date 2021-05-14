@@ -1,7 +1,7 @@
 package com.karbonpowered.protocol
 
-import com.karbonpowered.network.Message
+import com.karbonpowered.server.packet.Packet
 
-interface MinecraftPacket : Message {
+interface MinecraftPacket : Packet {
     override fun toString(): String
 }

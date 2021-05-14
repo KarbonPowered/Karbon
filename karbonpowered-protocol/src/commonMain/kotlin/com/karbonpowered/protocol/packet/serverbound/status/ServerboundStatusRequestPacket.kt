@@ -1,6 +1,6 @@
 package com.karbonpowered.protocol.packet.serverbound.status
 
-import com.karbonpowered.network.MessageCodec
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.MinecraftPacket
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
@@ -16,8 +16,8 @@ class ServerboundStatusRequestPacket : MinecraftPacket {
 
     override fun toString(): String = "ServerboundStatusRequest()"
 
-    companion object : MessageCodec<ServerboundStatusRequestPacket> {
-        override val messageType: KClass<ServerboundStatusRequestPacket>
+    companion object : PacketCodec<ServerboundStatusRequestPacket> {
+        override val packetType: KClass<ServerboundStatusRequestPacket>
             get() = ServerboundStatusRequestPacket::class
 
         override fun decode(input: Input): ServerboundStatusRequestPacket = ServerboundStatusRequestPacket()

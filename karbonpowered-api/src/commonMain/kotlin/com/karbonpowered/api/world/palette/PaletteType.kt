@@ -1,11 +1,8 @@
 package com.karbonpowered.api.world.palette
 
-import com.karbonpowered.api.Karbon
-import com.karbonpowered.api.ResourceKey
-import com.karbonpowered.api.block.BlockState
-import com.karbonpowered.api.block.BlockType
-import com.karbonpowered.api.registry.*
-import com.karbonpowered.api.world.biome.Biome
+import com.karbonpowered.api.registry.Registry
+import com.karbonpowered.api.registry.RegistryHolder
+import com.karbonpowered.api.registry.RegistryType
 
 interface PaletteType<T : Any, R : Any> {
     val resolver: (String, Registry<R>) -> T?
@@ -27,12 +24,4 @@ interface PaletteType<T : Any, R : Any> {
             this.stringfier = stringfier
         }
     }
-}
-
-object PaletteTypes {
-    val BIOME_PALLETE = key<Biome, Biome>(ResourceKey.karbon("biome_palette"))
-    val BLOCK_STATE_PALETTE = key<BlockState, BlockType>(ResourceKey.karbon("block_state_palette"))
-
-    private fun <T : Any, R : Any> key(location: ResourceKey): DefaultedRegistryReference<PaletteType<T, R>> =
-            RegistryKey(RegistryTypes.PALETTE_TYPE, location).asDefaultedReference { Karbon.game.registries }
 }

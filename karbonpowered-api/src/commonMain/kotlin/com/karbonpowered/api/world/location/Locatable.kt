@@ -10,7 +10,7 @@ interface Locatable {
 
     val serverLocation: ServerLocation
         get() = location as? ServerLocation
-                ?: throw RuntimeException("Attempt made to query for a server sided location on the client!")
+            ?: throw RuntimeException("Attempt made to query for a server sided location on the client!")
 
     val blockPosition: IntVector3
         get() = location.blockPosition

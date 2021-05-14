@@ -1,20 +1,26 @@
 package com.karbonpowered.protocol.packet.serverbound.game
 
-import com.karbonpowered.api.world.Difficulty
-import com.karbonpowered.network.MessageCodec
+import com.karbonpowered.api.world.difficulty.Difficulty
+import com.karbonpowered.protocol.MagicValues
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.MinecraftPacket
-import com.karbonpowered.protocol.readEnum
-import com.karbonpowered.protocol.writeEnum
+import com.karbonpowered.server.readVarInt
+import com.karbonpowered.server.writeVarInt
 import io.ktor.utils.io.core.*
 
 data class ServerboundChangeDifficultyPacket(
     val difficulty: Difficulty
 ) : MinecraftPacket {
-    companion object : MessageCodec<ServerboundChangeDifficultyPacket> {
-        override val messageType = ServerboundChangeDifficultyPacket::class
+    companion object : PacketCodec<ServerboundChangeDifficultyPacket> {
+        override val packetType = ServerboundChangeDifficultyPacket::class
 
-        override fun decode(input: Input) = ServerboundChangeDifficultyPacket(Difficulty.byId(input.readByte().toInt()))
+        override fun decode(input: Input): ServerboundChangeDifficultyPacket {
+            val difficulty = MagicValues.key<Difficulty>(input.readVarInt())
+            return ServerboundChangeDifficultyPacket(difficulty)
+        }
 
-        override fun encode(output: Output, data: ServerboundChangeDifficultyPacket) = output.writeByte(data.difficulty.id.toByte())
+        override fun encode(output: Output, data: ServerboundChangeDifficultyPacket) {
+            output.writeVarInt(MagicValues.value(data.difficulty))
+        }
     }
 }

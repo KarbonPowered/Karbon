@@ -10,7 +10,7 @@ interface GameProfileProvider {
     suspend fun basicProfiles(names: Iterable<String>, timeMs: Long? = null): Map<String, GameProfile>
 
     suspend fun profile(profile: GameProfile, signed: Boolean = true): GameProfile =
-            profile(profile.uniqueId, signed)
+        profile(profile.uniqueId, signed)
 
     suspend fun profile(name: String, signed: Boolean = true): GameProfile
 

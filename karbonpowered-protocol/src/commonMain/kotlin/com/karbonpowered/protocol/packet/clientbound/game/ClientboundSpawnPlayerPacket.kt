@@ -3,29 +3,33 @@ package com.karbonpowered.protocol.packet.clientbound.game
 import com.karbonpowered.common.UUID
 import com.karbonpowered.math.vector.DoubleVector3
 import com.karbonpowered.math.vector.FloatVector2
-import com.karbonpowered.network.MessageCodec
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.*
+import com.karbonpowered.protocol.util.readUUID
+import com.karbonpowered.protocol.util.writeUUID
+import com.karbonpowered.server.readVarInt
+import com.karbonpowered.server.writeVarInt
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
 data class ClientboundSpawnPlayerPacket(
-        val entityId: Int,
-        val uuid: UUID,
-        val x: Double,
-        val y: Double,
-        val z: Double,
-        val yaw: Float,
-        val pitch: Float
+    val entityId: Int,
+    val uuid: UUID,
+    val x: Double,
+    val y: Double,
+    val z: Double,
+    val yaw: Float,
+    val pitch: Float
 ) : MinecraftPacket {
     constructor(
-            entityId: Int,
-            uuid: UUID,
-            position: DoubleVector3,
-            rotation: FloatVector2
+        entityId: Int,
+        uuid: UUID,
+        position: DoubleVector3,
+        rotation: FloatVector2
     ) : this(entityId, uuid, position.x, position.y, position.z, rotation.x, rotation.y)
 
-    companion object : MessageCodec<ClientboundSpawnPlayerPacket> {
-        override val messageType: KClass<ClientboundSpawnPlayerPacket>
+    companion object : PacketCodec<ClientboundSpawnPlayerPacket> {
+        override val packetType: KClass<ClientboundSpawnPlayerPacket>
             get() = ClientboundSpawnPlayerPacket::class
 
         override fun decode(input: Input): ClientboundSpawnPlayerPacket {

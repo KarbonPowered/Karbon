@@ -1,6 +1,6 @@
 package com.karbonpowered.api.effect
 
-import com.karbonpowered.api.audience.Audience
+import com.karbonpowered.audience.Audience
 
 interface Viewer : Audience {
 }

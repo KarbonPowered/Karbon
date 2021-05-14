@@ -1,6 +1,6 @@
 package com.karbonpowered.api.registry
 
-import com.karbonpowered.api.ResourceKey
+import com.karbonpowered.data.ResourceKey
 import kotlin.reflect.KProperty
 
 interface DefaultedRegistryType<T : Any> : RegistryType<T> {
@@ -11,7 +11,7 @@ interface DefaultedRegistryType<T : Any> : RegistryType<T> {
     fun find(): Registry<T>?
 
     fun defaultReferenced(key: ResourceKey): DefaultedRegistryReference<T> =
-            RegistryKey(this, key).asDefaultedReference(defaultHolder)
+        RegistryKey(this, key).asDefaultedReference(defaultHolder)
 
     operator fun getValue(thisRef: Any?, property: KProperty<*>): Registry<T> = get()
 

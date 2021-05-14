@@ -1,6 +1,6 @@
 package com.karbonpowered.api.event.message
 
-import com.karbonpowered.api.audience.Audience
+import com.karbonpowered.audience.Audience
 
 interface MessageChannelEvent : MessageEvent {
     val originalAudience: Audience

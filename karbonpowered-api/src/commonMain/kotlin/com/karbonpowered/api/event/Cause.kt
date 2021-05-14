@@ -1,6 +1,5 @@
 package com.karbonpowered.api.event
 
-import com.karbonpowered.api.registry.factory
 import kotlin.reflect.KClass
 
 interface Cause : Iterable<Any> {
@@ -20,8 +19,8 @@ interface Cause : Iterable<Any> {
     }
 
     companion object {
-        fun of(context: EventContext, cause: Any): Cause = factory<Factory>().create(context, cause)
+        lateinit var factory: (EventContext, Any) -> Cause
+
+        operator fun invoke(context: EventContext, cause: Any): Cause = factory(context, cause)
     }
 }
-
-inline fun Cause(context: EventContext, cause: Any): Cause = Cause.of(context, cause)

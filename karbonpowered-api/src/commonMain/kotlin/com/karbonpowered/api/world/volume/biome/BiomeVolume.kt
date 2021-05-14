@@ -17,7 +17,7 @@ interface BiomeVolume : Volume {
 
     interface Mutable<M : Mutable<M>> : Sequence<M>, MutableVolume {
         fun setBiome(position: IntVector3, biome: Biome): Boolean =
-                setBiome(position.x, position.y, position.z, biome)
+            setBiome(position.x, position.y, position.z, biome)
 
         fun setBiome(x: Int, y: Int, z: Int, biome: Biome): Boolean
     }

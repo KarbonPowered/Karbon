@@ -1,22 +1,22 @@
 package com.karbonpowered.protocol.packet.serverbound.game
 
-import com.karbonpowered.network.MessageCodec
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.MinecraftPacket
-import com.karbonpowered.protocol.readBoolean
-import com.karbonpowered.protocol.writeBoolean
+import com.karbonpowered.server.readBoolean
+import com.karbonpowered.server.writeBoolean
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
 data class ServerboundPlayerPositionRotationPacket(
-        val x: Double = 0.0,
-        val y: Double = 0.0,
-        val z: Double = 0.0,
-        val yaw: Float = 0f,
-        val pitch: Float = 0f,
-        val onGround: Boolean = true
+    val x: Double = 0.0,
+    val y: Double = 0.0,
+    val z: Double = 0.0,
+    val yaw: Float = 0f,
+    val pitch: Float = 0f,
+    val onGround: Boolean = true
 ) : MinecraftPacket {
-    companion object : MessageCodec<ServerboundPlayerPositionRotationPacket> {
-        override val messageType: KClass<ServerboundPlayerPositionRotationPacket>
+    companion object : PacketCodec<ServerboundPlayerPositionRotationPacket> {
+        override val packetType: KClass<ServerboundPlayerPositionRotationPacket>
             get() = ServerboundPlayerPositionRotationPacket::class
 
         override fun decode(input: Input): ServerboundPlayerPositionRotationPacket {

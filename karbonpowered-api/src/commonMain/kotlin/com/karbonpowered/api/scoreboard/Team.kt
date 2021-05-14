@@ -1,33 +1,36 @@
 package com.karbonpowered.api.scoreboard
 
-import com.karbonpowered.api.entity.living.player.Player
-import com.karbonpowered.api.profile.GameProfile
-import com.karbonpowered.minecraft.text.Text
-import com.karbonpowered.minecraft.text.format.Formatting
+import com.karbonpowered.text.NamedTextColor
+import com.karbonpowered.text.Text
 
 interface Team {
-    val playerPrefix: Text
-    val playerSuffix: Text
-    val displayName: Text
-    val allowFriendlyFire: Boolean
-    val seeFriendlyInvisibles: Boolean
-    val nameTagVisibility: Visibility
-    val deathMessageVisibility: Visibility
-    val color: Formatting
-    val collisionRule: CollisionRule
     val name: String
+    var displayName: Text
+    var color: NamedTextColor
+    var prefix: Text
+    var suffix: Text
+    var isAllowFriendlyFire: Boolean
+    var canSeeFriendlyInvisibles: Boolean
+    var nameTagVisibility: NameTagVisibility
+    var deathMessageVisibility: NameTagVisibility
+    var collisionRule: CollisionRule
+    val members: Set<Text>
+    fun addMember(member: Text)
+    fun removeMember(member: Text)
+    val scoreboard: Scoreboard?
+    fun unregister()
 
-    enum class Visibility(val ruleName: String) {
-        ALWAYS("always"),
-        NEVER("never"),
-        HIDE_FOR_OTHER_TEAM("hideForOtherTeams"),
-        HIDE_FOR_OWN_TEAM("hideForOwnTeam")
-    }
-
-    enum class CollisionRule(val ruleName: String){
-        ALWAYS("always"),
-        NEVER("never"),
-        PUSH_OTHER_TEAMS("pushOtherTeams"),
-        PUSH_OWN_TEAM("pushOwnTeam")
+    interface Builder : com.karbonpowered.common.builder.Builder<Team, Builder> {
+        var name: String
+        var color: NamedTextColor
+        var displayName: Text
+        var prefix: Text
+        var suffix: Text
+        var isAllowFriendlyFire: Boolean
+        var canSeeFriendlyInvisibilities: Boolean
+        var nameTagVisibility: NameTagVisibility
+        var deathTextVisibility: NameTagVisibility
+        var collisionRule: CollisionRule
+        var members: MutableSet<Text>
     }
 }
