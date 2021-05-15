@@ -13,6 +13,8 @@ interface RegistryKey<T : Any> {
     companion object {
         lateinit var factory: (RegistryType<*>, ResourceKey) -> RegistryKey<*>
 
-        operator fun <T : Any> invoke(registry: RegistryType<T>, location: ResourceKey): RegistryKey<T> = factory(registry,location) as RegistryKey<T>
+        @Suppress("UNCHECKED_CAST")
+        operator fun <T : Any> invoke(registry: RegistryType<T>, location: ResourceKey): RegistryKey<T> =
+            factory(registry, location) as RegistryKey<T>
     }
 }

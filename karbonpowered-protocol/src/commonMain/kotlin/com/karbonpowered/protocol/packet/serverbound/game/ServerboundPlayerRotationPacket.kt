@@ -1,7 +1,7 @@
 package com.karbonpowered.protocol.packet.serverbound.game
 
-import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.MinecraftPacket
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.server.readBoolean
 import com.karbonpowered.server.writeBoolean
 import io.ktor.utils.io.core.*
@@ -24,10 +24,10 @@ data class ServerboundPlayerRotationPacket(
             return ServerboundPlayerRotationPacket(yaw, pitch, onGround)
         }
 
-        override fun encode(output: Output, data: ServerboundPlayerRotationPacket) {
-            output.writeFloat(data.yaw)
-            output.writeFloat(data.pitch)
-            output.writeBoolean(data.onGround)
+        override fun encode(output: Output, packet: ServerboundPlayerRotationPacket) {
+            output.writeFloat(packet.yaw)
+            output.writeFloat(packet.pitch)
+            output.writeBoolean(packet.onGround)
         }
     }
 }

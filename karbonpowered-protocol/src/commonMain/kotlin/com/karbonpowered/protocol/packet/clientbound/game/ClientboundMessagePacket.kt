@@ -2,10 +2,11 @@ package com.karbonpowered.protocol.packet.clientbound.game
 
 import com.karbonpowered.audience.MessageType
 import com.karbonpowered.common.UUID
-import com.karbonpowered.server.packet.PacketCodec
-import com.karbonpowered.protocol.*
+import com.karbonpowered.protocol.MagicValues
+import com.karbonpowered.protocol.MinecraftPacket
 import com.karbonpowered.protocol.util.readUUID
 import com.karbonpowered.protocol.util.writeUUID
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.server.readString
 import com.karbonpowered.server.readVarInt
 import com.karbonpowered.server.writeString
@@ -31,10 +32,10 @@ data class ClientboundMessagePacket(
             return ClientboundMessagePacket(LiteralText(message), packetType, sender)
         }
 
-        override fun encode(output: Output, data: ClientboundMessagePacket) {
-            output.writeString(data.message.toString())
-            output.writeVarInt(MagicValues.key(data.packetType))
-            output.writeUUID(data.sender)
+        override fun encode(output: Output, packet: ClientboundMessagePacket) {
+            output.writeString(packet.message.toString())
+            output.writeVarInt(MagicValues.key(packet.packetType))
+            output.writeUUID(packet.sender)
         }
     }
 }

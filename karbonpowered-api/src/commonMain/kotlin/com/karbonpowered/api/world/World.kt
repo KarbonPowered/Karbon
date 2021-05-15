@@ -1,7 +1,5 @@
 package com.karbonpowered.api.world
 
-import com.karbonpowered.audience.Audience
-import com.karbonpowered.audience.ForwardingAudience
 import com.karbonpowered.api.context.ContextSource
 import com.karbonpowered.api.effect.Viewer
 import com.karbonpowered.api.entity.living.player.Player
@@ -14,6 +12,8 @@ import com.karbonpowered.api.world.volume.RegionVolume
 import com.karbonpowered.api.world.volume.archetype.ArchetypeVolumeCreator
 import com.karbonpowered.api.world.volume.block.PhysicsAwareMutableBlockVolume
 import com.karbonpowered.api.world.weather.WeatherUniverse
+import com.karbonpowered.audience.Audience
+import com.karbonpowered.audience.ForwardingAudience
 
 interface World<W : World<W, L>, L : Location<W, L>> :
     ForwardingAudience,
@@ -27,6 +27,8 @@ interface World<W : World<W, L>, L : Location<W, L>> :
     RegionVolume,
     ChunkVolume,
     ScopedRegistryHolder {
+
+    @Suppress("UNCHECKED_CAST")
     override val world: W
         get() = this as W
 

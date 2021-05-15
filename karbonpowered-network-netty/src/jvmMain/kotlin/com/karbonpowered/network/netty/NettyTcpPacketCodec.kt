@@ -1,16 +1,18 @@
 package com.karbonpowered.network.netty
 
 import com.karbonpowered.server.Session
-import com.karbonpowered.server.event.PacketErrorEventImpl
+import com.karbonpowered.server.event.PacketErrorEvent
 import com.karbonpowered.server.packet.Packet
 import com.karbonpowered.server.packet.PacketCodec
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageCodec
+import kotlinx.coroutines.runBlocking
 
 class NettyTcpPacketCodec(
     val session: Session
 ) : ByteToMessageCodec<Packet>() {
+    @Suppress("UNCHECKED_CAST")
     override fun encode(ctx: ChannelHandlerContext, packet: Packet, out: ByteBuf) {
         val initial = out.writerIndex()
 
@@ -22,7 +24,7 @@ class NettyTcpPacketCodec(
         } catch (t: Throwable) {
             out.writerIndex(initial)
 
-            val event = PacketErrorEventImpl(session, t)
+            val event = PacketErrorEvent(session, t)
             session.callEvent(event)
             if (!event.shouldSuppress) {
                 throw t
@@ -53,8 +55,10 @@ class NettyTcpPacketCodec(
             // Advance buffer to end to make sure remaining data in this packet is skipped.
             buf.readerIndex(buf.readerIndex() + buf.readableBytes())
 
-            val event = PacketErrorEventImpl(session, t)
-            session.callEvent(event)
+            val event = PacketErrorEvent(session, t)
+            runBlocking {
+                session.callEvent(event)
+            }
             if (!event.shouldSuppress) {
                 throw t
             }

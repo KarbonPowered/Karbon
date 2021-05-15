@@ -2,7 +2,7 @@ package com.karbonpowered.server.util
 
 class VarInitByteDecoder {
     var readVarInt = 0
-    private set
+        private set
     var bytesRead = 0
     var result = DecodeResult.TOO_SHORT
 

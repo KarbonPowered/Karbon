@@ -18,8 +18,8 @@ data class ServerboundLoginStartPacket(
             return ServerboundLoginStartPacket(username)
         }
 
-        override fun encode(output: Output, data: ServerboundLoginStartPacket) {
-            output.writeString(data.username)
+        override fun encode(output: Output, packet: ServerboundLoginStartPacket) {
+            output.writeString(packet.username)
         }
     }
 }

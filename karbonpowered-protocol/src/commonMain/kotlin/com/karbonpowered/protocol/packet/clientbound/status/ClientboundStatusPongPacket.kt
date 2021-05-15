@@ -1,7 +1,7 @@
 package com.karbonpowered.protocol.packet.clientbound.status
 
-import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.MinecraftPacket
+import com.karbonpowered.server.packet.PacketCodec
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
@@ -17,8 +17,8 @@ data class ClientboundStatusPongPacket(
             return ClientboundStatusPongPacket(long)
         }
 
-        override fun encode(output: Output, message: ClientboundStatusPongPacket) {
-            output.writeLong(message.payload)
+        override fun encode(output: Output, packet: ClientboundStatusPongPacket) {
+            output.writeLong(packet.payload)
         }
     }
 }

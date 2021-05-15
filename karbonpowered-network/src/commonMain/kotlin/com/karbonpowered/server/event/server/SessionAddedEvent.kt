@@ -2,8 +2,6 @@ package com.karbonpowered.server.event.server
 
 import com.karbonpowered.server.Server
 import com.karbonpowered.server.Session
-import com.karbonpowered.server.event.server.ServerEvent
-import com.karbonpowered.server.event.server.ServerListener
 
 data class SessionAddedEvent(
     override val server: Server,

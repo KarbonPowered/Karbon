@@ -19,7 +19,6 @@ import com.karbonpowered.server.event.PacketReceivedEvent
 import com.karbonpowered.server.event.PacketSentEvent
 import com.karbonpowered.server.event.SessionListener
 import io.ktor.utils.io.core.*
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
@@ -61,7 +60,7 @@ open class ServerListener : SessionListener {
             }
             is ServerboundLoginStartPacket -> {
                 username = packet.username
-                GlobalScope.launch {
+                session.launch {
                     profile = userAuth()
                     session.sendPacket(ClientboundLoginSuccessPacket(profile.uniqueId, username))
                 }
@@ -80,7 +79,7 @@ open class ServerListener : SessionListener {
 
     override fun packetSent(event: PacketSentEvent) {
         val session = event.session
-        when(event.packet) {
+        when (event.packet) {
             is ClientboundLoginSuccessPacket -> {
                 (session.packetProtocol as MinecraftProtocol).subProtocol = MinecraftProtocol.SubProtocol.GAME
             }

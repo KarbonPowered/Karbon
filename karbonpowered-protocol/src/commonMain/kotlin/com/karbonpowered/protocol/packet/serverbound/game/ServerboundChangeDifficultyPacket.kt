@@ -2,8 +2,8 @@ package com.karbonpowered.protocol.packet.serverbound.game
 
 import com.karbonpowered.api.world.difficulty.Difficulty
 import com.karbonpowered.protocol.MagicValues
-import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.MinecraftPacket
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.server.readVarInt
 import com.karbonpowered.server.writeVarInt
 import io.ktor.utils.io.core.*
@@ -19,8 +19,8 @@ data class ServerboundChangeDifficultyPacket(
             return ServerboundChangeDifficultyPacket(difficulty)
         }
 
-        override fun encode(output: Output, data: ServerboundChangeDifficultyPacket) {
-            output.writeVarInt(MagicValues.value(data.difficulty))
+        override fun encode(output: Output, packet: ServerboundChangeDifficultyPacket) {
+            output.writeVarInt(MagicValues.value(packet.difficulty))
         }
     }
 }

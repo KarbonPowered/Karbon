@@ -1,7 +1,7 @@
 package com.karbonpowered.protocol.packet.serverbound.game
 
-import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.MinecraftPacket
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.server.readString
 import com.karbonpowered.server.writeString
 import io.ktor.utils.io.core.*
@@ -19,8 +19,8 @@ data class ServerboundChatPacket(
             return ServerboundChatPacket(message)
         }
 
-        override fun encode(output: Output, data: ServerboundChatPacket) {
-            output.writeString(data.message)
+        override fun encode(output: Output, packet: ServerboundChatPacket) {
+            output.writeString(packet.message)
         }
     }
 }

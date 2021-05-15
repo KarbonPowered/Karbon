@@ -30,8 +30,9 @@ abstract class PacketProtocol {
     fun outgoingId(codec: PacketCodec<out Packet>) = outgoing[codec]
         ?: throw IllegalArgumentException("Unregistered outgoing packet: ${codec.packetType}")
 
-    fun <T : Packet> outgoingId(packetType: KClass<T>):Int = outgoingId(outgoingCodec(packetType))
+    fun <T : Packet> outgoingId(packetType: KClass<T>): Int = outgoingId(outgoingCodec(packetType))
 
+    @Suppress("UNCHECKED_CAST")
     fun <T : Packet> outgoingCodec(packetType: KClass<T>): PacketCodec<T> = codecs[packetType] as? PacketCodec<T>
         ?: throw IllegalArgumentException("Unregistered outgoing packet: $packetType")
 

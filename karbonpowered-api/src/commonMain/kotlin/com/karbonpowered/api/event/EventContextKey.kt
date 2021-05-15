@@ -1,7 +1,7 @@
 package com.karbonpowered.api.event
 
-import com.karbonpowered.data.ResourceKeyed
 import com.karbonpowered.api.util.ResourceKeyedBuilder
+import com.karbonpowered.data.ResourceKeyed
 import kotlin.reflect.KClass
 
 interface EventContextKey<T> : ResourceKeyed {

@@ -34,7 +34,7 @@ interface StatusResponse {
         var version: MinecraftVersion
         var favicon: Favicon?
 
-        fun players(builder: Players.Builder.()->Unit)
+        fun players(builder: Players.Builder.() -> Unit)
     }
 
     companion object {

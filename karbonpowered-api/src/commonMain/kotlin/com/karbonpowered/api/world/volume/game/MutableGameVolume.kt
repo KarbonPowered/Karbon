@@ -24,7 +24,7 @@ interface MutableGameVolume {
 
     fun spawnEntity(entity: Entity<*>): Boolean
 
-    fun removeBlock(pos: IntVector3): Boolean = removeBlock(pos.x, pos.y, pos.z)
+    fun removeBlock(position: IntVector3): Boolean = removeBlock(position.x, position.y, position.z)
     fun removeBlock(x: Int, y: Int, z: Int): Boolean
 
     fun destroyBlock(pos: IntVector3, performDrops: Boolean): Boolean

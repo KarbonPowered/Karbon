@@ -1,7 +1,7 @@
 package com.karbonpowered.protocol.packet.serverbound.status
 
-import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.MinecraftPacket
+import com.karbonpowered.server.packet.PacketCodec
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
@@ -22,6 +22,6 @@ class ServerboundStatusRequestPacket : MinecraftPacket {
 
         override fun decode(input: Input): ServerboundStatusRequestPacket = ServerboundStatusRequestPacket()
 
-        override fun encode(output: Output, message: ServerboundStatusRequestPacket) {}
+        override fun encode(output: Output, packet: ServerboundStatusRequestPacket) {}
     }
 }

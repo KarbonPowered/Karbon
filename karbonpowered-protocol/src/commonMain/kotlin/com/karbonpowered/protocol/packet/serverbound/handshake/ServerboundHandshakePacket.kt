@@ -1,6 +1,8 @@
 package com.karbonpowered.protocol.packet.serverbound.handshake
 
-import com.karbonpowered.protocol.*
+import com.karbonpowered.protocol.MagicValues
+import com.karbonpowered.protocol.MinecraftPacket
+import com.karbonpowered.protocol.MinecraftProtocol
 import com.karbonpowered.server.readString
 import com.karbonpowered.server.readVarInt
 import com.karbonpowered.server.writeString
@@ -14,7 +16,6 @@ data class ServerboundHandshakePacket(
     val port: Int,
     val handshakeIntent: MinecraftProtocol.SubProtocol
 ) : MinecraftPacket {
-    @OptIn(ExperimentalUnsignedTypes::class)
     companion object : com.karbonpowered.server.packet.PacketCodec<ServerboundHandshakePacket> {
         override val packetType: KClass<ServerboundHandshakePacket>
             get() = ServerboundHandshakePacket::class
@@ -27,11 +28,11 @@ data class ServerboundHandshakePacket(
             return ServerboundHandshakePacket(protocolVersion, serverAddress, port, nextState)
         }
 
-        override fun encode(output: Output, message: ServerboundHandshakePacket) {
-            output.writeVarInt(message.protocolVersion)
-            output.writeString(message.serverAddress)
-            output.writeShort(message.port.toShort())
-            output.writeVarInt(MagicValues.value(message.handshakeIntent))
+        override fun encode(output: Output, packet: ServerboundHandshakePacket) {
+            output.writeVarInt(packet.protocolVersion)
+            output.writeString(packet.serverAddress)
+            output.writeShort(packet.port.toShort())
+            output.writeVarInt(MagicValues.value(packet.handshakeIntent))
         }
     }
 }

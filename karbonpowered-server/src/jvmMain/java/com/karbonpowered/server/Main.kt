@@ -1,22 +1,24 @@
 package com.karbonpowered.server
 
+import com.karbonpowered.network.netty.NettyTcpServer
 import com.karbonpowered.protocol.MinecraftProtocol
 import com.karbonpowered.protocol.packet.clientbound.game.*
 import com.karbonpowered.protocol.packet.clientbound.login.ClientboundLoginPluginRequestPacket
 import com.karbonpowered.protocol.packet.clientbound.login.ClientboundLoginSuccessPacket
 import com.karbonpowered.protocol.packet.clientbound.status.ClientboundStatusPongPacket
 import com.karbonpowered.protocol.packet.clientbound.status.ClientboundStatusResponsePacket
-import com.karbonpowered.protocol.packet.serverbound.game.*
+import com.karbonpowered.protocol.packet.serverbound.game.ServerboundAcceptTeleportationPacket
+import com.karbonpowered.protocol.packet.serverbound.game.ServerboundBlockEntityTagQueryPacket
+import com.karbonpowered.protocol.packet.serverbound.game.ServerboundChangeDifficultyPacket
+import com.karbonpowered.protocol.packet.serverbound.game.ServerboundChatPacket
 import com.karbonpowered.protocol.packet.serverbound.handshake.ServerboundHandshakePacket
 import com.karbonpowered.protocol.packet.serverbound.login.ServerboundLoginStartPacket
 import com.karbonpowered.protocol.packet.serverbound.status.ServerboundStatusPingPacket
 import com.karbonpowered.protocol.packet.serverbound.status.ServerboundStatusRequestPacket
-import com.karbonpowered.server.cio.TcpServerSettings
-import com.karbonpowered.server.cio.cioTcpServer
 import kotlinx.coroutines.runBlocking
 
 fun main() = runBlocking {
-    cioTcpServer(TcpServerSettings(protocol = MinecraftProtocol(true) {
+    NettyTcpServer("0.0.0.0", 25565, MinecraftProtocol(true) {
         handshake {
             serverbound(0x00, ServerboundHandshakePacket)
         }
@@ -47,5 +49,5 @@ fun main() = runBlocking {
             serverbound(0x02, ServerboundChangeDifficultyPacket)
             serverbound(0x03, ServerboundChatPacket)
         }
-    }))
+    }).bind()
 }

@@ -83,7 +83,7 @@ actual fun uuidFrom(charSequence: CharSequence): UUID {
 private fun CharSequence.hexValue(index: Int): Long {
     val digit = this[index]
     var value: Long = -1
-    require(digit.toInt() >= 0 && digit.toInt() < UUID_HEX_VALUES.size && UUID_HEX_VALUES[digit.toInt()].let {
+    require(digit.code >= 0 && digit.code < UUID_HEX_VALUES.size && UUID_HEX_VALUES[digit.code].let {
         value = it
         value
     } != -1L) {

@@ -33,9 +33,24 @@ allprojects {
         }
     }
 
+    val compilerArgs = listOf(
+        "-Xopt-in=kotlin.RequiresOptIn",
+        "-Xopt-in=kotlin.ExperimentalUnsignedTypes",
+        "-Xopt-in=kotlin.time.ExperimentalTime"
+    )
+
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions {
             jvmTarget = "16"
+            freeCompilerArgs = compilerArgs
+            allWarningsAsErrors = true
+        }
+    }
+
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompileCommon> {
+        kotlinOptions {
+            freeCompilerArgs = compilerArgs
+            allWarningsAsErrors = true
         }
     }
 

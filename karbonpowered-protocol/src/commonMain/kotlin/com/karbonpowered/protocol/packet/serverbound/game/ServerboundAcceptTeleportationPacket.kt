@@ -1,7 +1,7 @@
 package com.karbonpowered.protocol.packet.serverbound.game
 
-import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.MinecraftPacket
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.server.readVarInt
 import io.ktor.utils.io.core.*
 

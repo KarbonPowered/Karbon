@@ -30,13 +30,13 @@ class NettyTcpServer(
             group(eventLoopGroup)
             localAddress(host, port)
         }.bind().await().also {
-            channel= it.channel()
+            channel = it.channel()
         }
     }
 
     override suspend fun closeImpl() {
         val channel = channel
-        if(channel?.isOpen == true) {
+        if (channel?.isOpen == true) {
             channel.close().await()
         }
         this.channel = null

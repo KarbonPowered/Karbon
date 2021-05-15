@@ -28,6 +28,7 @@ object MagicValues {
         VALUES.getOrPut(key) { ArrayList() }.add(value)
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun <T : Any> key(keyType: KClass<T>, value: Any): T {
         for (key in VALUES.keys) {
             if (keyType.isInstance(key)) {
@@ -43,6 +44,7 @@ object MagicValues {
 
     inline fun <reified T : Any> key(value: Any): T = key(T::class, value)
 
+    @Suppress("UNCHECKED_CAST")
     fun <T : Any> value(valueType: KClass<T>, key: Any): T {
         if (VALUES.containsKey(key)) {
             for (value in VALUES[key] ?: throw UnmappedKeyException(key, valueType)) {

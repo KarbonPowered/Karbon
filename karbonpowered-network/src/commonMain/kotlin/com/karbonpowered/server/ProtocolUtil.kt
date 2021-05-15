@@ -7,7 +7,7 @@ import kotlin.experimental.or
 
 fun Input.readVarInt(): Int = readVarInt { readByte() }
 
-inline fun readVarInt(byte: ()->Byte): Int {
+inline fun readVarInt(byte: () -> Byte): Int {
     var numRead = 0
     var result = 0
     var read: Byte
@@ -23,7 +23,7 @@ inline fun readVarInt(byte: ()->Byte): Int {
     return result
 }
 
-inline fun writeVarInt(i: Int, writeByte: (Byte)->Unit) {
+inline fun writeVarInt(i: Int, writeByte: (Byte) -> Unit) {
     var value = i
     do {
         var temp = (value and 127).toByte()
@@ -92,5 +92,4 @@ fun Output.writeString(string: String) {
     writeFully(bytes)
 }
 
-@OptIn(ExperimentalUnsignedTypes::class)
 suspend fun ByteReadChannel.readUShort(): UShort = readShort().toUShort()

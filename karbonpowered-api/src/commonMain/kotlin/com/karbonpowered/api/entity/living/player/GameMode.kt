@@ -9,15 +9,19 @@ sealed interface GameMode : DefaultedRegistryValue, TextRepresentable {
     object Survival : GameMode {
         override fun toText(): Text = LiteralText("survival")
     }
+
     object Creative : GameMode {
         override fun toText(): Text = LiteralText("creative")
     }
+
     object Adventure : GameMode {
         override fun toText(): Text = LiteralText("adventure")
     }
+
     object Spectator : GameMode {
         override fun toText(): Text = LiteralText("spectator")
     }
+
     object NotSet : GameMode {
         override fun toText(): Text = LiteralText("not_set")
     }

@@ -28,9 +28,9 @@ data class ServerboundBlockEntityTagQueryPacket(
             return ServerboundBlockEntityTagQueryPacket(transactionId, x, y, z)
         }
 
-        override fun encode(output: Output, data: ServerboundBlockEntityTagQueryPacket) {
-            output.writeVarInt(data.transactionId)
-            output.writeBlockPosition(data.x, data.y, data.z)
+        override fun encode(output: Output, packet: ServerboundBlockEntityTagQueryPacket) {
+            output.writeVarInt(packet.transactionId)
+            output.writeBlockPosition(packet.x, packet.y, packet.z)
         }
     }
 }

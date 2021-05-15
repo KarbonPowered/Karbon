@@ -1,7 +1,7 @@
 package com.karbonpowered.protocol.packet.serverbound.game
 
-import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.MinecraftPacket
+import com.karbonpowered.server.packet.PacketCodec
 import io.ktor.utils.io.core.*
 
 data class ServerboundContainerButtonClickPacket(
@@ -17,9 +17,9 @@ data class ServerboundContainerButtonClickPacket(
             return ServerboundContainerButtonClickPacket(containerId, buttonId)
         }
 
-        override fun encode(output: Output, data: ServerboundContainerButtonClickPacket) {
-            output.writeByte(data.containerId.toByte())
-            output.writeByte(data.buttonId.toByte())
+        override fun encode(output: Output, packet: ServerboundContainerButtonClickPacket) {
+            output.writeByte(packet.containerId.toByte())
+            output.writeByte(packet.buttonId.toByte())
         }
     }
 }

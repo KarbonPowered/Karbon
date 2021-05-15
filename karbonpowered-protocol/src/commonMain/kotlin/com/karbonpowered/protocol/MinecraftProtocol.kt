@@ -12,7 +12,7 @@ abstract class MinecraftProtocol(val version: MinecraftVersion, val isServer: Bo
     private lateinit var statusBuilder: (ProtocolBuilder) -> Unit
     private lateinit var loginBuilder: (ProtocolBuilder) -> Unit
     private lateinit var gameBuilder: (ProtocolBuilder) -> Unit
-    private var newServerSessionBlock: (Session)->Unit = {}
+    private var newServerSessionBlock: (Session) -> Unit = {}
 
     var subProtocol: SubProtocol = SubProtocol.HANDSHAKE
         set(value) {
@@ -26,7 +26,7 @@ abstract class MinecraftProtocol(val version: MinecraftVersion, val isServer: Bo
             }
         }
 
-    fun onNewServerSession(block: (Session)->Unit) {
+    fun onNewServerSession(block: (Session) -> Unit) {
         newServerSessionBlock = block
     }
 

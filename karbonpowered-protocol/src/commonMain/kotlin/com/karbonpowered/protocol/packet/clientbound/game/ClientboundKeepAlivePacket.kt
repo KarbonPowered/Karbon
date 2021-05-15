@@ -1,7 +1,7 @@
 package com.karbonpowered.protocol.packet.clientbound.game
 
-import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.MinecraftPacket
+import com.karbonpowered.server.packet.PacketCodec
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
@@ -17,8 +17,8 @@ data class ClientboundKeepAlivePacket(
             return ClientboundKeepAlivePacket(id)
         }
 
-        override fun encode(output: Output, data: ClientboundKeepAlivePacket) {
-            output.writeLong(data.id)
+        override fun encode(output: Output, packet: ClientboundKeepAlivePacket) {
+            output.writeLong(packet.id)
         }
     }
 }

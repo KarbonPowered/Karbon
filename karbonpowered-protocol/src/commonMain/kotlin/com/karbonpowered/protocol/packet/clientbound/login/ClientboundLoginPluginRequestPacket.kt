@@ -2,8 +2,8 @@ package com.karbonpowered.protocol.packet.clientbound.login
 
 import com.karbonpowered.data.ResourceKey
 import com.karbonpowered.data.ResourceKeyImpl
+import com.karbonpowered.protocol.MinecraftPacket
 import com.karbonpowered.server.packet.PacketCodec
-import com.karbonpowered.protocol.*
 import com.karbonpowered.server.readString
 import com.karbonpowered.server.readVarInt
 import com.karbonpowered.server.writeString
@@ -19,8 +19,8 @@ data class ClientboundLoginPluginRequestPacket(
     companion object : PacketCodec<ClientboundLoginPluginRequestPacket> {
         override fun decode(input: Input): ClientboundLoginPluginRequestPacket {
             val messageId = input.readVarInt()
-            val (namespace,value) = input.readString().split(":")
-            val identifier = ResourceKeyImpl(namespace,value)
+            val (namespace, value) = input.readString().split(":")
+            val identifier = ResourceKeyImpl(namespace, value)
             val data = buildPacket {
                 while (!input.endOfInput) {
                     writeByte(input.readByte())

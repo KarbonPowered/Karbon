@@ -5,9 +5,9 @@ import com.karbonpowered.math.unpackLongY
 import com.karbonpowered.math.unpackLongZ
 import com.karbonpowered.math.vector.IntVector3
 import com.karbonpowered.math.vector.intVector3Of
-import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.MinecraftPacket
 import com.karbonpowered.protocol.util.writeBlockPosition
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.server.readVarInt
 import com.karbonpowered.server.writeVarInt
 import io.ktor.utils.io.core.*
@@ -30,10 +30,10 @@ data class ClientboundGameBlockBreakingProgressPacket(
     companion object : PacketCodec<ClientboundGameBlockBreakingProgressPacket> {
         override val packetType = ClientboundGameBlockBreakingProgressPacket::class
 
-        override fun encode(output: Output, data: ClientboundGameBlockBreakingProgressPacket) {
-            output.writeVarInt(data.entityId)
-            output.writeBlockPosition(data.x, data.y, data.z)
-            output.writeByte(data.progress.toByte())
+        override fun encode(output: Output, packet: ClientboundGameBlockBreakingProgressPacket) {
+            output.writeVarInt(packet.entityId)
+            output.writeBlockPosition(packet.x, packet.y, packet.z)
+            output.writeByte(packet.progress.toByte())
         }
 
         override fun decode(input: Input): ClientboundGameBlockBreakingProgressPacket {

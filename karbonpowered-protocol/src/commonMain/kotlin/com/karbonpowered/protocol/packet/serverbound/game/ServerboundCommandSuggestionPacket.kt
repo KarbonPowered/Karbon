@@ -1,13 +1,12 @@
 package com.karbonpowered.protocol.packet.serverbound.game
 
+import com.karbonpowered.protocol.MinecraftPacket
 import com.karbonpowered.server.packet.PacketCodec
-import com.karbonpowered.protocol.*
 import com.karbonpowered.server.readString
 import com.karbonpowered.server.readVarInt
 import com.karbonpowered.server.writeString
 import com.karbonpowered.server.writeVarInt
-import io.ktor.utils.io.core.Input
-import io.ktor.utils.io.core.Output
+import io.ktor.utils.io.core.*
 
 data class ServerboundCommandSuggestionPacket(
     val id: Int,
@@ -22,9 +21,9 @@ data class ServerboundCommandSuggestionPacket(
             return ServerboundCommandSuggestionPacket(id, command)
         }
 
-        override fun encode(output: Output, data: ServerboundCommandSuggestionPacket) {
-            output.writeVarInt(data.id)
-            output.writeString(data.command)
+        override fun encode(output: Output, packet: ServerboundCommandSuggestionPacket) {
+            output.writeVarInt(packet.id)
+            output.writeString(packet.command)
         }
 
     }

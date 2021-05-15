@@ -3,10 +3,10 @@ package com.karbonpowered.protocol.packet.clientbound.game
 import com.karbonpowered.common.UUID
 import com.karbonpowered.math.vector.DoubleVector3
 import com.karbonpowered.math.vector.FloatVector2
-import com.karbonpowered.server.packet.PacketCodec
-import com.karbonpowered.protocol.*
+import com.karbonpowered.protocol.MinecraftPacket
 import com.karbonpowered.protocol.util.readUUID
 import com.karbonpowered.protocol.util.writeUUID
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.server.readVarInt
 import com.karbonpowered.server.writeVarInt
 import io.ktor.utils.io.core.*
@@ -43,14 +43,14 @@ data class ClientboundSpawnPlayerPacket(
             return ClientboundSpawnPlayerPacket(entityId, uuid, x, y, z, yaw, pitch)
         }
 
-        override fun encode(output: Output, data: ClientboundSpawnPlayerPacket) {
-            output.writeVarInt(data.entityId)
-            output.writeUUID(data.uuid)
-            output.writeDouble(data.x)
-            output.writeDouble(data.y)
-            output.writeDouble(data.z)
-            output.writeByte((data.yaw * 256 / 360).toInt().toByte())
-            output.writeByte((data.pitch * 256 / 360).toInt().toByte())
+        override fun encode(output: Output, packet: ClientboundSpawnPlayerPacket) {
+            output.writeVarInt(packet.entityId)
+            output.writeUUID(packet.uuid)
+            output.writeDouble(packet.x)
+            output.writeDouble(packet.y)
+            output.writeDouble(packet.z)
+            output.writeByte((packet.yaw * 256 / 360).toInt().toByte())
+            output.writeByte((packet.pitch * 256 / 360).toInt().toByte())
         }
     }
 }

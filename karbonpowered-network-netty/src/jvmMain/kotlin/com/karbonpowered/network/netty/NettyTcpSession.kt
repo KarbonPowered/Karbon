@@ -5,13 +5,10 @@ import com.karbonpowered.server.event.*
 import com.karbonpowered.server.packet.Packet
 import com.karbonpowered.server.packet.PacketProtocol
 import io.netty.channel.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.launch
 import java.net.ConnectException
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.coroutines.CoroutineContext
@@ -40,13 +37,13 @@ open class NettyTcpSession(
         packetHandleJob = launch {
             packetsQueue.receiveAsFlow().collect { packet ->
                 try {
-                    callEvent(PacketReceivedEventImpl(this@NettyTcpSession, packet))
+                    callEvent(PacketReceivedEvent(this@NettyTcpSession, packet))
                 } catch (t: Throwable) {
                     exceptionCaught(t)
                 }
             }
         }
-        callEvent(ConnectedEventImpl(this))
+        callEvent(SessionConnectedEvent(this@NettyTcpSession))
     }
 
     override fun addListener(listener: SessionListener) {
@@ -92,12 +89,14 @@ open class NettyTcpSession(
     }
 
     private fun prepareSend(packet: Packet) {
-        val sendingEvent = PacketSendingEventImpl(this, packet)
-        callEvent(sendingEvent)
+        val sendingEvent = PacketSendingEvent(this, packet)
+        launch {
+            callEvent(sendingEvent)
 
-        if (!sendingEvent.isCancelled) {
-            val toSend = sendingEvent.packet
-            nettyChannel?.write(toSend)?.addListener(SendFutureListener(toSend))
+            if (!sendingEvent.isCancelled) {
+                val toSend = sendingEvent.packet
+                nettyChannel?.write(toSend)?.addListener(SendFutureListener(toSend))
+            }
         }
     }
 
@@ -116,11 +115,15 @@ open class NettyTcpSession(
             nettyChannel = null
         }
         if (nettyChannel?.isOpen == true) {
-            val disconnectingEvent = DisconnectingEventImpl(this, reason, cause)
-            callEvent(disconnectingEvent)
+            val disconnectingEvent = DisconnectingEvent(this, reason, cause)
+            runBlocking {
+                callEvent(disconnectingEvent)
+            }
             nettyChannel.flush().close().addListener {
-                val disconnectedEvent = DisconnectedEventImpl(this, reason, cause)
-                callEvent(disconnectedEvent)
+                val disconnectedEvent = DisconnectedEvent(this, reason, cause)
+                runBlocking {
+                    callEvent(disconnectedEvent)
+                }
             }
         }
     }
@@ -158,7 +161,7 @@ open class NettyTcpSession(
     ) : ChannelFutureListener {
         override fun operationComplete(future: ChannelFuture) {
             if (future.isSuccess) {
-                val event = PacketSentEventImpl(this@NettyTcpSession, packet)
+                val event = PacketSentEvent(this@NettyTcpSession, packet)
                 callEvent(event)
             } else {
                 exceptionCaught(future.cause())

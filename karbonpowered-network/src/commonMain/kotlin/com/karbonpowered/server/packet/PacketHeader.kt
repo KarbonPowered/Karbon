@@ -2,7 +2,6 @@ package com.karbonpowered.server.packet
 
 import com.karbonpowered.server.readVarInt
 import com.karbonpowered.server.writeVarInt
-import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
 
 interface PacketHeader {

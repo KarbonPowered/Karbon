@@ -2,8 +2,8 @@ package com.karbonpowered.protocol.packet.clientbound.game
 
 import com.karbonpowered.math.vector.DoubleVector2
 import com.karbonpowered.math.vector.DoubleVector3
+import com.karbonpowered.protocol.MinecraftPacket
 import com.karbonpowered.server.packet.PacketCodec
-import com.karbonpowered.protocol.*
 import com.karbonpowered.server.readBoolean
 import com.karbonpowered.server.readVarInt
 import com.karbonpowered.server.writeBoolean
@@ -58,18 +58,18 @@ data class ClientboundGamePlayerPositionRotationPacket(
         override val packetType: KClass<ClientboundGamePlayerPositionRotationPacket> =
             ClientboundGamePlayerPositionRotationPacket::class
 
-        override fun encode(output: Output, data: ClientboundGamePlayerPositionRotationPacket) {
-            output.writeDouble(data.x)
-            output.writeDouble(data.y)
-            output.writeDouble(data.z)
-            output.writeFloat(data.yaw)
-            output.writeFloat(data.pitch)
+        override fun encode(output: Output, packet: ClientboundGamePlayerPositionRotationPacket) {
+            output.writeDouble(packet.x)
+            output.writeDouble(packet.y)
+            output.writeDouble(packet.z)
+            output.writeFloat(packet.yaw)
+            output.writeFloat(packet.pitch)
             var flags = 0.toByte()
-            data.relative.forEach { element ->
+            packet.relative.forEach { element ->
                 flags = flags or element.bit
             }
             output.writeByte(flags)
-            output.writeVarInt(data.teleportId)
+            output.writeVarInt(packet.teleportId)
         }
 
         override fun decode(input: Input): ClientboundGamePlayerPositionRotationPacket {
@@ -100,19 +100,19 @@ data class ClientboundGamePlayerPositionRotationPacket(
         override val packetType: KClass<ClientboundGamePlayerPositionRotationPacket> =
             ClientboundGamePlayerPositionRotationPacket::class
 
-        override fun encode(output: Output, data: ClientboundGamePlayerPositionRotationPacket) {
-            output.writeDouble(data.x)
-            output.writeDouble(data.y)
-            output.writeDouble(data.z)
-            output.writeFloat(data.yaw)
-            output.writeFloat(data.pitch)
+        override fun encode(output: Output, packet: ClientboundGamePlayerPositionRotationPacket) {
+            output.writeDouble(packet.x)
+            output.writeDouble(packet.y)
+            output.writeDouble(packet.z)
+            output.writeFloat(packet.yaw)
+            output.writeFloat(packet.pitch)
             var flags = 0.toByte()
-            data.relative.forEach { element ->
+            packet.relative.forEach { element ->
                 flags = flags or element.bit
             }
             output.writeByte(flags)
-            output.writeVarInt(data.teleportId)
-            output.writeBoolean(data.shouldDismount)
+            output.writeVarInt(packet.teleportId)
+            output.writeBoolean(packet.shouldDismount)
         }
 
         override fun decode(input: Input): ClientboundGamePlayerPositionRotationPacket {

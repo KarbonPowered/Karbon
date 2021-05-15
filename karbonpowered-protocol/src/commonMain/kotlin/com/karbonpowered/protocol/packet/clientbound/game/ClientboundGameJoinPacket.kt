@@ -2,11 +2,12 @@ package com.karbonpowered.protocol.packet.clientbound.game
 
 import com.karbonpowered.api.entity.living.player.GameMode
 import com.karbonpowered.nbt.NBT
-import com.karbonpowered.server.packet.PacketCodec
-import com.karbonpowered.protocol.*
+import com.karbonpowered.protocol.MagicValues
+import com.karbonpowered.protocol.MinecraftPacket
 import com.karbonpowered.protocol.util.readNBT
 import com.karbonpowered.protocol.util.writeNBT
 import com.karbonpowered.server.*
+import com.karbonpowered.server.packet.PacketCodec
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
@@ -30,25 +31,25 @@ data class ClientboundGameJoinPacket(
     companion object : PacketCodec<ClientboundGameJoinPacket> {
         override val packetType: KClass<ClientboundGameJoinPacket> = ClientboundGameJoinPacket::class
 
-        override fun encode(output: Output, data: ClientboundGameJoinPacket) {
-            output.writeInt(data.entityId)
-            output.writeBoolean(data.isHardcore)
-            output.writeByte(MagicValues.value(data.gameMode))
-            output.writeByte(MagicValues.value(data.previousGameMode))
-            output.writeVarInt(data.worlds.size)
-            data.worlds.forEach {
+        override fun encode(output: Output, packet: ClientboundGameJoinPacket) {
+            output.writeInt(packet.entityId)
+            output.writeBoolean(packet.isHardcore)
+            output.writeByte(MagicValues.value(packet.gameMode))
+            output.writeByte(MagicValues.value(packet.previousGameMode))
+            output.writeVarInt(packet.worlds.size)
+            packet.worlds.forEach {
                 output.writeString(it)
             }
-            output.writeNBT(data.dimensionCodec)
-            output.writeNBT(data.dimension)
-            output.writeString(data.world)
-            output.writeLong(data.hashedSeed)
-            output.writeVarInt(data.maxPlayers)
-            output.writeVarInt(data.viewDistance)
-            output.writeBoolean(data.reducedDebugInfo)
-            output.writeBoolean(data.enableRespawnScreen)
-            output.writeBoolean(data.isDebug)
-            output.writeBoolean(data.isFlat)
+            output.writeNBT(packet.dimensionCodec)
+            output.writeNBT(packet.dimension)
+            output.writeString(packet.world)
+            output.writeLong(packet.hashedSeed)
+            output.writeVarInt(packet.maxPlayers)
+            output.writeVarInt(packet.viewDistance)
+            output.writeBoolean(packet.reducedDebugInfo)
+            output.writeBoolean(packet.enableRespawnScreen)
+            output.writeBoolean(packet.isDebug)
+            output.writeBoolean(packet.isFlat)
         }
 
         override fun decode(input: Input): ClientboundGameJoinPacket {

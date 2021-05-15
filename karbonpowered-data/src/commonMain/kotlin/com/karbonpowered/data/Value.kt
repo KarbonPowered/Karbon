@@ -23,7 +23,7 @@ interface Value<E> {
     interface Immutable<E> : Value<E> {
         fun with(value: E): Immutable<E>
 
-        fun transform(function: (E)->E): Immutable<E>
+        fun transform(function: (E) -> E): Immutable<E>
 
         override fun asMutableCopy(): Mutable<E> = asMutableCopy()
 

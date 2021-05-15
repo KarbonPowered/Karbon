@@ -2,11 +2,11 @@ package com.karbonpowered.protocol.packet.clientbound.game
 
 import com.karbonpowered.io.Codec
 import com.karbonpowered.nbt.NBT
-import com.karbonpowered.server.packet.PacketCodec
-import com.karbonpowered.protocol.*
+import com.karbonpowered.protocol.MinecraftPacket
 import com.karbonpowered.protocol.util.BitStorage
 import com.karbonpowered.protocol.util.readNBT
 import com.karbonpowered.protocol.util.writeNBT
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.server.readVarInt
 import com.karbonpowered.server.writeVarInt
 import io.ktor.utils.io.core.*
@@ -123,29 +123,29 @@ data class ClientboundPlayChunkData(
         }
 
         @OptIn(DangerousInternalIoApi::class)
-        override fun encode(output: Output, data: ClientboundPlayChunkData) {
+        override fun encode(output: Output, packet: ClientboundPlayChunkData) {
             var mask = 0L
             val chunkData = buildPacket {
-                data.chunks.forEachIndexed { index, chunk ->
+                packet.chunks.forEachIndexed { index, chunk ->
                     if (chunk != null && !chunk.isEmpty()) {
                         mask = mask or (1L shl index)
                         ChunkData.encode(this, chunk)
                     }
                 }
             }
-            output.writeInt(data.x)
-            output.writeInt(data.z)
+            output.writeInt(packet.x)
+            output.writeInt(packet.z)
             output.writeVarInt(1)
             output.writeLong(mask)
-            output.writeNBT(data.heightMaps)
-            output.writeVarInt(data.biomes.size)
-            data.biomes.forEach {
+            output.writeNBT(packet.heightMaps)
+            output.writeVarInt(packet.biomes.size)
+            packet.biomes.forEach {
                 output.writeVarInt(it)
             }
             output.writeVarInt(chunkData.remaining.toInt())
             output.writePacket(chunkData)
-            output.writeVarInt(data.blockEntities.size)
-            data.blockEntities.forEach {
+            output.writeVarInt(packet.blockEntities.size)
+            packet.blockEntities.forEach {
                 output.writeNBT(it)
             }
         }

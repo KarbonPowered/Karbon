@@ -1,8 +1,8 @@
 package com.karbonpowered.protocol.packet.clientbound.status
 
 import com.karbonpowered.api.network.status.StatusResponse
-import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.protocol.MinecraftPacket
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.server.readString
 import com.karbonpowered.server.writeString
 import io.ktor.utils.io.core.*
@@ -17,19 +17,19 @@ data class ClientboundStatusResponsePacket(
 
         override fun decode(input: Input): ClientboundStatusResponsePacket {
             val rawResponse = input.readString()
-            TODO()
+            TODO(rawResponse)
         }
 
-        override fun encode(output: Output, message: ClientboundStatusResponsePacket) {
+        override fun encode(output: Output, packet: ClientboundStatusResponsePacket) {
             val rawResponse = buildString {
                 append("{")
                 append("\"version\":{")
                 append("\"name\":\"")
-                append(message.response.version.name)
+                append(packet.response.version.name)
                 append("\",\"protocol\":")
-                append(message.response.version.protocolVersion)
+                append(packet.response.version.protocolVersion)
                 append("},")
-                val players = message.response.players
+                val players = packet.response.players
                 if (players != null) {
                     append("\"players\":{")
                     append("\"max\":")
@@ -51,8 +51,8 @@ data class ClientboundStatusResponsePacket(
                     append("]},")
                 }
                 append("\"description\":")
-                append(message.response.description)
-                val favicon = message.response.favicon
+                append(packet.response.description)
+                val favicon = packet.response.favicon
                 if (favicon != null) {
                     append(",\"favicon\":\"")
                     append(favicon)
