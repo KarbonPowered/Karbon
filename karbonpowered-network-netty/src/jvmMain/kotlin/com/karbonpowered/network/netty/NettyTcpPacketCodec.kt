@@ -4,6 +4,7 @@ import com.karbonpowered.server.Session
 import com.karbonpowered.server.event.PacketErrorEvent
 import com.karbonpowered.server.packet.Packet
 import com.karbonpowered.server.packet.PacketCodec
+import io.ktor.utils.io.core.*
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageCodec
@@ -20,7 +21,10 @@ class NettyTcpPacketCodec(
             val codec = session.packetProtocol.outgoingCodec(packet::class) as PacketCodec<Packet>
             val id = session.packetProtocol.outgoingId(codec)
             out.writeVarInt(id)
-            codec.encode(out.asOutput(), packet)
+            val bytes = buildPacket {
+                codec.encode(this, packet)
+            }.readBytes()
+            out.writeBytes(bytes)
         } catch (t: Throwable) {
             out.writerIndex(initial)
 

@@ -18,10 +18,9 @@ class NettyTcpPacketSizer(
     override fun encode(ctx: ChannelHandlerContext, msg: ByteBuf, out: ByteBuf) {
         val length = msg.readableBytes()
         out.ensureWritable(session.packetProtocol.packetHeader.lengthSize(length) + length)
-        runBlocking {
-            session.packetProtocol.packetHeader.writeLength(ByteBufOutputStream(out).asOutput(), length)
-        }
+        out.writeVarInt(length)
         out.writeBytes(msg)
+        println("length=$length $out")
     }
 
     override fun decode(ctx: ChannelHandlerContext, buf: ByteBuf, out: MutableList<Any>) {
@@ -48,7 +47,8 @@ class NettyTcpPacketSizer(
             } else {
                 val minimumRead: Int = reader.bytesRead + readLen
                 if (buf.isReadable(minimumRead)) {
-                    out.add(buf.retainedSlice(varIntEnd + 1, readLen))
+                    val slicedBuf = buf.retainedSlice(varIntEnd + 1, readLen)
+                    out.add(slicedBuf)
                     buf.skipBytes(minimumRead)
                 }
             }

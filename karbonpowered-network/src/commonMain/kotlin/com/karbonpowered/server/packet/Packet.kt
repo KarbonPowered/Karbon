@@ -3,7 +3,9 @@ package com.karbonpowered.server.packet
 import io.ktor.utils.io.core.*
 import kotlin.reflect.KClass
 
-interface Packet
+interface Packet {
+    val isPriority: Boolean get() = false
+}
 
 interface PacketCodec<T : Packet> {
     val packetType: KClass<T>

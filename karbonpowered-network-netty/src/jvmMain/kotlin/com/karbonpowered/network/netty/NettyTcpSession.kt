@@ -12,6 +12,9 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import java.net.ConnectException
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 import io.netty.channel.Channel as NettyChannel
 
 open class NettyTcpSession(
@@ -90,12 +93,20 @@ open class NettyTcpSession(
 
     private fun prepareSend(packet: Packet) {
         val sendingEvent = PacketSendingEvent(this, packet)
-        launch {
-            callEvent(sendingEvent)
+        callEvent(sendingEvent)
 
-            if (!sendingEvent.isCancelled) {
-                val toSend = sendingEvent.packet
-                nettyChannel?.write(toSend)?.addListener(SendFutureListener(toSend))
+        if (!sendingEvent.isCancelled) {
+            val toSend = sendingEvent.packet
+            val channelFuture = nettyChannel?.write(toSend)
+            println("write: $toSend")
+            channelFuture?.addListener {
+                println("write complete: $toSend")
+                if (channelFuture.isSuccess) {
+                    val event = PacketSentEvent(this@NettyTcpSession, packet)
+                    callEvent(event)
+                } else {
+                    exceptionCaught(channelFuture.cause())
+                }
             }
         }
     }
@@ -151,8 +162,12 @@ open class NettyTcpSession(
     }
 
     override fun channelRead0(ctx: ChannelHandlerContext, packet: Packet) {
-        launch {
-            packetsQueue.send(packet)
+        if (packet.isPriority) {
+            callEvent(PacketReceivedEvent(this@NettyTcpSession, packet))
+        } else {
+            launch {
+                packetsQueue.send(packet)
+            }
         }
     }
 
@@ -160,12 +175,7 @@ open class NettyTcpSession(
         val packet: Packet
     ) : ChannelFutureListener {
         override fun operationComplete(future: ChannelFuture) {
-            if (future.isSuccess) {
-                val event = PacketSentEvent(this@NettyTcpSession, packet)
-                callEvent(event)
-            } else {
-                exceptionCaught(future.cause())
-            }
+
         }
     }
 }

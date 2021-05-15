@@ -2,6 +2,7 @@ package com.karbonpowered.server
 
 import com.karbonpowered.server.event.SessionEvent
 import com.karbonpowered.server.event.SessionListener
+import com.karbonpowered.server.event.SessionListenerBuilder
 import com.karbonpowered.server.packet.Packet
 import com.karbonpowered.server.packet.PacketProtocol
 import kotlinx.coroutines.CoroutineScope
@@ -12,6 +13,7 @@ interface Session : CoroutineScope {
     val listeners: Collection<SessionListener>
 
     fun addListener(listener: SessionListener)
+    fun listen(listener: SessionListenerBuilder.() -> Unit) = addListener(SessionListenerBuilder().apply(listener))
     fun removeListener(listener: SessionListener)
     fun sendPacket(packet: Packet, flush: Boolean = true)
     fun sendPackets(vararg packets: Packet, flush: Boolean = true)

@@ -16,6 +16,8 @@ data class ServerboundHandshakePacket(
     val port: Int,
     val handshakeIntent: MinecraftProtocol.SubProtocol
 ) : MinecraftPacket {
+    override val isPriority: Boolean = true
+
     companion object : com.karbonpowered.server.packet.PacketCodec<ServerboundHandshakePacket> {
         override val packetType: KClass<ServerboundHandshakePacket>
             get() = ServerboundHandshakePacket::class
