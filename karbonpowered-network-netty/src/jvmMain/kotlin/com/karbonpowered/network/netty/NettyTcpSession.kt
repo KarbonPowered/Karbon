@@ -98,9 +98,7 @@ open class NettyTcpSession(
         if (!sendingEvent.isCancelled) {
             val toSend = sendingEvent.packet
             val channelFuture = nettyChannel?.write(toSend)
-            println("write: $toSend")
             channelFuture?.addListener {
-                println("write complete: $toSend")
                 if (channelFuture.isSuccess) {
                     val event = PacketSentEvent(this@NettyTcpSession, packet)
                     callEvent(event)

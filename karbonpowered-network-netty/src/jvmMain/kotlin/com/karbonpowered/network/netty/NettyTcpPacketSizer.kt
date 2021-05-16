@@ -20,7 +20,6 @@ class NettyTcpPacketSizer(
         out.ensureWritable(session.packetProtocol.packetHeader.lengthSize(length) + length)
         out.writeVarInt(length)
         out.writeBytes(msg)
-        println("length=$length $out")
     }
 
     override fun decode(ctx: ChannelHandlerContext, buf: ByteBuf, out: MutableList<Any>) {

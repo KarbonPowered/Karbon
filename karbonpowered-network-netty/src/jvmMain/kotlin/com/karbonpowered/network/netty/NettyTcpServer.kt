@@ -5,6 +5,8 @@ import com.karbonpowered.server.packet.PacketProtocol
 import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.Channel
 import io.netty.channel.ChannelInitializer
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 class NettyTcpServer(
     override val host: String,
@@ -14,7 +16,7 @@ class NettyTcpServer(
     val eventLoopGroup = Netty.createEventLoopGroup()
     var channel: Channel? = null
     override suspend fun bind() {
-        ServerBootstrap().apply {
+        channel = ServerBootstrap().apply {
             channel(Netty.serverSocketChannel())
             childHandler(object : ChannelInitializer<Channel>() {
                 override fun initChannel(channel: Channel) {
@@ -29,17 +31,14 @@ class NettyTcpServer(
             })
             group(eventLoopGroup)
             localAddress(host, port)
-        }.bind().await().also {
-            channel = it.channel()
-        }
+        }.bind().suspendAwait()
     }
 
-    override suspend fun closeImpl() {
+    override suspend fun closeImpl(): Unit = coroutineScope {
         val channel = channel
         if (channel?.isOpen == true) {
-            channel.close().await()
+            channel.close().suspendAwait()
         }
-        this.channel = null
-        eventLoopGroup.shutdownGracefully().await()
+        eventLoopGroup.shutdownGracefully().suspendAwait()
     }
 }
