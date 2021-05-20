@@ -1,3 +1,3 @@
-# KarbonPowered 
-![Discord](https://img.shields.io/discord/828678938070745129?color=7289DA&label=Discord)
-![License](https://img.shields.io/github/license/karbonpowered/karbonpowered)
+# Karbon
+[![Discord](https://img.shields.io/discord/842462585639141396?color=7289DA&label=Discord)](https://discord.gg/sxWKUf2VHT)
+[![License](https://img.shields.io/github/license/karbonpowered/karbonpowered)](LICENSE)

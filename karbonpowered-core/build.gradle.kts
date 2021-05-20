@@ -1,6 +1,6 @@
 kotlin {
     sourceSets {
-        val jvmMain by getting {
+        val commonMain by getting {
             dependencies {
                 implementation(project(":karbonpowered-protocol"))
                 implementation(project(":karbonpowered-text"))
