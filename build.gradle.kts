@@ -56,13 +56,27 @@ allprojects {
             allWarningsAsErrors = true
         }
     }
+}
 
+kotlin {
+    sourceSets {
+        val jvmMain by getting {
+            dependencies {
+                subprojects {
+                    api(this)
+                }
+            }
+        }
+    }
+}
+
+subprojects {
     publishing {
         publications {
             create<MavenPublication>("maven") {
-                groupId = this@allprojects.group.toString()
-                artifactId = this@allprojects.name
-                version = this@allprojects.version.toString()
+                groupId = this@subprojects.group.toString()
+                artifactId = this@subprojects.name
+                version = this@subprojects.version.toString()
                 from(components["java"])
             }
         }
@@ -76,18 +90,6 @@ allprojects {
                         username = System.getenv("GITHUB_ACTOR")
                         password = System.getenv("GITHUB_TOKEN")
                     }
-                }
-            }
-        }
-    }
-}
-
-kotlin {
-    sourceSets {
-        val jvmMain by getting {
-            dependencies {
-                subprojects {
-                    api(this)
                 }
             }
         }
