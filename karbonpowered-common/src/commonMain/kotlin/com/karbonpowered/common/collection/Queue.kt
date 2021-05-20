@@ -1,4 +1,4 @@
-package com.karbonpowered.common.collections
+package com.karbonpowered.common.collection
 
 interface Queue<E> : Collection<E> {
     fun add(element: E): Boolean

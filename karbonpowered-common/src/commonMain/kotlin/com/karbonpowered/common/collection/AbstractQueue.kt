@@ -1,4 +1,4 @@
-package com.karbonpowered.common.collections
+package com.karbonpowered.common.collection
 
 abstract class AbstractQueue<E> : AbstractCollection<E>(), Queue<E> {
     override fun add(element: E): Boolean =
