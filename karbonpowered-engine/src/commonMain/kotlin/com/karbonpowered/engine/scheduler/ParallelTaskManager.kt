@@ -4,6 +4,6 @@ import com.karbonpowered.engine.world.KarbonRegion
 
 abstract class ParallelTaskManager : TaskManager {
     fun registerRegion(region: KarbonRegion) {
-        TODO()
+        TODO("registerRegion: $region")
     }
 }
