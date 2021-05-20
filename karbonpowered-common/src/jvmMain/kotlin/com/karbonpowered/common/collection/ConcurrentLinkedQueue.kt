@@ -1,6 +1,5 @@
-package com.karbonpowered.common.collections
+package com.karbonpowered.common.collection
 
-import com.karbonpowered.common.collection.AbstractQueue
 import java.util.concurrent.ConcurrentLinkedQueue
 
 actual class ConcurrentLinkedQueue<E> : AbstractQueue<E>() {
