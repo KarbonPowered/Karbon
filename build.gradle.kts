@@ -63,6 +63,20 @@ allprojects {
                 groupId = this@allprojects.group.toString()
                 artifactId = this@allprojects.name
                 version = this@allprojects.version.toString()
+                from(components["java"])
+            }
+        }
+
+        repositories {
+            if (System.getenv("GITHUB_TOKEN") != null) {
+                maven {
+                    name = "GitHubPackages"
+                    setUrl("https://maven.pkg.github.com/KarbonPowered/Karbon")
+                    credentials {
+                        username = System.getenv("GITHUB_ACTOR")
+                        password = System.getenv("GITHUB_TOKEN")
+                    }
+                }
             }
         }
     }
