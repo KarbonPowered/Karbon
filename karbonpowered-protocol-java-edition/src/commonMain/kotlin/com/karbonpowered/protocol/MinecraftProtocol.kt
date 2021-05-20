@@ -1,7 +1,6 @@
 package com.karbonpowered.protocol
 
 import com.karbonpowered.api.MinecraftVersion
-import com.karbonpowered.api.MinecraftVersions
 import com.karbonpowered.server.Session
 import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.server.packet.PacketProtocol
@@ -81,8 +80,8 @@ abstract class MinecraftProtocol(val version: MinecraftVersion, val isServer: Bo
 }
 
 fun MinecraftProtocol(
+    version: MinecraftVersion,
     isServer: Boolean,
-    version: MinecraftVersion = MinecraftVersions.LATEST_RELEASE,
     protocol: MinecraftProtocol.() -> Unit
 ): () -> MinecraftProtocol = {
     object : MinecraftProtocol(version, isServer) {

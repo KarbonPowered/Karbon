@@ -1,5 +1,6 @@
 plugins {
-    kotlin("multiplatform") version "1.5.0"
+    kotlin("multiplatform")
+    kotlin("plugin.serialization")
     application
     `maven-publish`
 }
@@ -8,6 +9,7 @@ allprojects {
     apply(plugin = "maven-publish")
     apply(plugin = "application")
     apply(plugin = "kotlin-multiplatform")
+    apply(plugin = "kotlinx-serialization")
 
     group = "com.karbonpowered"
     version = "1.0-SNAPSHOT"
@@ -26,6 +28,7 @@ allprojects {
                     api("org.jetbrains.kotlinx:atomicfu:0.16.1")
                     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-RC")
                     api("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.4")
+                    api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
                     api("io.ktor:ktor-io:1.5.4")
                     api("io.ktor:ktor-network:1.5.4")
                 }

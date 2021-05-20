@@ -27,7 +27,7 @@ data class ClientboundStatusResponsePacket(
                 append("\"name\":\"")
                 append(packet.response.version.name)
                 append("\",\"protocol\":")
-                append(packet.response.version.protocolVersion)
+                append(packet.response.version.protocol)
                 append("},")
                 val players = packet.response.players
                 if (players != null) {

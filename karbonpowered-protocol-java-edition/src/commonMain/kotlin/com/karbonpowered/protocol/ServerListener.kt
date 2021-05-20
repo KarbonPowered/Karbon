@@ -4,6 +4,7 @@ import com.karbonpowered.api.network.status.StatusResponse
 import com.karbonpowered.common.UUID
 import com.karbonpowered.common.md5
 import com.karbonpowered.common.uuidOf
+import com.karbonpowered.core.network.status.StatusResponse
 import com.karbonpowered.profile.GameProfile
 import com.karbonpowered.protocol.packet.clientbound.game.ClientboundGameJoinPacket
 import com.karbonpowered.protocol.packet.clientbound.game.ClientboundKeepAlivePacket
@@ -50,9 +51,9 @@ open class ServerListener : SessionListener {
                     }
                     MinecraftProtocol.SubProtocol.LOGIN -> {
                         protocol.subProtocol = MinecraftProtocol.SubProtocol.LOGIN
-                        if (packet.protocolVersion > protocol.version.protocolVersion) {
+                        if (packet.protocolVersion > protocol.version.protocol) {
                             session.disconnect("Outdated server! I'm still on ${protocol.version.name}")
-                        } else if (packet.protocolVersion < protocol.version.protocolVersion) {
+                        } else if (packet.protocolVersion < protocol.version.protocol) {
                             session.disconnect("Outdated client! Please use ${protocol.version.name}")
                         }
                     }
@@ -67,10 +68,11 @@ open class ServerListener : SessionListener {
                 }
             }
             is ServerboundStatusRequestPacket -> {
-                val builder = StatusResponse.builder()
-                serverInfoBuilder(builder, session)
-                val response = ClientboundStatusResponsePacket(builder.build())
-                session.sendPacket(response)
+                val response = StatusResponse {
+                    serverInfoBuilder(this, session)
+                }
+                val responsePacket = ClientboundStatusResponsePacket(response)
+                session.sendPacket(responsePacket)
             }
             is ServerboundStatusPingPacket -> {
                 session.sendPacket(ClientboundStatusPongPacket(packet.payload))

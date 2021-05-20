@@ -1,4 +1,4 @@
-package com.karbonpowered.protocol
+package com.karbonpowered.protocol.util
 
 class VarIntByteDecoder {
     var readVarInt: Int = 0

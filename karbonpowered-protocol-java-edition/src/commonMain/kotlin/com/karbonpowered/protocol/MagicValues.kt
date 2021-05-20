@@ -1,7 +1,7 @@
 package com.karbonpowered.protocol
 
-import com.karbonpowered.api.entity.living.player.GameModes
-import com.karbonpowered.audience.MessageTypes
+import com.karbonpowered.core.audience.MessageTypes
+import com.karbonpowered.core.entity.living.player.GameModes
 import kotlin.reflect.KClass
 
 object MagicValues {

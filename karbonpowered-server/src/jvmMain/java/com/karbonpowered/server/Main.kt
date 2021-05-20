@@ -1,5 +1,6 @@
 package com.karbonpowered.server
 
+import com.karbonpowered.core.MinecraftVersions
 import com.karbonpowered.network.netty.NettyTcpServer
 import com.karbonpowered.protocol.MinecraftProtocol
 import com.karbonpowered.protocol.packet.clientbound.game.*
@@ -19,7 +20,7 @@ import com.karbonpowered.protocol.packet.serverbound.status.ServerboundStatusReq
 import kotlinx.coroutines.runBlocking
 
 fun main() = runBlocking {
-    NettyTcpServer("0.0.0.0", 25565, MinecraftProtocol(true) {
+    NettyTcpServer("0.0.0.0", 25565, MinecraftProtocol(MinecraftVersions.LATEST_SNAPSHOT, true) {
         handshake {
             serverbound(0x00, ServerboundHandshakePacket)
         }
