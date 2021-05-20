@@ -1,4 +1,4 @@
-rootProject.name = "KarbonPowered"
+rootProject.name = "Karbon"
 
 pluginManagement {
     repositories {
@@ -16,7 +16,7 @@ include("karbonpowered-api")
 include("karbonpowered-text")
 include("karbonpowered-audience")
 include("karbonpowered-protocol")
-//include("karbonpowered-engine")
+include("karbonpowered-engine")
 include("karbonpowered-nbt")
 include("karbonpowered-io")
 include("karbonpowered-data")
