@@ -17,6 +17,9 @@ data class ClientboundLoginPluginRequestPacket(
     val data: ByteReadPacket
 ) : MinecraftPacket {
     companion object : PacketCodec<ClientboundLoginPluginRequestPacket> {
+        override val packetType: KClass<ClientboundLoginPluginRequestPacket>
+            get() = ClientboundLoginPluginRequestPacket::class
+
         override fun decode(input: Input): ClientboundLoginPluginRequestPacket {
             val messageId = input.readVarInt()
             val (namespace, value) = input.readString().split(":")
@@ -34,8 +37,5 @@ data class ClientboundLoginPluginRequestPacket(
             output.writeString(packet.identifier.toString())
             output.writePacket(packet.data)
         }
-
-        override val packetType: KClass<ClientboundLoginPluginRequestPacket>
-            get() = ClientboundLoginPluginRequestPacket::class
     }
 }

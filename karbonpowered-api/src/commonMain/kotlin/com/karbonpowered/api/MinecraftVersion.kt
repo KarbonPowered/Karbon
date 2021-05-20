@@ -15,12 +15,13 @@ internal data class MinecraftVersionImpl(
 ) : MinecraftVersion
 
 object MinecraftVersions {
+    val SNAPSHOT_21W20A = snapshot(28, "21w20a")
     val SNAPSHOT_21w19A = snapshot(27, "21w19a")
     val RELEASE_1_16_5 = release(754, "1.16.5")
     val RELEASE_1_16_4 = release(754, "1.16.4")
 
     val LATEST_RELEASE get() = RELEASE_1_16_5
-    val LATEST_SNAPSHOT get() = SNAPSHOT_21w19A
+    val LATEST_SNAPSHOT get() = SNAPSHOT_21W20A
 
     private fun snapshot(protocol: Int, name: String): MinecraftVersion =
         MinecraftVersionImpl(name, false, 0x40000000 + protocol)

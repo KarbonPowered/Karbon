@@ -3,6 +3,7 @@ package com.karbonpowered.server
 import com.karbonpowered.network.netty.NettyTcpServer
 import com.karbonpowered.protocol.MinecraftProtocol
 import com.karbonpowered.protocol.packet.clientbound.game.*
+import com.karbonpowered.protocol.packet.clientbound.login.ClientboundLoginDisconnect
 import com.karbonpowered.protocol.packet.clientbound.login.ClientboundLoginPluginRequestPacket
 import com.karbonpowered.protocol.packet.clientbound.login.ClientboundLoginSuccessPacket
 import com.karbonpowered.protocol.packet.clientbound.status.ClientboundStatusPongPacket
@@ -23,6 +24,7 @@ fun main() = runBlocking {
             serverbound(0x00, ServerboundHandshakePacket)
         }
         login {
+            clientbound(0x00, ClientboundLoginDisconnect)
             clientbound(0x02, ClientboundLoginSuccessPacket)
             clientbound(0x04, ClientboundLoginPluginRequestPacket)
 
