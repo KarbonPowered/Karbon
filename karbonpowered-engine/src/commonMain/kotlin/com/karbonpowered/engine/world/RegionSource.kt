@@ -1,6 +1,7 @@
 package com.karbonpowered.engine.world
 
-import com.karbonpowered.common.collection.concurrent.TripleIntObjectMap
+import com.karbonpowered.common.collection.concurrent.TripleIntObjectReferenceArrayMap
+import com.karbonpowered.common.collection.concurrent.getOrPut
 import com.karbonpowered.engine.scheduler.KarbonScheduler
 import kotlinx.atomicfu.atomic
 
@@ -12,26 +13,8 @@ class RegionSource(
 ) : Iterable<KarbonRegion> {
     private val warnThreshold = atomic(WARN_THRESHOLD)
     private val regionsLoaded = atomic(0)
-    private val loadedRegions: TripleIntObjectMap<KarbonRegion> = object : TripleIntObjectMap<KarbonRegion> {
-        override val values: Collection<KarbonRegion>
-            get() = TODO("Not yet implemented")
+    private val loadedRegions = TripleIntObjectReferenceArrayMap<KarbonRegion>(REGION_MAP_BITS)
 
-        override fun get(x: Int, y: Int, z: Int): KarbonRegion {
-            TODO("Not yet implemented")
-        }
-
-        override fun remove(x: Int, y: Int, z: Int): KarbonRegion? {
-            TODO("Not yet implemented")
-        }
-
-        override fun remove(x: Int, y: Int, z: Int, value: KarbonRegion): Boolean {
-            TODO("Not yet implemented")
-        }
-
-        override fun getOrPut(x: Int, y: Int, z: Int, value: () -> KarbonRegion): KarbonRegion {
-            TODO("Not yet implemented")
-        }
-    }
     val regions: Collection<KarbonRegion> get() = loadedRegions.values
 
     override fun iterator(): Iterator<KarbonRegion> = regions.iterator()
