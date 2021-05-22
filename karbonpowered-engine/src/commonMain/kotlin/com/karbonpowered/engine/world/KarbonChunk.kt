@@ -1,4 +1,15 @@
 package com.karbonpowered.engine.world
 
-class KarbonChunk : AbstractChunk() {
+import com.karbonpowered.engine.util.BitSize
+
+/**
+ * Represents a cube containing 16x16x16 Blocks
+ */
+class KarbonChunk {
+    companion object {
+        /**
+         * Stores the size of the amount of blocks in this Chunk
+         */
+        val BLOCKS = BitSize(4)
+    }
 }

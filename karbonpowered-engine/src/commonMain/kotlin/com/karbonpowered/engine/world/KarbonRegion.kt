@@ -1,16 +1,20 @@
 package com.karbonpowered.engine.world
 
 import com.karbonpowered.engine.scheduler.AsyncManager
+import com.karbonpowered.engine.util.BitSize
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 
+/**
+ * Represents a cube containing 16x16x16 Chunks (256x256x256 Blocks)
+ */
 class KarbonRegion(
     val world: KarbonWorld,
     val x: Int,
     val y: Int,
     val z: Int,
     val regionSource: RegionSource
-) : AbstractRegion(), AsyncManager {
+) : AsyncManager {
     private val chunks: Array<Array<Array<AtomicRef<KarbonChunk?>>>> =
         Array(CHUNKS.SIZE) { Array(CHUNKS.SIZE) { Array(CHUNKS.SIZE) { atomic(null) } } }
     private val neighbours = Array(3) { dx ->
@@ -52,7 +56,19 @@ class KarbonRegion(
         return region
     }
 
-    override fun getChunk(x: Int, y: Int, z: Int, loadOption: LoadOption): KarbonChunk {
+    fun getChunk(x: Int, y: Int, z: Int, loadOption: LoadOption): KarbonChunk {
         TODO("Not yet implemented")
+    }
+
+    companion object {
+        /**
+         * Stores the size of the amount of chunks in this Region
+         */
+        val CHUNKS = BitSize(4)
+
+        /**
+         * Stores the size of the amount of blocks in this Region
+         */
+        val BLOCKS = BitSize(CHUNKS.BITS + KarbonChunk.BLOCKS.BITS)
     }
 }
