@@ -14,17 +14,17 @@ class KarbonWorld(
 
     fun getRegionFromChunk(x: Int, y: Int, z: Int, loadOption: LoadOption = LoadOption.LOAD_GEN) =
         getRegion(
-            x shr AbstractRegion.CHUNKS.BITS,
-            y shr AbstractRegion.CHUNKS.BITS,
-            z shr AbstractRegion.CHUNKS.BITS,
+            x shr KarbonRegion.CHUNKS.BITS,
+            y shr KarbonRegion.CHUNKS.BITS,
+            z shr KarbonRegion.CHUNKS.BITS,
             loadOption
         )
 
     fun getRegionFromBlock(x: Int, y: Int, z: Int, loadOption: LoadOption = LoadOption.LOAD_GEN) =
         getRegion(
-            x shr AbstractRegion.BLOCKS.BITS,
-            y shr AbstractRegion.BLOCKS.BITS,
-            z shr AbstractRegion.BLOCKS.BITS,
+            x shr KarbonRegion.BLOCKS.BITS,
+            y shr KarbonRegion.BLOCKS.BITS,
+            z shr KarbonRegion.BLOCKS.BITS,
             loadOption
         )
 

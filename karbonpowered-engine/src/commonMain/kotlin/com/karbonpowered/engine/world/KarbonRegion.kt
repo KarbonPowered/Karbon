@@ -5,6 +5,8 @@ import com.karbonpowered.engine.util.BitSize
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 
+private const val FILE_EXISTS = false
+
 /**
  * Represents a cube containing 16x16x16 Chunks (256x256x256 Blocks)
  */
@@ -15,6 +17,13 @@ class KarbonRegion(
     val z: Int,
     val regionSource: RegionSource
 ) : AsyncManager {
+    val blockX = x shl BLOCKS.BITS
+    val blockY = y shl BLOCKS.BITS
+    val blockZ = z shl BLOCKS.BITS
+    val chunkX = x shl CHUNKS.BITS
+    val chunkY = y shl CHUNKS.BITS
+    val chunkZ = z shl CHUNKS.BITS
+
     private val chunks: Array<Array<Array<AtomicRef<KarbonChunk?>>>> =
         Array(CHUNKS.SIZE) { Array(CHUNKS.SIZE) { Array(CHUNKS.SIZE) { atomic(null) } } }
     private val neighbours = Array(3) { dx ->
@@ -24,6 +33,8 @@ class KarbonRegion(
             }
         }
     }
+
+    private var activeChunks = atomic(0)
 
     fun unlinkNeighbours() {
         repeat(3) { dx ->
@@ -56,9 +67,101 @@ class KarbonRegion(
         return region
     }
 
-    fun getChunk(x: Int, y: Int, z: Int, loadOption: LoadOption): KarbonChunk {
-        TODO("Not yet implemented")
+    fun getChunk(x: Int, y: Int, z: Int, loadOption: LoadOption): KarbonChunk? {
+        val cx = x and CHUNKS.MASK
+        val cy = y and CHUNKS.MASK
+        val cz = z and CHUNKS.MASK
+
+        var chunk = chunks[cx][cy][cz].value
+        if (chunk != null) {
+            checkChunkLoaded(chunk, loadOption)
+            return chunk
+        }
+
+        val fileExists = FILE_EXISTS
+
+        // TODO: loading chunks if file exists
+        if (loadOption.isLoad && fileExists) {
+            chunk = KarbonChunk(this, chunkX + x, chunkY + y, chunkZ + z)
+        }
+
+        if (loadOption.isGenerate && !fileExists && chunk == null) {
+            // TODO: Chunk generation
+            val generatedChunk = chunks[x][y][z].value
+            if (generatedChunk != null) {
+                checkChunkLoaded(generatedChunk, loadOption)
+                return generatedChunk
+            } else {
+                println("Chunk generation failed! Region $this, chunk ($x, $y, $z): $loadOption")
+                Throwable().printStackTrace()
+            }
+        }
+
+        if (chunk == null) {
+            return null
+        }
+
+        chunk = setChunk(chunk, x, y, z, false)
+        checkChunkLoaded(chunk, loadOption)
+        return chunk
     }
+
+    private fun setChunk(newChunk: KarbonChunk, x: Int, y: Int, z: Int, generated: Boolean): KarbonChunk {
+        val ref = chunks[x][y][z]
+        while (true) {
+            if (ref.compareAndSet(null, newChunk)) {
+                if (generated) {
+                    // TODO: queue lightning
+                    // TODO: queue chunk sending to players
+                }
+                activeChunks.incrementAndGet()
+
+                // TODO: add loaded entities
+                // TODO: add block updates
+
+                // TODO: call ChunkLoadEvent
+
+                return newChunk
+            }
+
+            val oldChunk = ref.value
+            if (oldChunk != null) {
+                // TODO: unload chunk data
+                return oldChunk
+            }
+        }
+    }
+
+    fun removeChunk(chunk: KarbonChunk): Boolean {
+        if (chunk.region != this) {
+            return false
+        }
+
+        val currentRef = chunks[chunk.x and CHUNKS.MASK][chunk.y and CHUNKS.MASK][chunk.z and CHUNKS.MASK]
+        val currentChunk = currentRef.value
+        if (currentChunk != chunk) {
+            return false
+        }
+        if (currentRef.compareAndSet(currentChunk, null)) {
+            val currentActiveChunks = activeChunks.decrementAndGet()
+            // TODO: remove entities
+            // TODO: unload chunk data
+            // TODO: remove chunk updates
+
+            if (currentActiveChunks == 0) {
+                return true
+            }
+            check(currentActiveChunks >= 0) {
+                "Region $this has less than 0 active chunks: $currentActiveChunks"
+            }
+        }
+        return false
+    }
+
+    private fun checkChunkLoaded(chunk: KarbonChunk, loadOption: LoadOption) =
+        check(!loadOption.isLoad || chunk.cancelUnload()) {
+            "Returned unloaded chunk"
+        }
 
     companion object {
         /**
