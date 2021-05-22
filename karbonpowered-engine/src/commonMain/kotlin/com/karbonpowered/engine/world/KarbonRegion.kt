@@ -5,7 +5,7 @@ import com.karbonpowered.engine.util.BitSize
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 
-private const val FILE_EXISTS = false
+private const val FILE_EXISTS = true
 
 /**
  * Represents a cube containing 16x16x16 Chunks (256x256x256 Blocks)
