@@ -2,13 +2,10 @@ package com.karbonpowered.network.netty
 
 import com.karbonpowered.server.Session
 import com.karbonpowered.server.util.VarInitByteDecoder
-import io.ktor.utils.io.streams.*
 import io.netty.buffer.ByteBuf
-import io.netty.buffer.ByteBufOutputStream
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.ByteToMessageCodec
 import io.netty.handler.codec.DecoderException
-import kotlinx.coroutines.runBlocking
 
 class NettyTcpPacketSizer(
     val session: Session

@@ -12,9 +12,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import java.net.ConnectException
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 import io.netty.channel.Channel as NettyChannel
 
 open class NettyTcpSession(

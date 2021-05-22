@@ -16,11 +16,8 @@ import io.netty.channel.socket.ServerSocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
 import io.netty.util.ResourceLeakDetector
 import kotlinx.coroutines.suspendCancellableCoroutine
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Future
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 object Netty {
     init {

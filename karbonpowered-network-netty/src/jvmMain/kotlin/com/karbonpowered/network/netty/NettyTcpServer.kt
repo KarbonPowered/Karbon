@@ -6,7 +6,6 @@ import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.Channel
 import io.netty.channel.ChannelInitializer
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 
 class NettyTcpServer(
     override val host: String,

@@ -47,5 +47,5 @@ internal data class StatusResponseImpl(
     }
 }
 
-fun StatusResponse(builder: StatusResponse.Builder.()->Unit): StatusResponse =
+fun StatusResponse(builder: StatusResponse.Builder.() -> Unit): StatusResponse =
     StatusResponseImpl.BuilderImpl().apply(builder).build()
