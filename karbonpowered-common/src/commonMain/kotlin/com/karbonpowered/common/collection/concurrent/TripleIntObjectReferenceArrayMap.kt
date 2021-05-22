@@ -113,7 +113,7 @@ class TripleIntObjectReferenceArrayMap<T>(
         var entry = root.value
         val depth = entry.depth
         var shift = entry.initialShift
-        var prevEntry = entry
+        var prevEntry: Entry<T>
 
         var keyDepth = 0
         while (true) {
