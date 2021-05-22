@@ -16,4 +16,8 @@ class KarbonRegion(
     fun unlinkNeighbours() {
         TODO()
     }
+
+    override fun getChunk(x: Int, y: Int, z: Int, loadOption: LoadOption): KarbonChunk {
+        TODO("Not yet implemented")
+    }
 }

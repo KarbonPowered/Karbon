@@ -1,7 +1,6 @@
 package com.karbonpowered.engine.world
 
 import com.karbonpowered.common.collection.concurrent.TripleIntObjectReferenceArrayMap
-import com.karbonpowered.common.collection.concurrent.getOrPut
 import com.karbonpowered.engine.scheduler.KarbonScheduler
 import kotlinx.atomicfu.atomic
 
@@ -19,20 +18,31 @@ class RegionSource(
 
     override fun iterator(): Iterator<KarbonRegion> = regions.iterator()
 
-    fun getRegion(x: Int, y: Int, z: Int): KarbonRegion = loadedRegions.getOrPut(x, y, z) {
-        KarbonRegion(world, x, y, z, this).also { region ->
-            KarbonScheduler.addAsyncManager(region)
-
-            val threshold = warnThreshold.value
-            if (regionsLoaded.getAndIncrement() > threshold) {
-                println("Warning: number of regions exceeds $threshold when creating ($x, $y, $z)")
-                RuntimeException().printStackTrace()
-                warnThreshold.addAndGet(5)
-            }
-
-            // TODO: Register in parallel task managers
-            // TODO: Call RegionLoadEvent
+    fun getRegion(x: Int, y: Int, z: Int, loadOption: LoadOption): KarbonRegion? {
+        var region = loadedRegions[x, y, z]
+        if (region != null) {
+            return region
         }
+
+        if (!loadOption.isLoad) {
+            return null
+        }
+
+        region = KarbonRegion(world, x, y, z, this)
+        loadedRegions[x, y, z] = region
+        KarbonScheduler.addAsyncManager(region)
+
+        val threshold = warnThreshold.value
+        if (regionsLoaded.getAndIncrement() > threshold) {
+            println("Warning: number of regions exceeds $threshold when creating ($x, $y, $z)")
+            RuntimeException().printStackTrace()
+            warnThreshold.addAndGet(5)
+        }
+
+        // TODO: Register in parallel task managers
+        // TODO: Call RegionLoadEvent
+
+        return region
     }
 
     fun hasRegion(x: Int, y: Int, z: Int): Boolean = loadedRegions[x, y, z] != null
