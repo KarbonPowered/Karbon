@@ -10,7 +10,7 @@ import kotlinx.atomicfu.AtomicIntArray
  * Entries widths can be a power of 2 from 1 to 32
  */
 class AtomicVariableWidthArray(
-    val length: Int,
+    size: Int,
     val width: Int,
     val initial: IntArray? = null
 ) {
@@ -19,12 +19,12 @@ class AtomicVariableWidthArray(
     }
 
     private val valuesPerInt = 32 / width
-    private val newLength = length / valuesPerInt
+    private val newSize = size / valuesPerInt
 
     init {
-        require(newLength * valuesPerInt == length) { "The length must be a multiple of $valuesPerInt for arrays of width $width" }
+        require(newSize * valuesPerInt == size) { "The length must be a multiple of $valuesPerInt for arrays of width $width" }
         if (initial != null) {
-            require(newLength == initial.size) { "Length of packed array did not match expected" }
+            require(newSize == initial.size) { "Length of packed array did not match expected" }
         }
     }
 
@@ -43,7 +43,7 @@ class AtomicVariableWidthArray(
             }
         }
     } else {
-        AtomicIntArray(newLength)
+        AtomicIntArray(newSize)
     }
     private val isFullWidth = width == 32
     val maxValue = if (isFullWidth) -1 else valueBitmask[0]
