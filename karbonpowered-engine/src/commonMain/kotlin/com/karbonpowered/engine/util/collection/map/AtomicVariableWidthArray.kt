@@ -47,6 +47,10 @@ class AtomicVariableWidthArray(
     }
     private val isFullWidth = width == 32
     val maxValue = if (isFullWidth) -1 else valueBitmask[0]
+    val packed
+        get() = IntArray(array.size) {
+            array[it].value
+        }
 
     operator fun get(i: Int): Int = if (isFullWidth) {
         array[i].value

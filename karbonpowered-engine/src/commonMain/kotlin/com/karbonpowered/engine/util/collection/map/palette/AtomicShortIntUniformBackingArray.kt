@@ -1,6 +1,6 @@
 package com.karbonpowered.engine.util.collection.map.palette
 
-import com.karbonpowered.engine.util.collection.map.palette.exception.PalleteFullException
+import com.karbonpowered.engine.util.collection.map.palette.exception.PaletteFullException
 import kotlinx.atomicfu.atomic
 
 class AtomicShortIntUniformBackingArray(
@@ -26,7 +26,7 @@ class AtomicShortIntUniformBackingArray(
 
     override fun set(index: Int, value: Int): Int {
         if (!store.compareAndSet(value, value)) {
-            throw PalleteFullException()
+            throw PaletteFullException()
         }
         return value
     }
@@ -36,7 +36,7 @@ class AtomicShortIntUniformBackingArray(
             false
         } else {
             if (expect != update) {
-                throw PalleteFullException()
+                throw PaletteFullException()
             }
             store.compareAndSet(expect, update)
         }

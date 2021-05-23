@@ -13,7 +13,7 @@ class AtomicShortIntDirectBackingArray(
         copyFromPrevious(previous)
     }
 
-    override val width: Int = AtomicShortIntPalleteBackingArray.roundUpWith(size - 1)
+    override val width: Int = AtomicShortIntPaletteBackingArray.roundUpWith(size - 1)
     override val palette: IntArray
         get() = TODO("Not yet implemented")
     override val backingArray: IntArray
