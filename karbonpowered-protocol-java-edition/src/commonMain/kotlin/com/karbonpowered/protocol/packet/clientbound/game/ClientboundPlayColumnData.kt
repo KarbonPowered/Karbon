@@ -10,10 +10,8 @@ import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.server.readVarInt
 import com.karbonpowered.server.writeVarInt
 import io.ktor.utils.io.core.*
-import io.ktor.utils.io.core.internal.*
-import kotlin.reflect.KClass
 
-data class ClientboundPlayChunkData(
+data class ClientboundPlayColumnData(
     val x: Int,
     val z: Int,
     val heightMaps: NBT = NBT(),
@@ -96,14 +94,14 @@ data class ClientboundPlayChunkData(
         }
     }
 
-    companion object : PacketCodec<ClientboundPlayChunkData> {
+    companion object : PacketCodec<ClientboundPlayColumnData> {
         private const val MAX_CHUNK_Y = 20
         private const val MIN_CHUNK_Y = -4
         private const val CHUNK_COUNT = MAX_CHUNK_Y - MIN_CHUNK_Y
         private const val BIOME_SIZE = 16 * 96
-        override val packetType: KClass<ClientboundPlayChunkData> = ClientboundPlayChunkData::class
+        override val packetType = ClientboundPlayColumnData::class
 
-        override fun decode(input: Input): ClientboundPlayChunkData {
+        override fun decode(input: Input): ClientboundPlayColumnData {
             val x = input.readInt()
             val z = input.readInt()
             input.readVarInt()
@@ -119,11 +117,10 @@ data class ClientboundPlayChunkData(
                 } else null
             }
             val blockEntities = List(input.readVarInt()) { requireNotNull(input.readNBT()) }
-            return ClientboundPlayChunkData(x, z, heightMaps, biomes, chunks, blockEntities)
+            return ClientboundPlayColumnData(x, z, heightMaps, biomes, chunks, blockEntities)
         }
 
-        @OptIn(DangerousInternalIoApi::class)
-        override fun encode(output: Output, packet: ClientboundPlayChunkData) {
+        override fun encode(output: Output, packet: ClientboundPlayColumnData) {
             var mask = 0L
             val chunkData = buildPacket {
                 packet.chunks.forEachIndexed { index, chunk ->

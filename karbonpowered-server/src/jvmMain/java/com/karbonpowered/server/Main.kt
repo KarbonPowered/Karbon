@@ -43,7 +43,7 @@ fun main() = runBlocking {
             clientbound(0x08, ClientboundGameBlockBreakingProgressPacket)
             clientbound(0x0E, ClientboundMessagePacket)
             clientbound(0x1F, ClientboundKeepAlivePacket)
-            clientbound(0x20, ClientboundPlayChunkData)
+            clientbound(0x20, ClientboundPlayColumnData)
             clientbound(0x24, ClientboundGameJoinPacket)
             clientbound(0x34, ClientboundGamePlayerPositionRotationPacket)
 
