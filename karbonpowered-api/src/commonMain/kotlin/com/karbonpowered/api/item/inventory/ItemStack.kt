@@ -17,6 +17,6 @@ interface ItemStack {
     var displayName: Text?
     var customModelData: Int?
     var customName: Text?
-    var umbrekable: Boolean
+    var unbreakable: Boolean
     var lore: List<Text>?
 }
