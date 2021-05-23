@@ -1,14 +1,17 @@
-package com.karbonpowered.engine.util.collection.map.palette
+package com.karbonpowered.engine.util.collection.map.palette.backing
 
 import kotlinx.atomicfu.AtomicIntArray
 
-abstract class AtomicShortIntBackingArray(
+abstract class AbstractAtomicShortIntBackingArray(
     val size: Int
 ) {
+    abstract val isPaletteMaxSize: Boolean
     abstract val width: Int
     abstract val palette: IntArray
     abstract val backingArray: IntArray
-    val unique: Int get() = getUnique()
+    abstract val paletteSize: Int
+    abstract val paletteUsage: Int
+    val unique: Int get() = unique()
 
     abstract operator fun get(index: Int): Int
 
@@ -16,7 +19,7 @@ abstract class AtomicShortIntBackingArray(
 
     abstract fun compareAndSet(index: Int, expect: Int, update: Int): Boolean
 
-    fun getUnique(inUseSet: MutableSet<Int> = mutableSetOf()): Int {
+    fun unique(inUseSet: MutableSet<Int> = mutableSetOf()): Int {
         inUseSet.clear()
         var unique = 0
         repeat(size) {
@@ -27,7 +30,7 @@ abstract class AtomicShortIntBackingArray(
         return unique
     }
 
-    protected fun copyFromPrevious(previous: AtomicShortIntBackingArray?) {
+    protected fun copyFromPrevious(previous: AbstractAtomicShortIntBackingArray?) {
         if (previous != null) {
             repeat(size) {
                 set(it, previous[it])

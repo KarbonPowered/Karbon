@@ -1,8 +1,9 @@
-package com.karbonpowered.engine.util.collection.map.palette
+package com.karbonpowered.engine.util.collection.map.palette.backing
 
 import com.karbonpowered.engine.util.collection.map.AtomicIntShortSingleUseHashMap
 import com.karbonpowered.engine.util.collection.map.AtomicVariableWidthArray
-import com.karbonpowered.engine.util.collection.map.palette.AtomicShortIntPaletteBackingArray.Companion.roundUpWith
+import com.karbonpowered.engine.util.collection.map.palette.backing.AtomicShortIntPaletteBackingArray.Companion.allowedPalette
+import com.karbonpowered.engine.util.collection.map.palette.backing.AtomicShortIntPaletteBackingArray.Companion.roundUpWith
 import com.karbonpowered.engine.util.collection.map.palette.exception.PaletteFullException
 import com.karbonpowered.engine.util.roundUpPow2
 import kotlinx.atomicfu.AtomicInt
@@ -14,19 +15,17 @@ private const val CALCULATE_UNIQUE = -1
 
 private fun widthToPaletteSize(width: Int) = 1 shl width
 
-private fun getAllowedPalette(length: Int) = length shr 2
-
 class AtomicShortIntPaletteBackingArray internal constructor(
     size: Int,
-    previous: AtomicShortIntBackingArray?,
+    previous: AbstractAtomicShortIntBackingArray?,
     override val width: Int,
-    val paletteSize: Int,
+    override val paletteSize: Int,
     private val idLookup: AtomicIntShortSingleUseHashMap,
     private val store: AtomicVariableWidthArray,
     private val atomicPalette: AtomicIntArray,
     private val paletteCounter: AtomicInt,
-    val isMaxPaletteSize: Boolean
-) : AtomicShortIntBackingArray(size) {
+    override val isPaletteMaxSize: Boolean
+) : AbstractAtomicShortIntBackingArray(size) {
     init {
         if (previous != null) {
             copyFromPrevious(previous)
@@ -37,6 +36,8 @@ class AtomicShortIntPaletteBackingArray internal constructor(
         get() = toIntArray(atomicPalette, paletteCounter.value)
     override val backingArray: IntArray
         get() = store.packed
+    override val paletteUsage: Int
+        get() = paletteCounter.value
 
     override fun get(index: Int): Int = atomicPalette[store[index]].value
 
@@ -94,11 +95,13 @@ class AtomicShortIntPaletteBackingArray internal constructor(
         }
 
         fun roundUpWith(i: Int): Int = roundLookup[(i + 1).roundUpPow2()].toInt()
+
+        fun allowedPalette(length: Int) = length shr 2
     }
 }
 
 fun AtomicShortIntPaletteBackingArray(
-    previous: AtomicShortIntBackingArray,
+    previous: AbstractAtomicShortIntBackingArray,
     compress: Boolean = false,
     expand: Boolean = false,
     unique: Int = CALCULATE_UNIQUE
@@ -106,7 +109,7 @@ fun AtomicShortIntPaletteBackingArray(
 
 fun AtomicShortIntPaletteBackingArray(
     size: Int,
-    previous: AtomicShortIntBackingArray? = null,
+    previous: AbstractAtomicShortIntBackingArray? = null,
     compress: Boolean = false,
     expand: Boolean = false,
     unique: Int = CALCULATE_UNIQUE
@@ -126,7 +129,7 @@ fun AtomicShortIntPaletteBackingArray(
             }
         }
     }
-    val allowedPalette = getAllowedPalette(size)
+    val allowedPalette = allowedPalette(size)
     val paletteSize = min(widthToPaletteSize(width), allowedPalette)
     val paletteCounter = atomic(0)
     val idLookup = AtomicIntShortSingleUseHashMap(paletteSize + (paletteSize shr 2))
@@ -149,7 +152,7 @@ fun AtomicShortIntPaletteBackingArray(
     initial: IntArray
 ): AtomicShortIntPaletteBackingArray {
     val width = roundUpWith(unique - 1)
-    val allowedPalette = getAllowedPalette(size)
+    val allowedPalette = allowedPalette(size)
     val paletteSize = min(widthToPaletteSize(width), allowedPalette)
     val paletteCounter = atomic(0)
     val isMaxPaletteSize = paletteSize == allowedPalette
@@ -179,7 +182,7 @@ fun AtomicShortIntPaletteBackingArray(
     width: Int,
     variableWidthBlockArray: IntArray
 ): AtomicShortIntPaletteBackingArray {
-    val allowedPalette = getAllowedPalette(size)
+    val allowedPalette = allowedPalette(size)
     val paletteSize = palette.size
     val paletteCounter = atomic(palette.size)
     val isMaxPaletteSize = paletteSize >= allowedPalette
