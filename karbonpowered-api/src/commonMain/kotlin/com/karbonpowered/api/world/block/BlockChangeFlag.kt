@@ -87,11 +87,11 @@ interface BlockChangeFlag {
 
     /**
      * Gets whether this block change is going to request the client to re-render
-     * the block on chnge for the next client tick. This has particular usage
+     * the block on change for the next client tick. This has particular usage
      * when performing complicated block changes with extra steps, such as
      * pistons performing a move.
      *
-     * @return True if the blockchagne is requesting the client to re-render
+     * @return True if the block change is requesting the client to re-render
      * the change on the next tick
      */
     val forceClientRerender: Boolean
