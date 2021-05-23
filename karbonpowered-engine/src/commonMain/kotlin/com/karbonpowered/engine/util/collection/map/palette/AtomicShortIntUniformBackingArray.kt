@@ -16,6 +16,7 @@ class AtomicShortIntUniformBackingArray(
         copyFromPrevious(previous)
     }
 
+    override val width: Int = 0
     override val palette: IntArray
         get() = intArrayOf(store.value)
     override val backingArray: IntArray
