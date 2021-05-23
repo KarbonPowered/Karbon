@@ -1,7 +1,6 @@
 package com.karbonpowered.api.event
 
 enum class Order {
-
     /**
      * The order point of PRE handles setting up things that need to be done
      * before other things are handled.
@@ -55,5 +54,4 @@ enum class Order {
      * of events for rollback or logging.
      */
     POST
-
 }
