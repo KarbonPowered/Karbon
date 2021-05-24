@@ -4,6 +4,7 @@ kotlin {
             dependencies {
                 implementation(project(":karbonpowered-common"))
                 implementation(project(":karbonpowered-core"))
+                implementation(project(":karbonpowered-math"))
             }
         }
     }
