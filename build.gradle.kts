@@ -26,7 +26,7 @@ allprojects {
             val commonMain by getting {
                 dependencies {
                     api("org.jetbrains.kotlinx:atomicfu:0.16.1")
-                    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-RC")
+                    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
                     api("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.4")
                     api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
                     api("io.ktor:ktor-io:1.5.4")
