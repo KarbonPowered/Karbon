@@ -1,27 +1,27 @@
-package com.karbonpowered.engine.util
+package com.karbonpowered.engine.util.cuboid
 
 import com.karbonpowered.math.vector.IntVector3
 
-class CuboidIntBuffer(
+open class CuboidIntBuffer(
     base: IntVector3,
     size: IntVector3,
     val data: IntArray = IntArray(size.x * size.y * size.z)
 ) : CuboidBuffer(base, size) {
-    operator fun set(x: Int, y: Int, z: Int, value: Int) {
+    open operator fun set(x: Int, y: Int, z: Int, value: Int) {
         val index = checkedIndex(x, y, z)
         data[index] = value
     }
 
-    operator fun get(x: Int, y: Int, z: Int): Int {
+    open operator fun get(x: Int, y: Int, z: Int): Int {
         val index = checkedIndex(x, y, z)
         return data[index]
     }
 
-    fun fill(value: Int) {
+    open fun fill(value: Int) {
         data.fill(value)
     }
 
-    fun fillHorizontalLayer(y: Int, height: Int, value: Int) {
+    open fun fillHorizontalLayer(value: Int, y: Int, height: Int = y) {
         val fromIndex = checkedIndex(base.x, y, base.z)
         val toIndex = checkedIndex(top.x - 1, y + height - 1, top.z - 1) + 1
         data.fill(value, fromIndex, toIndex)

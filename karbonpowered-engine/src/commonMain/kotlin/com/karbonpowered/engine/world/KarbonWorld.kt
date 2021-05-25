@@ -2,10 +2,13 @@ package com.karbonpowered.engine.world
 
 import com.karbonpowered.common.UUID
 import com.karbonpowered.common.uuid4
+import kotlin.random.Random
 
 class KarbonWorld(
     val name: String,
-    val uniqueId: UUID = uuid4()
+    val generator: WorldGenerator,
+    val uniqueId: UUID = uuid4(),
+    val seed: Long = Random.nextLong()
 ) {
     val regions = RegionSource(this)
 
@@ -28,7 +31,7 @@ class KarbonWorld(
             loadOption
         )
 
-    fun getChunk(x: Int, y: Int, z: Int, loadOption: LoadOption): KarbonChunk? {
+    suspend fun getChunk(x: Int, y: Int, z: Int, loadOption: LoadOption): KarbonChunk? {
         val region = getRegionFromChunk(x, y, z, loadOption)
         if (region != null) {
             return region.getChunk(x, y, z, loadOption)

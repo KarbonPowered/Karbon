@@ -1,4 +1,4 @@
-package com.karbonpowered.engine.util
+package com.karbonpowered.engine.util.cuboid
 
 import com.karbonpowered.engine.world.KarbonChunk
 import com.karbonpowered.math.vector.IntVector3

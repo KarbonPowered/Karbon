@@ -2,10 +2,11 @@ package com.karbonpowered.engine.world
 
 import com.karbonpowered.engine.scheduler.AsyncManager
 import com.karbonpowered.engine.util.BitSize
+import com.karbonpowered.engine.util.collection.map.palette.AtomicPaletteIntStore
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 
-private const val FILE_EXISTS = true
+private const val FILE_EXISTS = false
 
 /**
  * Represents a cube containing 16x16x16 Chunks (256x256x256 Blocks)
@@ -24,6 +25,7 @@ class KarbonRegion(
     val chunkY = y shl CHUNKS.BITS
     val chunkZ = z shl CHUNKS.BITS
 
+    private val generator = RegionGenerator(this)
     private val chunks: Array<Array<Array<AtomicRef<KarbonChunk?>>>> =
         Array(CHUNKS.SIZE) { Array(CHUNKS.SIZE) { Array(CHUNKS.SIZE) { atomic(null) } } }
     private val neighbours = Array(3) { dx ->
@@ -67,7 +69,7 @@ class KarbonRegion(
         return region
     }
 
-    fun getChunk(x: Int, y: Int, z: Int, loadOption: LoadOption): KarbonChunk? {
+    suspend fun getChunk(x: Int, y: Int, z: Int, loadOption: LoadOption): KarbonChunk? {
         val cx = x and CHUNKS.MASK
         val cy = y and CHUNKS.MASK
         val cz = z and CHUNKS.MASK
@@ -82,15 +84,15 @@ class KarbonRegion(
 
         // TODO: loading chunks if file exists
         if (loadOption.isLoad && fileExists) {
-            chunk = KarbonChunk(this, chunkX + x, chunkY + y, chunkZ + z)
+            chunk = KarbonChunk(this, chunkX + x, chunkY + y, chunkZ + z, AtomicPaletteIntStore(0, false))
         }
 
         if (loadOption.isGenerate && !fileExists && chunk == null) {
-            // TODO: Chunk generation
-            val generatedChunk = chunks[x][y][z].value
-            if (generatedChunk != null) {
-                checkChunkLoaded(generatedChunk, loadOption)
-                return generatedChunk
+            chunk = generator.generateChunk(chunkX + x, chunkY + y, chunkZ + z)
+            if (chunk != null) {
+                chunks[x][y][z].value = chunk
+                checkChunkLoaded(chunk, loadOption)
+                return chunk
             } else {
                 println("Chunk generation failed! Region $this, chunk ($x, $y, $z): $loadOption")
                 Throwable().printStackTrace()
