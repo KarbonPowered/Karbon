@@ -29,7 +29,7 @@ allprojects {
                     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
                     api("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.4")
                     api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
-                    api("io.ktor:ktor-io:1.5.4")
+                    api("io.ktor:ktor-io:1.6.0")
                     api("io.ktor:ktor-network:1.5.4")
                 }
             }
