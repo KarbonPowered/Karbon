@@ -1,12 +1,10 @@
 package com.karbonpowered.server
 
 import com.karbonpowered.server.event.server.*
-import com.karbonpowered.server.packet.PacketProtocol
 
 abstract class AbstractServer(
     override val host: String,
-    override val port: Int,
-    override val protocolFactory: () -> PacketProtocol
+    override val port: Int
 ) : Server {
     private val _sessions = ArrayList<Session>()
     private val _listeners = ArrayList<ServerListener>()

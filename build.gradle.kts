@@ -48,7 +48,7 @@ allprojects {
             apiVersion = "1.5"
             languageVersion = "1.5"
             freeCompilerArgs = freeCompilerArgs + compilerArgs
-            allWarningsAsErrors = true
+//            allWarningsAsErrors = true
         }
     }
 
@@ -57,7 +57,7 @@ allprojects {
             apiVersion = "1.5"
             languageVersion = "1.5"
             freeCompilerArgs = freeCompilerArgs + compilerArgs
-            allWarningsAsErrors = true
+//            allWarningsAsErrors = true
         }
     }
 }

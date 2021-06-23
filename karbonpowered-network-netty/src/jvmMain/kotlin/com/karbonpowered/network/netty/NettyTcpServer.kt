@@ -7,11 +7,11 @@ import io.netty.channel.Channel
 import io.netty.channel.ChannelInitializer
 import kotlinx.coroutines.coroutineScope
 
-class NettyTcpServer(
+open class NettyTcpServer(
     override val host: String,
     override val port: Int,
-    val protocolProvider: () -> PacketProtocol
-) : AbstractServer(host, port, protocolProvider) {
+    val protocolProvider: () -> PacketProtocol,
+) : AbstractServer(host, port) {
     val eventLoopGroup = Netty.createEventLoopGroup()
     var channel: Channel? = null
     override suspend fun bind() {
@@ -30,14 +30,14 @@ class NettyTcpServer(
             })
             group(eventLoopGroup)
             localAddress(host, port)
-        }.bind().suspendAwait()
+        }.bind().await().channel()
     }
 
     override suspend fun closeImpl(): Unit = coroutineScope {
         val channel = channel
         if (channel?.isOpen == true) {
-            channel.close().suspendAwait()
+            channel.close().await()
         }
-        eventLoopGroup.shutdownGracefully().suspendAwait()
+        eventLoopGroup.shutdownGracefully().await()
     }
 }

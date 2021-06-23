@@ -36,7 +36,7 @@ internal data class StatusResponseImpl(
     data class BuilderImpl(
         override var description: Text = LiteralText("A Minecraft Server"),
         override var players: StatusResponse.Players? = PlayersImpl.BuilderImpl().build(),
-        override var version: MinecraftVersion = MinecraftVersions.LATEST_SNAPSHOT,
+        override var version: MinecraftVersion = MinecraftVersions.LATEST_RELEASE,
         override var favicon: Favicon? = null
     ) : StatusResponse.Builder {
         override fun players(builder: StatusResponse.Players.Builder.() -> Unit) {
