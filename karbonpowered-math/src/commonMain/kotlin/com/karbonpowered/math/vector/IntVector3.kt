@@ -125,9 +125,9 @@ open class IntVector3(
     fun distance(x: Float, y: Float, z: Float): Float = distance(x.roundToInt(), y.roundToInt(), z.roundToInt())
     fun distance(x: Int, y: Int, z: Int): Float = sqrt(distanceSquared(x, y, z).toDouble()).toFloat()
 
-    override fun toArray(): IntArray = intArrayOf(x, y, z)
+    override fun toIntArray(): IntArray = intArrayOf(x, y, z)
     fun toInt(): IntVector3 = IntVector3(x, y, z)
-    fun toDouble(): DoubleVector3 = doubleVector3of(x.toDouble(), y.toDouble(), z.toDouble())
+    fun toDouble(): DoubleVector3 = DoubleVector3(x.toDouble(), y.toDouble(), z.toDouble())
 
     fun copy(): IntVector3 = IntVector3(this)
 

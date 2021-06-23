@@ -2,9 +2,24 @@ package com.karbonpowered.common.concurrent
 
 import kotlinx.atomicfu.locks.ReentrantLock
 import kotlinx.atomicfu.locks.withLock
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
-fun <T> Pair<ReentrantLock, ReentrantLock>.withLock(block: () -> T): T = dualLock(first, second, block)
+@OptIn(ExperimentalContracts::class)
+fun <T> Pair<ReentrantLock, ReentrantLock>.withLock(block: () -> T): T {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    return dualLock(first, second, block)
+}
+
+@OptIn(ExperimentalContracts::class)
 fun <T> dualLock(first: ReentrantLock, second: ReentrantLock, block: () -> T): T {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+
     if (first == second) {
         return first.withLock(block)
     }

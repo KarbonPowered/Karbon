@@ -1,14 +1,11 @@
 package com.karbonpowered.math.vector
 
-interface DoubleVector3 : DoubleVector2 {
-    override val x: Double
-    override val y: Double
-    val z: Double
-
+interface DoubleVector3 : DoubleVector2, Vector3<Double> {
     fun add(x: Double, y: Double, z: Double): DoubleVector3
     fun sub(x: Double, y: Double, z: Double): DoubleVector3
     fun mul(x: Double, y: Double, z: Double): DoubleVector3
     fun div(x: Double, y: Double, z: Double): DoubleVector3
+
     fun distanceSquared(x: Double, y: Double, z: Double): Double {
         val dx = this.x - x
         val dy = this.y - y
@@ -17,20 +14,12 @@ interface DoubleVector3 : DoubleVector2 {
     }
 
     override fun toDoubleArray(): DoubleArray = doubleArrayOf(x, y, z)
-
-    companion object {
-        fun of(
-            x: Double = 0.0,
-            y: Double = 0.0,
-            z: Double = 0.0
-        ): DoubleVector3 = doubleVector3of(x, y, z)
-    }
 }
 
 interface MutableDoubleVector3 : DoubleVector3 {
     override var x: Double
     override var y: Double
-    override val z: Double
+    override var z: Double
 }
 
 open class BaseDoubleVector3(
@@ -111,11 +100,11 @@ open class BaseMutableDoubleVector3(
     }
 }
 
-fun doubleVector3of(
+fun DoubleVector3(
     vector: DoubleVector3
 ): DoubleVector3 = BaseDoubleVector3(vector.x, vector.y, vector.z)
 
-fun doubleVector3of(
+fun DoubleVector3(
     x: Double = 0.0,
     y: Double = 0.0,
     z: Double = 0.0

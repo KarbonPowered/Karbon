@@ -19,9 +19,8 @@ open class NettyTcpServer(
             channel(Netty.serverSocketChannel())
             childHandler(object : ChannelInitializer<Channel>() {
                 override fun initChannel(channel: Channel) {
-                    val protocol = protocolProvider()
-                    val session = NettyTcpServerSession(this@NettyTcpServer, protocol)
-                    protocol.newServerSession(session)
+                    val session = createSession()
+                    session.packetProtocol.newServerSession(session)
 
                     channel.pipeline().addLast("packet-sizer", NettyTcpPacketSizer(session))
                     channel.pipeline().addLast("packet-codec", NettyTcpPacketCodec(session))
@@ -31,6 +30,12 @@ open class NettyTcpServer(
             group(eventLoopGroup)
             localAddress(host, port)
         }.bind().await().channel()
+    }
+
+    override fun createSession(): NettyTcpServerSession {
+        val protocol = protocolProvider()
+        val session = NettyTcpServerSession(this@NettyTcpServer, protocol)
+        return session
     }
 
     override suspend fun closeImpl(): Unit = coroutineScope {

@@ -1,10 +1,19 @@
 package com.karbonpowered.engine.util
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeSource
 
 @OptIn(ExperimentalTime::class)
-object Log {
+object Log : CoroutineScope {
+    val job = SupervisorJob()
+    override val coroutineContext: CoroutineContext = Dispatchers.Default + job
+
     // Reset
     const val RESET = "\u001b[0m" // Text Reset
 
@@ -79,23 +88,56 @@ object Log {
     const val WHITE_BACKGROUND_BRIGHT = "\u001b[0;107m" // WHITE
 
     private val startTime = TimeSource.Monotonic.markNow()
-    private val stringTime: String get() = logTime()
 
-    fun info(logger: String, info: String) = println("$CYAN[$stringTime] $WHITE[$logger] $RESET$info")
-
-    private fun logTime(): String {
-        val elapsedNow = startTime.elapsedNow()
-        return elapsedNow.toComponents { hours, minutes, seconds, nanoseconds ->
-            val milliseconds = nanoseconds / 1_000_000
-            buildString {
-                append(hours.toString().padStart(2, '0'))
-                append(":")
-                append(minutes.toString().padStart(2, '0'))
-                append(":")
-                append(seconds.toString().padStart(2, '0'))
-                append('.')
-                append(milliseconds.toString().padStart(3, '0'))
+    fun info(logger: String, info: String) {
+        val time = startTime.elapsedNow()
+        launch {
+            val log = buildString {
+                append(CYAN)
+                append("[")
+                appendTime(time)
+                append("] ")
+                append(WHITE)
+                append("[")
+                append(logger)
+                append("] ")
+                append(RESET)
+                append(info)
             }
+            println(log)
+        }
+    }
+
+    fun error(logger: String, info: String, throwable: Throwable?) {
+        val time = startTime.elapsedNow()
+        launch {
+            val log = buildString {
+                append(CYAN)
+                append("[")
+                appendTime(time)
+                append("] ")
+                append(RED)
+                append("[")
+                append(logger)
+                append("] ")
+                append(RED)
+                append(info)
+            }
+            println(log)
+            throwable?.printStackTrace()
+        }
+    }
+
+    private fun StringBuilder.appendTime(time: Duration) {
+        time.toComponents { hours, minutes, seconds, nanoseconds ->
+            val milliseconds = nanoseconds / 1_000_000
+            append(hours.toString().padStart(2, '0'))
+            append(":")
+            append(minutes.toString().padStart(2, '0'))
+            append(":")
+            append(seconds.toString().padStart(2, '0'))
+            append('.')
+            append(milliseconds.toString().padStart(3, '0'))
         }
     }
 }

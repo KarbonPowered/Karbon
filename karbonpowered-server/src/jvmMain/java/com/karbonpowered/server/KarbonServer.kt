@@ -15,11 +15,7 @@ class KarbonServer(
     host: String = "0.0.0.0",
     port: Int = 25565,
 ) : KarbonEngine(), ServerListener {
-    val networkServer = NettyTcpServer(host, port) {
-        VanillaProtocol(MinecraftVersions.LATEST_RELEASE, true).apply {
-
-        }
-    }
+    val networkServer = NettyTcpServer(host, port) { VanillaProtocol(MinecraftVersions.LATEST_RELEASE, true) }
     val players = mutableMapOf<UUID, KarbonPlayer>()
 
     override fun start() {
@@ -37,7 +33,14 @@ class KarbonServer(
         event.session.addListener(LoginHandler(this, event.session))
     }
 
-    fun addPlayer(uniqueId: UUID, username: String, session: Session) {
+    fun addPlayer(uniqueId: UUID, username: String, session: Session): KarbonPlayer {
         info("Join player $username ($uniqueId) $session")
+        val player = KarbonPlayer(this, uniqueId, username, session)
+        val oldPlayer = players.put(uniqueId, player)
+        if (oldPlayer != null && oldPlayer.network.session.isConnected) {
+            oldPlayer.network.session.disconnect("Login from another client")
+        }
+
+        return player
     }
 }

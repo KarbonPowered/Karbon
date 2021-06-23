@@ -2,7 +2,7 @@ package com.karbonpowered.protocol.packet.clientbound.game
 
 import com.karbonpowered.common.UUID
 import com.karbonpowered.math.vector.DoubleVector3
-import com.karbonpowered.math.vector.FloatVector2
+import com.karbonpowered.math.vector.Vector2
 import com.karbonpowered.protocol.MinecraftPacket
 import com.karbonpowered.protocol.util.readUUID
 import com.karbonpowered.protocol.util.writeUUID
@@ -25,7 +25,7 @@ data class ClientboundSpawnPlayerPacket(
         entityId: Int,
         uuid: UUID,
         position: DoubleVector3,
-        rotation: FloatVector2
+        rotation: Vector2<Float>
     ) : this(entityId, uuid, position.x, position.y, position.z, rotation.x, rotation.y)
 
     companion object : PacketCodec<ClientboundSpawnPlayerPacket> {

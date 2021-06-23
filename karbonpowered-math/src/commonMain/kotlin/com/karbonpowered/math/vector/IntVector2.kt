@@ -4,5 +4,5 @@ open class IntVector2(
     open val x: Int,
     open val y: Int
 ) : IntVector {
-    override fun toArray(): IntArray = intArrayOf(x, y)
+    override fun toIntArray(): IntArray = intArrayOf(x, y)
 }

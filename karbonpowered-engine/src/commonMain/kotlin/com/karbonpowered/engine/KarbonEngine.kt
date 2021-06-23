@@ -20,5 +20,5 @@ abstract class KarbonEngine : AsyncManager {
     }
 
     fun info(info: String) = Log.info("Karbon", info)
-
+    fun error(info: String, throwable: Throwable? = null) = Log.error("Karbon", info, throwable)
 }

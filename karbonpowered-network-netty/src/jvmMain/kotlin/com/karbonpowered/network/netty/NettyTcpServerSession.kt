@@ -3,7 +3,7 @@ package com.karbonpowered.network.netty
 import com.karbonpowered.server.packet.PacketProtocol
 import io.netty.channel.ChannelHandlerContext
 
-class NettyTcpServerSession(
+open class NettyTcpServerSession(
     val server: NettyTcpServer,
     protocol: PacketProtocol
 ) : NettyTcpSession(protocol) {

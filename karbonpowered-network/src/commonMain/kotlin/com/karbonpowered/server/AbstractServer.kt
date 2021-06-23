@@ -13,6 +13,8 @@ abstract class AbstractServer(
 
     override val sessions: Collection<Session> = ArrayList(_sessions)
 
+    abstract fun createSession(): Session
+
     fun addSession(session: Session) {
         _sessions.add(session)
         callEvent(SessionAddedEvent(this, session))
