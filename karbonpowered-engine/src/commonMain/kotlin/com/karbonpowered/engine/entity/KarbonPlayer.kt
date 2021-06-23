@@ -7,13 +7,15 @@ import com.karbonpowered.server.Session
 
 class KarbonPlayer(
     engine: KarbonEngine,
-    val uniqueId: UUID,
+    override val uniqueId: UUID,
     val username: String,
     session: Session
 ) : KarbonEntity(engine) {
+    fun isInvisible(observed: KarbonEntity): Boolean = false
+
     init {
-        components.add(PlayerNetworkComponent(session))
+        components.add(PlayerNetworkComponent(this, session))
     }
 
-    val network get() = components[PlayerNetworkComponent::class]
+    override val network get() = components[PlayerNetworkComponent::class]
 }

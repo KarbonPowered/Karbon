@@ -1,10 +1,25 @@
 package com.karbonpowered.engine.component
 
+import com.karbonpowered.common.UUID
+import com.karbonpowered.engine.entity.KarbonEntity
+import com.karbonpowered.engine.entity.KarbonPlayer
 import com.karbonpowered.server.Session
 import kotlinx.atomicfu.atomic
 
 class PlayerNetworkComponent(
+    player: KarbonPlayer,
     session: Session
-) : NetworkComponent() {
+) : NetworkComponent(player) {
+    val syncDistance = 10
+    private var sync: Boolean = false
     var session by atomic(session)
+
+    val synchronizedEntities = HashSet<UUID>()
+
+    fun hasSpawned(entity: KarbonEntity) =
+        synchronizedEntities.contains(entity.uniqueId)
+
+    fun forceSync() {
+        sync = true
+    }
 }

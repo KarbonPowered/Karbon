@@ -1,5 +1,10 @@
 package com.karbonpowered.engine.component
 
-open class NetworkComponent : EntityComponent() {
+import com.karbonpowered.engine.entity.KarbonEntity
+import com.karbonpowered.engine.snapshot.Snapshotable
 
+open class NetworkComponent(entity: KarbonEntity) : EntityComponent(entity), Snapshotable {
+    override fun copySnapshot() {
+
+    }
 }

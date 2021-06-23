@@ -141,4 +141,6 @@ class Transform(
     fun isEmpty(): Boolean = lock.withLock {
         _position == FloatVector3.ZERO && _rotation == FloatQuaternion.IDENTITY && _scale == FloatVector3.ONE
     }
+
+    fun copy(): Transform = Transform(this)
 }

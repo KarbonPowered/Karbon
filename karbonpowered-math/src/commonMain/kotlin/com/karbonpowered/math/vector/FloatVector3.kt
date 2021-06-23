@@ -5,6 +5,8 @@ interface FloatVector3 : Vector3<Float> {
     fun add(x: Float, y: Float, z: Float): FloatVector3
     fun add(vector: FloatVector3): FloatVector3 = add(vector.x, vector.y, vector.z)
 
+    fun distanceSquared(x: Float, y: Float, z: Float): Float
+
     companion object {
         val ZERO = BaseFloatVector3(0f, 0f, 0f)
         val ONE = BaseFloatVector3(1f, 1f, 1f)
@@ -17,12 +19,21 @@ interface FloatVector3 : Vector3<Float> {
     }
 }
 
+infix fun FloatVector3.distanceSquared(vector: FloatVector3) = distanceSquared(vector.x, vector.y, vector.z)
+
 open class BaseFloatVector3(
     override val x: Float,
     override val y: Float,
     override val z: Float
 ) : FloatVector3 {
     override fun add(x: Float, y: Float, z: Float): FloatVector3 = FloatVector3(this.x + x, this.y + y, this.z + z)
+
+    override fun distanceSquared(x: Float, y: Float, z: Float): Float {
+        val dx = this.x - x
+        val dy = this.y - y
+        val dz = this.z - z
+        return dx * dx + dy * dy + dz * dz
+    }
 }
 
 fun FloatVector3() = FloatVector3.ZERO

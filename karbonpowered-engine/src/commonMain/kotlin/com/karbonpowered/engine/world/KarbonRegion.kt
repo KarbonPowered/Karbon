@@ -1,6 +1,8 @@
 package com.karbonpowered.engine.world
 
+import com.karbonpowered.engine.entity.EntityManager
 import com.karbonpowered.engine.scheduler.AsyncManager
+import com.karbonpowered.engine.snapshot.SnapshotManager
 import com.karbonpowered.engine.util.BitSize
 import com.karbonpowered.engine.util.collection.map.palette.AtomicPaletteIntStore
 import kotlinx.atomicfu.AtomicRef
@@ -18,6 +20,8 @@ class KarbonRegion(
     val z: Int,
     val regionSource: RegionSource
 ) : AsyncManager {
+    val snapshotManager = SnapshotManager()
+    val entityManager = EntityManager(this)
     val blockX = x shl BLOCKS.BITS
     val blockY = y shl BLOCKS.BITS
     val blockZ = z shl BLOCKS.BITS
