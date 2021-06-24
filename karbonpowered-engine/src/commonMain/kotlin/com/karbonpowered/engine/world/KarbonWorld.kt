@@ -2,15 +2,29 @@ package com.karbonpowered.engine.world
 
 import com.karbonpowered.common.UUID
 import com.karbonpowered.common.uuid4
+import com.karbonpowered.engine.KarbonEngine
+import com.karbonpowered.engine.component.BaseComponentHolder
+import com.karbonpowered.engine.component.EntityComponent
+import com.karbonpowered.engine.component.WorldComponent
+import com.karbonpowered.engine.entity.KarbonEntity
+import com.karbonpowered.engine.entity.KarbonPlayer
+import kotlinx.atomicfu.locks.reentrantLock
+import kotlinx.atomicfu.locks.withLock
 import kotlin.random.Random
 
 class KarbonWorld(
+    val engine: KarbonEngine,
     val name: String,
     val generator: WorldGenerator,
     val uniqueId: UUID = uuid4(),
     val seed: Long = Random.nextLong()
 ) {
+    private val lock = reentrantLock()
+
     val regions = RegionSource(this)
+    val components = BaseComponentHolder(engine)
+    val _players = ArrayList<KarbonPlayer>()
+    val players get() = _players.toList()
 
     fun getRegion(x: Int, y: Int, z: Int, loadOption: LoadOption = LoadOption.LOAD_GEN) =
         regions.getRegion(x, y, z, loadOption)
@@ -39,5 +53,33 @@ class KarbonWorld(
             println("Unable to load region: $x, $y, $z: $loadOption")
         }
         return null
+    }
+
+    fun spawnEntity(entity: KarbonEntity) {
+        val region = checkNotNull(entity.region)
+        // TODO: Entity spawn event
+        region.entityManager.addEntity(entity)
+        components.forEach { component ->
+            if (component is WorldComponent) {
+                component.onSpawn(entity)
+            }
+        }
+        entity.components.forEach { component ->
+            if (component is EntityComponent) {
+                component.onSpawned()
+            }
+        }
+    }
+
+    fun addPlayer(player: KarbonPlayer) {
+        lock.withLock {
+            _players.add(player)
+        }
+    }
+
+    fun removePlayer(player: KarbonPlayer) {
+        lock.withLock {
+            _players.remove(player)
+        }
     }
 }

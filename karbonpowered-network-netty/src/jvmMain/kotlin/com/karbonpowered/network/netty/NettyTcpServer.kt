@@ -29,7 +29,7 @@ open class NettyTcpServer(
             })
             group(eventLoopGroup)
             localAddress(host, port)
-        }.bind().await().channel()
+        }.bind().channel()
     }
 
     override fun createSession(): NettyTcpServerSession {

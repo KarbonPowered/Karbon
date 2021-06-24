@@ -1,11 +1,23 @@
 package com.karbonpowered.math.vector
 
+import kotlin.math.floor
+
 interface FloatVector3 : Vector3<Float> {
+    val floorX get() = floor(x)
+    val floorY get() = floor(y)
+    val floorZ get() = floor(z)
+
     operator fun plus(vector: FloatVector3): FloatVector3 = add(vector)
+
     fun add(x: Float, y: Float, z: Float): FloatVector3
     fun add(vector: FloatVector3): FloatVector3 = add(vector.x, vector.y, vector.z)
 
-    fun distanceSquared(x: Float, y: Float, z: Float): Float
+    fun distanceSquared(x: Float, y: Float, z: Float): Float {
+        val dx = this.x - x
+        val dy = this.y - y
+        val dz = this.z - z
+        return dx * dx + dy * dy + dz * dz
+    }
 
     companion object {
         val ZERO = BaseFloatVector3(0f, 0f, 0f)
@@ -27,13 +39,6 @@ open class BaseFloatVector3(
     override val z: Float
 ) : FloatVector3 {
     override fun add(x: Float, y: Float, z: Float): FloatVector3 = FloatVector3(this.x + x, this.y + y, this.z + z)
-
-    override fun distanceSquared(x: Float, y: Float, z: Float): Float {
-        val dx = this.x - x
-        val dy = this.y - y
-        val dz = this.z - z
-        return dx * dx + dy * dy + dz * dz
-    }
 }
 
 fun FloatVector3() = FloatVector3.ZERO

@@ -4,6 +4,7 @@ import com.karbonpowered.engine.entity.KarbonEntity
 import com.karbonpowered.engine.entity.KarbonPlayer
 import com.karbonpowered.engine.snapshot.Snapshotable
 import com.karbonpowered.engine.util.Transform
+import com.karbonpowered.engine.world.Position
 import com.karbonpowered.math.imaginary.FloatQuaternion
 import com.karbonpowered.math.vector.FloatVector3
 
@@ -29,7 +30,7 @@ class PhysicsComponent(entity: KarbonEntity) : EntityComponent(entity), Snapshot
             setTransform(value, true)
         }
 
-    var position: FloatVector3
+    var position: Position
         get() = snapshot.position
         set(value) {
             transformLive.position = value

@@ -8,6 +8,7 @@ import com.karbonpowered.engine.component.PhysicsComponent
 import com.karbonpowered.engine.snapshot.SnapshotManager
 import com.karbonpowered.engine.snapshot.Snapshotable
 import com.karbonpowered.engine.snapshot.SnapshotableReference
+import com.karbonpowered.engine.world.KarbonRegion
 import kotlinx.atomicfu.atomic
 
 open class KarbonEntity(
@@ -26,8 +27,14 @@ open class KarbonEntity(
     val physics get() = components[PhysicsComponent::class]
     open val network get() = components[NetworkComponent::class]
 
+    val region: KarbonRegion? get() = physics.position.region()
+
     override fun copySnapshot() {
         physics.copySnapshot()
         network.copySnapshot()
+    }
+
+    fun preSnapshotRun() {
+        network.preSnapshotRun(physics.transformLive.copy())
     }
 }

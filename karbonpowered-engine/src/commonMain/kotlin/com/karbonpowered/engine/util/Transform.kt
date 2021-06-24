@@ -2,14 +2,14 @@ package com.karbonpowered.engine.util
 
 import com.karbonpowered.common.concurrent.dualLock
 import com.karbonpowered.engine.world.KarbonWorld
+import com.karbonpowered.engine.world.Position
 import com.karbonpowered.math.imaginary.FloatQuaternion
 import com.karbonpowered.math.vector.FloatVector3
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 
 class Transform(
-    world: KarbonWorld? = null,
-    position: FloatVector3 = FloatVector3.ZERO,
+    position: Position = Position.INVALID,
     rotation: FloatQuaternion = FloatQuaternion.IDENTITY,
     scale: FloatVector3 = FloatVector3.ONE
 ) {
@@ -18,14 +18,11 @@ class Transform(
     }
 
     private val lock = reentrantLock()
-    private var _world: KarbonWorld? = world
-    private var _position: FloatVector3 = position
+    private var _position: Position = position
     private var _rotation: FloatQuaternion = rotation
     private var _scale: FloatVector3 = scale
 
-    val world: KarbonWorld get() = checkNotNull(_world)
-
-    var position: FloatVector3
+    var position: Position
         get() = lock.withLock {
             _position
         }
@@ -74,6 +71,7 @@ class Transform(
     }
 
     fun set(
+        world: KarbonWorld,
         positionX: Float = 0f,
         positionY: Float = 0f,
         positionZ: Float = 0f,
@@ -85,18 +83,18 @@ class Transform(
         scaleY: Float = 0f,
         scaleZ: Float = 0f
     ) = set(
-        FloatVector3(positionX, positionY, positionZ),
+        Position(world, positionX, positionY, positionZ),
         FloatQuaternion(rotationX, rotationY, rotationZ, rotationW),
         FloatVector3(scaleX, scaleY, scaleZ)
     )
 
-    fun set(position: FloatVector3, rotation: FloatQuaternion, scale: FloatVector3) = apply {
+    fun set(position: Position, rotation: FloatQuaternion, scale: FloatVector3) = apply {
         lock.withLock {
             setUnsafe(position, rotation, scale)
         }
     }
 
-    private fun setUnsafe(position: FloatVector3, rotation: FloatQuaternion, scale: FloatVector3) {
+    private fun setUnsafe(position: Position, rotation: FloatQuaternion, scale: FloatVector3) {
         _position = position
         _rotation = rotation
         _scale = scale
@@ -129,9 +127,9 @@ class Transform(
     }
 
     override fun hashCode(): Int {
-        var result = _world?.hashCode() ?: 0
+        var result = 0
         lock.withLock {
-            result = 31 * result + _position.hashCode()
+            result = _position.hashCode()
             result = 31 * result + _rotation.hashCode()
             result = 31 * result + _scale.hashCode()
         }
@@ -139,7 +137,7 @@ class Transform(
     }
 
     fun isEmpty(): Boolean = lock.withLock {
-        _position == FloatVector3.ZERO && _rotation == FloatQuaternion.IDENTITY && _scale == FloatVector3.ONE
+        _position == Position.INVALID && _rotation == FloatQuaternion.IDENTITY && _scale == FloatVector3.ONE
     }
 
     fun copy(): Transform = Transform(this)

@@ -3,6 +3,7 @@ package com.karbonpowered.engine.component
 import com.karbonpowered.common.UUID
 import com.karbonpowered.engine.entity.KarbonEntity
 import com.karbonpowered.engine.entity.KarbonPlayer
+import com.karbonpowered.engine.world.KarbonChunk
 import com.karbonpowered.server.Session
 import kotlinx.atomicfu.atomic
 
@@ -22,4 +23,6 @@ class PlayerNetworkComponent(
     fun forceSync() {
         sync = true
     }
+
+    fun isObservedChunk(chunk: KarbonChunk): Boolean = true
 }

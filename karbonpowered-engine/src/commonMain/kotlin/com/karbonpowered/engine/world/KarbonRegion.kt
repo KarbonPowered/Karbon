@@ -169,6 +169,16 @@ class KarbonRegion(
             "Returned unloaded chunk"
         }
 
+    override suspend fun preSnapshotRun() {
+        entityManager.preSnapshotRun()
+        entityManager.syncEntities()
+    }
+
+    override fun copySnapshotRun() {
+        entityManager.copyAllSnapshots()
+        snapshotManager.copyAllSnapshots()
+    }
+
     companion object {
         /**
          * Stores the size of the amount of chunks in this Region

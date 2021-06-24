@@ -128,6 +128,25 @@ object Log : CoroutineScope {
         }
     }
 
+    fun warn(logger: String, info: String) {
+        val time = startTime.elapsedNow()
+        launch {
+            val log = buildString {
+                append(CYAN)
+                append("[")
+                appendTime(time)
+                append("] ")
+                append(YELLOW)
+                append("[")
+                append(logger)
+                append("] ")
+                append(YELLOW)
+                append(info)
+            }
+            println(log)
+        }
+    }
+
     private fun StringBuilder.appendTime(time: Duration) {
         time.toComponents { hours, minutes, seconds, nanoseconds ->
             val milliseconds = nanoseconds / 1_000_000

@@ -1,26 +1,26 @@
 package com.karbonpowered.math.vector
 
-interface Vector<T>
+interface Vector<T : Number>
 
-interface Vector1<T> : Vector<T> {
+interface Vector1<T : Number> : Vector<T> {
     val x: T
 
     operator fun component0() = x
 }
 
-interface Vector2<T> : Vector1<T> {
+interface Vector2<T : Number> : Vector1<T> {
     val y: T
 
     operator fun component1() = y
 }
 
-interface Vector3<T> : Vector2<T> {
+interface Vector3<T : Number> : Vector2<T> {
     val z: T
 
     operator fun component2() = z
 }
 
-interface Vector4<T> : Vector3<T> {
+interface Vector4<T : Number> : Vector3<T> {
     val w: T
 
     operator fun component3() = w

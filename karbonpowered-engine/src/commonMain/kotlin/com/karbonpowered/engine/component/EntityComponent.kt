@@ -6,4 +6,7 @@ abstract class EntityComponent(
     val entity: KarbonEntity
 ) : Component() {
 
+    fun onSpawned() {
+    }
+
 }
