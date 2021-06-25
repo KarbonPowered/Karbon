@@ -4,7 +4,9 @@ import com.karbonpowered.server.Session
 import com.karbonpowered.server.event.*
 import com.karbonpowered.server.packet.Packet
 import com.karbonpowered.server.packet.PacketProtocol
-import io.netty.channel.*
+import io.netty.channel.ChannelHandlerContext
+import io.netty.channel.ConnectTimeoutException
+import io.netty.channel.SimpleChannelInboundHandler
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
@@ -92,6 +94,8 @@ open class NettyTcpSession(
         val sendingEvent = PacketSendingEvent(this, packet)
         callEvent(sendingEvent)
 
+        println("OUT: $packet")
+
         if (!sendingEvent.isCancelled) {
             val toSend = sendingEvent.packet
             val channelFuture = nettyChannel?.write(toSend)
@@ -121,6 +125,7 @@ open class NettyTcpSession(
             nettyChannel = null
         }
         if (nettyChannel?.isOpen == true) {
+            cause?.printStackTrace()
             val disconnectingEvent = DisconnectingEvent(this, reason, cause)
             runBlocking {
                 callEvent(disconnectingEvent)
@@ -163,14 +168,6 @@ open class NettyTcpSession(
             launch {
                 packetsQueue.send(packet)
             }
-        }
-    }
-
-    inner class SendFutureListener(
-        val packet: Packet
-    ) : ChannelFutureListener {
-        override fun operationComplete(future: ChannelFuture) {
-
         }
     }
 }

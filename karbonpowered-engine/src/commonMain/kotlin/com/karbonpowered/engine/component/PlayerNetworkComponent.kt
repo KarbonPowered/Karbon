@@ -3,11 +3,12 @@ package com.karbonpowered.engine.component
 import com.karbonpowered.common.UUID
 import com.karbonpowered.engine.entity.KarbonEntity
 import com.karbonpowered.engine.entity.KarbonPlayer
+import com.karbonpowered.engine.protocol.ProtocolEvent
 import com.karbonpowered.engine.world.KarbonChunk
 import com.karbonpowered.server.Session
 import kotlinx.atomicfu.atomic
 
-class PlayerNetworkComponent(
+open class PlayerNetworkComponent(
     player: KarbonPlayer,
     session: Session
 ) : NetworkComponent(player) {
@@ -25,4 +26,8 @@ class PlayerNetworkComponent(
     }
 
     fun isObservedChunk(chunk: KarbonChunk): Boolean = true
+
+    fun callProtocolEvent(event: ProtocolEvent) {
+        session.callEvent(event)
+    }
 }

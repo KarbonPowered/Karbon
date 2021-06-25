@@ -17,8 +17,10 @@ class SnapshotableHashMap<K : Any, V : Any>(
     private val dirtyKeys = ConcurrentLinkedQueue<K>()
     private val dirtyValues = ConcurrentLinkedQueue<V>()
 
-    private val map: Map<K, V> get() = snapshot
-    private val liveMap: Map<K, V> get() = live
+    val map: Map<K, V>
+        get() = snapshot
+    val liveMap: Map<K, V>
+        get() = live
 
     override val size: Int
         get() = snapshot.size
@@ -31,11 +33,14 @@ class SnapshotableHashMap<K : Any, V : Any>(
 
     override fun isEmpty(): Boolean = snapshot.isEmpty()
 
-    override val entries: MutableSet<MutableMap.MutableEntry<K, V>> = snapshot.toMutableMap().entries
+    override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
+        get() = snapshot.toMutableMap().entries
 
-    override val keys: MutableSet<K> = snapshot.keys.toMutableSet()
+    override val keys: MutableSet<K>
+        get() = snapshot.keys.toMutableSet()
 
-    override val values: MutableCollection<V> = snapshot.values.toMutableSet()
+    override val values: MutableCollection<V>
+        get() = snapshot.values.toMutableSet()
 
     override fun clear() {
         dirtyKeys.addAll(keys)

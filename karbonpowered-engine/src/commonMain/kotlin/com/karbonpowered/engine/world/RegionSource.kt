@@ -1,7 +1,6 @@
 package com.karbonpowered.engine.world
 
 import com.karbonpowered.common.collection.concurrent.TripleIntObjectReferenceArrayMap
-import com.karbonpowered.engine.scheduler.KarbonScheduler
 import kotlinx.atomicfu.atomic
 
 private const val REGION_MAP_BITS = 5
@@ -30,7 +29,7 @@ class RegionSource(
 
         region = KarbonRegion(world, x, y, z, this)
         loadedRegions[x, y, z] = region
-        KarbonScheduler.addAsyncManager(region)
+        world.engine.scheduler.addAsyncManager(region)
 
         val threshold = warnThreshold.value
         if (regionsLoaded.getAndIncrement() > threshold) {

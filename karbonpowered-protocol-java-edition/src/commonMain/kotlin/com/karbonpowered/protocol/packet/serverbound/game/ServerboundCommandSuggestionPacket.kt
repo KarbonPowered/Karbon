@@ -12,7 +12,7 @@ data class ServerboundCommandSuggestionPacket(
     val id: Int,
     val command: String
 ) : MinecraftPacket {
-    companion object : PacketCodec<ServerboundCommandSuggestionPacket> {
+    object Codec : PacketCodec<ServerboundCommandSuggestionPacket> {
         override val packetType = ServerboundCommandSuggestionPacket::class
 
         override fun decode(input: Input): ServerboundCommandSuggestionPacket {

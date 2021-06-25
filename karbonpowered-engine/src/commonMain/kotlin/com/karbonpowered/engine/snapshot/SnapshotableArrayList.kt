@@ -18,10 +18,10 @@ class SnapshotableArrayList<T>(
     private val _snapshot = initial?.let { ArrayList(it) } ?: ArrayList()
     private val _live = ArrayList(_snapshot)
 
-    val live: List<T> = _live.toList()
-    val snapshot: List<T> = _snapshot.toList()
+    val live: List<T> get() = _live.toList()
+    val snapshot: List<T> get() = _snapshot.toList()
 
-    override val size: Int = _snapshot.size
+    override val size: Int get() = _snapshot.size
     override fun contains(element: T): Boolean = _snapshot.contains(element)
     override fun containsAll(elements: Collection<T>): Boolean = _snapshot.containsAll(elements)
     override fun get(index: Int): T = _snapshot[index]
@@ -66,7 +66,7 @@ class SnapshotableArrayList<T>(
         if (dirty.isNotEmpty()) {
             lock.withLock {
                 _snapshot.clear()
-                _snapshot.addAll(live)
+                _snapshot.addAll(_live)
             }
             dirty.clear()
         }

@@ -96,7 +96,7 @@ data class ClientboundGamePlayerPositionRotationPacket(
         }
     }
 
-    companion object : PacketCodec<ClientboundGamePlayerPositionRotationPacket> {
+    object Codec : PacketCodec<ClientboundGamePlayerPositionRotationPacket> {
         override val packetType: KClass<ClientboundGamePlayerPositionRotationPacket> =
             ClientboundGamePlayerPositionRotationPacket::class
 

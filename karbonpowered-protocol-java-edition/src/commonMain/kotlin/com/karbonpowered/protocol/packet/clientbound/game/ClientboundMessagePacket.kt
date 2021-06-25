@@ -21,7 +21,7 @@ data class ClientboundMessagePacket(
     val packetType: MessageType,
     val sender: UUID
 ) : MinecraftPacket {
-    companion object : PacketCodec<ClientboundMessagePacket> {
+    object Codec : PacketCodec<ClientboundMessagePacket> {
         override val packetType: KClass<ClientboundMessagePacket>
             get() = ClientboundMessagePacket::class
 

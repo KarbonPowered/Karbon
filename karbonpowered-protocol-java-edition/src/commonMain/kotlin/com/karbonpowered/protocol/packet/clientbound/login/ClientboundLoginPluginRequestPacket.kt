@@ -16,7 +16,7 @@ data class ClientboundLoginPluginRequestPacket(
     val identifier: ResourceKey,
     val data: ByteReadPacket
 ) : MinecraftPacket {
-    companion object : PacketCodec<ClientboundLoginPluginRequestPacket> {
+    object Codec : PacketCodec<ClientboundLoginPluginRequestPacket> {
         override val packetType: KClass<ClientboundLoginPluginRequestPacket>
             get() = ClientboundLoginPluginRequestPacket::class
 

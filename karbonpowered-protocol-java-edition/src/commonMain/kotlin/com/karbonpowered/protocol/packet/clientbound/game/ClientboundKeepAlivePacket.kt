@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 data class ClientboundKeepAlivePacket(
     val id: Long
 ) : MinecraftPacket {
-    companion object : PacketCodec<ClientboundKeepAlivePacket> {
+    object Codec : PacketCodec<ClientboundKeepAlivePacket> {
         override val packetType: KClass<ClientboundKeepAlivePacket>
             get() = ClientboundKeepAlivePacket::class
 

@@ -27,7 +27,7 @@ data class ClientboundGameBlockBreakingProgressPacket(
         progress
     )
 
-    companion object : PacketCodec<ClientboundGameBlockBreakingProgressPacket> {
+    object Codec : PacketCodec<ClientboundGameBlockBreakingProgressPacket> {
         override val packetType = ClientboundGameBlockBreakingProgressPacket::class
 
         override fun encode(output: Output, packet: ClientboundGameBlockBreakingProgressPacket) {

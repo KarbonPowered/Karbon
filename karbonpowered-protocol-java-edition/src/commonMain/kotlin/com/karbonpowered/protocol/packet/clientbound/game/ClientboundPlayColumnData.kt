@@ -1,6 +1,5 @@
 package com.karbonpowered.protocol.packet.clientbound.game
 
-import com.karbonpowered.io.Codec
 import com.karbonpowered.nbt.NBT
 import com.karbonpowered.protocol.MinecraftPacket
 import com.karbonpowered.protocol.util.BitStorage
@@ -10,6 +9,12 @@ import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.server.readVarInt
 import com.karbonpowered.server.writeVarInt
 import io.ktor.utils.io.core.*
+
+private const val AIR = 0
+private const val MAX_CHUNK_Y = 20
+private const val MIN_CHUNK_Y = -4
+private const val CHUNK_COUNT = MAX_CHUNK_Y - MIN_CHUNK_Y
+private const val BIOME_SIZE = 16 * 96
 
 data class ClientboundPlayColumnData(
     val x: Int,
@@ -62,8 +67,7 @@ data class ClientboundPlayColumnData(
             storage[ind] = id
         }
 
-        companion object : Codec<ChunkData> {
-            const val AIR = 0
+        companion object : com.karbonpowered.io.Codec<ChunkData> {
             private fun index(x: Int, y: Int, z: Int): Int = y shl 8 or (z shl 4) or x
 
             override fun encode(output: Output, data: ChunkData) {
@@ -94,11 +98,7 @@ data class ClientboundPlayColumnData(
         }
     }
 
-    companion object : PacketCodec<ClientboundPlayColumnData> {
-        private const val MAX_CHUNK_Y = 20
-        private const val MIN_CHUNK_Y = -4
-        private const val CHUNK_COUNT = MAX_CHUNK_Y - MIN_CHUNK_Y
-        private const val BIOME_SIZE = 16 * 96
+    object Codec : PacketCodec<ClientboundPlayColumnData> {
         override val packetType = ClientboundPlayColumnData::class
 
         override fun decode(input: Input): ClientboundPlayColumnData {

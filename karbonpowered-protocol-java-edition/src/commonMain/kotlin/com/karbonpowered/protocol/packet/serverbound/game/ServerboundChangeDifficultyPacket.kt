@@ -11,7 +11,7 @@ import io.ktor.utils.io.core.*
 data class ServerboundChangeDifficultyPacket(
     val difficulty: Difficulty
 ) : MinecraftPacket {
-    companion object : PacketCodec<ServerboundChangeDifficultyPacket> {
+    object Codec : PacketCodec<ServerboundChangeDifficultyPacket> {
         override val packetType = ServerboundChangeDifficultyPacket::class
 
         override fun decode(input: Input): ServerboundChangeDifficultyPacket {

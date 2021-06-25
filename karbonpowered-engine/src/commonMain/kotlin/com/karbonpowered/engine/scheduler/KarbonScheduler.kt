@@ -1,5 +1,6 @@
 package com.karbonpowered.engine.scheduler
 
+import com.karbonpowered.engine.KarbonEngine
 import com.karbonpowered.engine.snapshot.SnapshotManager
 import com.karbonpowered.engine.snapshot.SnapshotableArrayList
 import com.karbonpowered.engine.util.Log
@@ -8,19 +9,25 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
-object KarbonScheduler : TaskManager, CoroutineScope {
+
+/**
+ * The threshold before physics and dynamic updates are aborted
+ */
+private const val UPDATE_THRESHOLD = 100000
+
+/**
+ * The number of milliseconds between pulses.
+ */
+private const val PULSE_EVERY_MS = 1000L
+
+@OptIn(ExperimentalTime::class)
+class KarbonScheduler(
+    val engine: KarbonEngine
+) : TaskManager, CoroutineScope {
     override val coroutineContext: CoroutineContext = Dispatchers.Default
-
-    /**
-     * The threshold before physics and dynamic updates are aborted
-     */
-    private const val UPDATE_THRESHOLD = 100000
-
-    /**
-     * The number of milliseconds between pulses.
-     */
-    const val PULSE_EVERY_MS = 50
 
     /**
      * A snapshot manager for local snapshot variables
@@ -32,14 +39,20 @@ object KarbonScheduler : TaskManager, CoroutineScope {
      */
     private val asyncManagers = SnapshotableArrayList<AsyncManager>(snapshotManager)
 
-    fun addAsyncManager(manager: AsyncManager) = asyncManagers.add(manager)
+    fun addAsyncManager(manager: AsyncManager): Boolean {
+        engine.info("Add async manager: $manager")
+        return asyncManagers.add(manager)
+    }
 
     fun removeAsyncManager(manager: AsyncManager) = asyncManagers.remove(manager)
 
     fun runMainTask() = launch {
         while (true) {
-            delay(1000)
-            tick(1000)
+            delay(PULSE_EVERY_MS)
+            val tickDuration = measureTime {
+                tick(1000)
+            }
+//            engine.info("Last tick duration: $tickDuration")
         }
     }
 
@@ -84,9 +97,13 @@ object KarbonScheduler : TaskManager, CoroutineScope {
     }
 
     private fun copySnapshotTick(managers: Iterable<AsyncManager>) = launch {
-        managers.forEach {
+        managers.forEach { manager ->
             launch {
-                it.copySnapshotRun()
+                measureTime {
+                    manager.copySnapshotRun()
+                }.also {
+//                    engine.info("ticking: $manager ($it)")
+                }
             }
         }
     }

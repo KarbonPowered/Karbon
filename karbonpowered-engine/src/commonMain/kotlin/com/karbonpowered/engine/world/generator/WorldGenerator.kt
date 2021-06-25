@@ -1,4 +1,4 @@
-package com.karbonpowered.engine.world
+package com.karbonpowered.engine.world.generator
 
 import com.karbonpowered.engine.util.cuboid.CuboidIntBuffer
 import kotlin.random.Random

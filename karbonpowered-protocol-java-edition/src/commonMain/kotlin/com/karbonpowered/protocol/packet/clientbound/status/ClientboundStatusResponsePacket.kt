@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 data class ClientboundStatusResponsePacket(
     val response: StatusResponse
 ) : MinecraftPacket {
-    companion object : PacketCodec<ClientboundStatusResponsePacket> {
+    object Codec : PacketCodec<ClientboundStatusResponsePacket> {
         override val packetType: KClass<ClientboundStatusResponsePacket>
             get() = ClientboundStatusResponsePacket::class
 

@@ -33,13 +33,25 @@ allprojects {
                     api("io.ktor:ktor-network:1.6.0")
                 }
             }
+            commonTest {
+                dependencies {
+                    implementation(kotlin("test-common"))
+                    implementation(kotlin("test-annotations-common"))
+                }
+            }
+            val jvmTest by getting {
+                dependencies {
+                    implementation(kotlin("test"))
+                    implementation(kotlin("test-junit"))
+                }
+            }
         }
     }
 
     val compilerArgs = listOf(
-            "-Xopt-in=kotlin.RequiresOptIn",
-            "-Xopt-in=kotlin.ExperimentalUnsignedTypes",
-            "-Xopt-in=kotlin.time.ExperimentalTime",
+        "-Xopt-in=kotlin.RequiresOptIn",
+        "-Xopt-in=kotlin.ExperimentalUnsignedTypes",
+        "-Xopt-in=kotlin.time.ExperimentalTime",
     )
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

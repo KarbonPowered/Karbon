@@ -28,7 +28,7 @@ data class ClientboundGameJoinPacket(
     val isDebug: Boolean,
     val isFlat: Boolean
 ) : MinecraftPacket {
-    companion object : PacketCodec<ClientboundGameJoinPacket> {
+    object Codec : PacketCodec<ClientboundGameJoinPacket> {
         override val packetType: KClass<ClientboundGameJoinPacket> = ClientboundGameJoinPacket::class
 
         override fun encode(output: Output, packet: ClientboundGameJoinPacket) {

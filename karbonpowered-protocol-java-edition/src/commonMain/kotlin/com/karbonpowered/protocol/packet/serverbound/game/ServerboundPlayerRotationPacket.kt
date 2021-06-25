@@ -12,7 +12,7 @@ data class ServerboundPlayerRotationPacket(
     val pitch: Float = 0f,
     val onGround: Boolean = true
 ) : MinecraftPacket {
-    companion object : PacketCodec<ServerboundPlayerRotationPacket> {
+    object Codec : PacketCodec<ServerboundPlayerRotationPacket> {
         override val packetType: KClass<ServerboundPlayerRotationPacket>
             get() = ServerboundPlayerRotationPacket::class
 

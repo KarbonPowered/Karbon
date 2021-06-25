@@ -13,7 +13,7 @@ data class ServerboundPlayerPositionPacket(
     val z: Double = 0.0,
     val onGround: Boolean = true
 ) : MinecraftPacket {
-    companion object : PacketCodec<ServerboundPlayerPositionPacket> {
+    object Codec : PacketCodec<ServerboundPlayerPositionPacket> {
         override val packetType: KClass<ServerboundPlayerPositionPacket>
             get() = ServerboundPlayerPositionPacket::class
 

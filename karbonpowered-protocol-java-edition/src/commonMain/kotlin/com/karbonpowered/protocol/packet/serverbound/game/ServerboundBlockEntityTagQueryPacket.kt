@@ -16,7 +16,7 @@ data class ServerboundBlockEntityTagQueryPacket(
     val y: Int,
     val z: Int
 ) : MinecraftPacket {
-    companion object : PacketCodec<ServerboundBlockEntityTagQueryPacket> {
+    object Codec : PacketCodec<ServerboundBlockEntityTagQueryPacket> {
         override val packetType = ServerboundBlockEntityTagQueryPacket::class
 
         override fun decode(input: Input): ServerboundBlockEntityTagQueryPacket {

@@ -7,4 +7,5 @@ interface ClientSettings {
     val hasChatColors: Boolean
     val skinParts: Set<SkinPart>
     val mainHand: HandType
+    val textFiltering: Boolean
 }

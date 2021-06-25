@@ -13,7 +13,9 @@ class SnapshotManager : Iterable<Snapshotable> {
     }
 
     fun copyAllSnapshots() = lock.withLock {
-        entries.forEach { it.copySnapshot() }
+        entries.forEach {
+            it.copySnapshot()
+        }
     }
 
     override fun iterator(): Iterator<Snapshotable> = lock.withLock {

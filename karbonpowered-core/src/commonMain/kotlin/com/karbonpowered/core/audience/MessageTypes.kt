@@ -2,7 +2,7 @@ package com.karbonpowered.core.audience
 
 import com.karbonpowered.audience.MessageType
 
-internal data class MessageTypesImpl(
+internal data class VanillaMessageType(
     val name: String
 ) : MessageType
 
@@ -12,6 +12,6 @@ object MessageTypes {
     val SYSTEM by messageType("system")
 
     private fun messageType(name: String): Lazy<MessageType> = lazy {
-        MessageTypesImpl(name)
+        VanillaMessageType(name)
     }
 }

@@ -8,7 +8,7 @@ import io.ktor.utils.io.core.*
 data class ServerboundAcceptTeleportationPacket(
     val id: Int
 ) : MinecraftPacket {
-    companion object : PacketCodec<ServerboundAcceptTeleportationPacket> {
+    object Codec : PacketCodec<ServerboundAcceptTeleportationPacket> {
         override val packetType = ServerboundAcceptTeleportationPacket::class
 
         override fun decode(input: Input): ServerboundAcceptTeleportationPacket {

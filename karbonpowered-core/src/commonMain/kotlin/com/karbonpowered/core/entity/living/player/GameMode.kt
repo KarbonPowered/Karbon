@@ -4,8 +4,10 @@ import com.karbonpowered.api.entity.living.player.GameMode
 import com.karbonpowered.text.LiteralText
 import com.karbonpowered.text.Text
 
-internal class GameModeImpl(val name: String) : GameMode {
+internal data class VanillaGameMode(val name: String) : GameMode {
     override fun toText(): Text = LiteralText(name)
+
+    override fun toString(): String = "GameMode($name)"
 }
 
 object GameModes {
@@ -15,6 +17,5 @@ object GameModes {
     val SPECTATOR by gameMode("spectator")
     val NOT_SET by gameMode("not_set")
 
-    private fun gameMode(name: String): Lazy<GameMode> =
-        lazy { GameModeImpl(name) }
+    private fun gameMode(name: String): Lazy<GameMode> = lazy { VanillaGameMode(name) }
 }

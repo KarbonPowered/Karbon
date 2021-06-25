@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 data class ServerboundChatPacket(
     val message: String
 ) : MinecraftPacket {
-    companion object : PacketCodec<ServerboundChatPacket> {
+    object Codec : PacketCodec<ServerboundChatPacket> {
         override val packetType: KClass<ServerboundChatPacket>
             get() = ServerboundChatPacket::class
 

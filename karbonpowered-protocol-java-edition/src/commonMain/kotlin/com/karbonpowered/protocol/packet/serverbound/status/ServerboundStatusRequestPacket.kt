@@ -16,7 +16,7 @@ class ServerboundStatusRequestPacket : MinecraftPacket {
 
     override fun toString(): String = "ServerboundStatusRequest()"
 
-    companion object : PacketCodec<ServerboundStatusRequestPacket> {
+    object Codec : PacketCodec<ServerboundStatusRequestPacket> {
         override val packetType: KClass<ServerboundStatusRequestPacket>
             get() = ServerboundStatusRequestPacket::class
 

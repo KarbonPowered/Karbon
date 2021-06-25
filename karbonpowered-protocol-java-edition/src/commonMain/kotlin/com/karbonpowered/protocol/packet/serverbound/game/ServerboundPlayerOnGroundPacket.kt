@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 data class ServerboundPlayerOnGroundPacket(
     val onGround: Boolean = true
 ) : MinecraftPacket {
-    companion object : PacketCodec<ServerboundPlayerOnGroundPacket> {
+    object Codec : PacketCodec<ServerboundPlayerOnGroundPacket> {
         override val packetType: KClass<ServerboundPlayerOnGroundPacket>
             get() = ServerboundPlayerOnGroundPacket::class
 

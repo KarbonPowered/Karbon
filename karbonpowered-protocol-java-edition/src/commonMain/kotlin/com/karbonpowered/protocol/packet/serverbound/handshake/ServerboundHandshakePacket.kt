@@ -3,6 +3,7 @@ package com.karbonpowered.protocol.packet.serverbound.handshake
 import com.karbonpowered.protocol.MagicValues
 import com.karbonpowered.protocol.MinecraftPacket
 import com.karbonpowered.protocol.MinecraftProtocol
+import com.karbonpowered.server.packet.PacketCodec
 import com.karbonpowered.server.readString
 import com.karbonpowered.server.readVarInt
 import com.karbonpowered.server.writeString
@@ -18,7 +19,7 @@ data class ServerboundHandshakePacket(
 ) : MinecraftPacket {
     override val isPriority: Boolean = true
 
-    companion object : com.karbonpowered.server.packet.PacketCodec<ServerboundHandshakePacket> {
+    object Codec : PacketCodec<ServerboundHandshakePacket> {
         override val packetType: KClass<ServerboundHandshakePacket>
             get() = ServerboundHandshakePacket::class
 

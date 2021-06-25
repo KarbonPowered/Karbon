@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 data class ServerboundLoginStartPacket(
     val username: String
 ) : MinecraftPacket {
-    companion object : com.karbonpowered.server.packet.PacketCodec<ServerboundLoginStartPacket> {
+    object Codec : com.karbonpowered.server.packet.PacketCodec<ServerboundLoginStartPacket> {
         override val packetType: KClass<ServerboundLoginStartPacket>
             get() = ServerboundLoginStartPacket::class
 

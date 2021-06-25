@@ -14,7 +14,7 @@ data class ClientboundLoginSuccessPacket(
     val uniqueId: UUID,
     val username: String
 ) : MinecraftPacket {
-    companion object : PacketCodec<ClientboundLoginSuccessPacket> {
+    object Codec : PacketCodec<ClientboundLoginSuccessPacket> {
         override val packetType: KClass<ClientboundLoginSuccessPacket>
             get() = ClientboundLoginSuccessPacket::class
 

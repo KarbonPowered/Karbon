@@ -28,7 +28,7 @@ data class ClientboundSpawnPlayerPacket(
         rotation: Vector2<Float>
     ) : this(entityId, uuid, position.x, position.y, position.z, rotation.x, rotation.y)
 
-    companion object : PacketCodec<ClientboundSpawnPlayerPacket> {
+    object Codec : PacketCodec<ClientboundSpawnPlayerPacket> {
         override val packetType: KClass<ClientboundSpawnPlayerPacket>
             get() = ClientboundSpawnPlayerPacket::class
 

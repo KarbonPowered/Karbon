@@ -8,7 +8,7 @@ data class ServerboundContainerButtonClickPacket(
     val containerId: Int,
     val buttonId: Int
 ) : MinecraftPacket {
-    companion object : PacketCodec<ServerboundContainerButtonClickPacket> {
+    object Codec : PacketCodec<ServerboundContainerButtonClickPacket> {
         override val packetType = ServerboundContainerButtonClickPacket::class
 
         override fun decode(input: Input): ServerboundContainerButtonClickPacket {

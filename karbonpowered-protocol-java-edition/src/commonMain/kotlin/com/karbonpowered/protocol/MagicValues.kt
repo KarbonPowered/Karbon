@@ -1,7 +1,10 @@
 package com.karbonpowered.protocol
 
 import com.karbonpowered.core.audience.MessageTypes
+import com.karbonpowered.core.entity.living.player.ChatVisibilities
 import com.karbonpowered.core.entity.living.player.GameModes
+import com.karbonpowered.core.entity.living.player.HandTypes
+import com.karbonpowered.core.entity.living.player.SkinParts
 import kotlin.reflect.KClass
 
 object MagicValues {
@@ -17,6 +20,21 @@ object MagicValues {
         register(MessageTypes.ACTION_BAR, 0)
         register(MessageTypes.CHAT, 1)
         register(MessageTypes.SYSTEM, 2)
+
+        register(ChatVisibilities.ENABLED, 0)
+        register(ChatVisibilities.COMMANDS_ONLY, 1)
+        register(ChatVisibilities.HIDDEN, 2)
+
+        register(SkinParts.CAPE, 0x01)
+        register(SkinParts.JACKET, 0x02)
+        register(SkinParts.LEFT_SLEEVE, 0x04)
+        register(SkinParts.RIGHT_SLEEVE, 0x08)
+        register(SkinParts.LEFT_PANTS_LEG, 0x10)
+        register(SkinParts.RIGHT_PANTS_LEG, 0x20)
+        register(SkinParts.HAT, 0x40)
+
+        register(HandTypes.OFF_HAND, 0)
+        register(HandTypes.MAIN_HAND, 1)
 
         register(MinecraftProtocol.SubProtocol.HANDSHAKE, 0)
         register(MinecraftProtocol.SubProtocol.STATUS, 1)

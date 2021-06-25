@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 data class ClientboundStatusPongPacket(
     val payload: Long
 ) : MinecraftPacket {
-    companion object : PacketCodec<ClientboundStatusPongPacket> {
+    object Codec : PacketCodec<ClientboundStatusPongPacket> {
         override val packetType: KClass<ClientboundStatusPongPacket>
             get() = ClientboundStatusPongPacket::class
 

@@ -15,7 +15,7 @@ data class ServerboundPlayerPositionRotationPacket(
     val pitch: Float = 0f,
     val onGround: Boolean = true
 ) : MinecraftPacket {
-    companion object : PacketCodec<ServerboundPlayerPositionRotationPacket> {
+    object Codec : PacketCodec<ServerboundPlayerPositionRotationPacket> {
         override val packetType: KClass<ServerboundPlayerPositionRotationPacket>
             get() = ServerboundPlayerPositionRotationPacket::class
 

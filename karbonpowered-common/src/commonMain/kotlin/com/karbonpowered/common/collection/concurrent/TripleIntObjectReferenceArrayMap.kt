@@ -123,6 +123,7 @@ class TripleIntObjectReferenceArrayMap<T>(
             if (currentEntry == null) {
                 break
             }
+            entry = currentEntry
             keyDepth++
         }
 
@@ -136,7 +137,7 @@ class TripleIntObjectReferenceArrayMap<T>(
         entry = prevEntry
         shift += bits
 
-        repeat(depth - keyDepth) {
+        for (i in keyDepth until depth) {
             val newEntry = AtomicReferenceArrayEntry(depth)
             check((entry as AtomicReferenceArrayEntry).set(x, y, z, shift, newEntry)) { "Unable to add new map entry" }
             shift -= bits
@@ -177,7 +178,7 @@ class TripleIntObjectReferenceArrayMap<T>(
     private inline fun getEntryRaw(x: Int, y: Int, z: Int): Entry<T>? {
         var entry = root.value
         var shift = entry.initialShift
-        repeat(entry.depth) {
+        repeat(entry.depth + 1) {
             entry = entry.getSubEntry(x, y, z, shift) ?: return null
             shift -= bits
         }
@@ -238,7 +239,7 @@ class TripleIntObjectReferenceArrayMap<T>(
         }
 
         @Suppress("NOTHING_TO_INLINE", "NAME_SHADOWING")
-        private inline fun index(x: Int, y: Int, z: Int, shift: Int): Int {
+        private fun index(x: Int, y: Int, z: Int, shift: Int): Int {
             var x = x shr shift
             var y = y shr shift
             var z = z shr shift

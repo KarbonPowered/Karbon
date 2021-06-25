@@ -8,23 +8,34 @@ import com.karbonpowered.engine.component.EntityComponent
 import com.karbonpowered.engine.component.WorldComponent
 import com.karbonpowered.engine.entity.KarbonEntity
 import com.karbonpowered.engine.entity.KarbonPlayer
+import com.karbonpowered.engine.scheduler.AsyncManager
+import com.karbonpowered.engine.util.Transform
+import com.karbonpowered.engine.world.generator.WorldGenerator
 import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 import kotlin.random.Random
 
-class KarbonWorld(
+open class KarbonWorld(
     val engine: KarbonEngine,
     val name: String,
     val generator: WorldGenerator,
     val uniqueId: UUID = uuid4(),
     val seed: Long = Random.nextLong()
-) {
+) : AsyncManager {
     private val lock = reentrantLock()
 
     val regions = RegionSource(this)
     val components = BaseComponentHolder(engine)
+
     val _players = ArrayList<KarbonPlayer>()
     val players get() = _players.toList()
+
+    private val _spawnPoint = Transform(Position(this, 0f, 64f, 0f))
+    var spawnPoint: Transform
+        get() = _spawnPoint.copy()
+        set(value) {
+            _spawnPoint.set(value)
+        }
 
     fun getRegion(x: Int, y: Int, z: Int, loadOption: LoadOption = LoadOption.LOAD_GEN) =
         regions.getRegion(x, y, z, loadOption)

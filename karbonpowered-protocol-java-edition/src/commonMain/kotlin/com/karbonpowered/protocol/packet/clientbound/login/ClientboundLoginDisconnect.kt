@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
 data class ClientboundLoginDisconnect(
     val message: Text = LiteralText("Disconnected")
 ) : MinecraftPacket {
-    companion object : PacketCodec<ClientboundLoginDisconnect> {
+    object Codec : PacketCodec<ClientboundLoginDisconnect> {
         override val packetType: KClass<ClientboundLoginDisconnect>
             get() = ClientboundLoginDisconnect::class
 
