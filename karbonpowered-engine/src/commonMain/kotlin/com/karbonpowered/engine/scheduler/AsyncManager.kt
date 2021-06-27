@@ -1,6 +1,13 @@
 package com.karbonpowered.engine.scheduler
 
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+
 interface AsyncManager {
+    @OptIn(ExperimentalTime::class)
+    suspend fun startTickRun(stage: Int, duration: Duration) {
+    }
+
     /**
      * This function is called directly before preSnapshot is called
      */

@@ -1,10 +1,8 @@
 package com.karbonpowered.engine.world.generator
 
 import com.karbonpowered.engine.util.cuboid.CuboidIntBuffer
-import kotlin.random.Random
+import com.karbonpowered.engine.world.KarbonWorld
 
 interface WorldGenerator {
-    fun canGenerate(x: Int, y: Int, z: Int): Boolean = true
-
-    suspend fun generateChunk(x: Int, y: Int, z: Int, random: Random, buffer: CuboidIntBuffer)
+    suspend fun generateChunk(cuboidIntBuffer: CuboidIntBuffer, world: KarbonWorld)
 }

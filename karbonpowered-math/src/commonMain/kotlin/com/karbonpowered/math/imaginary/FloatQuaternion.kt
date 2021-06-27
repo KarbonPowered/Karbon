@@ -5,6 +5,7 @@ import com.karbonpowered.math.tableSin
 import com.karbonpowered.math.toRadians
 import com.karbonpowered.math.vector.FloatVector3
 import com.karbonpowered.math.vector.Vector4
+import kotlinx.serialization.Serializable
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sign
@@ -155,6 +156,7 @@ interface FloatQuaternion : FloatImaginary, Comparable<FloatQuaternion>, Vector4
     }
 }
 
+@Serializable
 open class BaseFloatQuaternion(
     override val x: Float,
     override val y: Float,

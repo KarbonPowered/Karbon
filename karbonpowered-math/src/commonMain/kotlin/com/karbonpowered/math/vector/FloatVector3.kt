@@ -1,5 +1,6 @@
 package com.karbonpowered.math.vector
 
+import kotlinx.serialization.Serializable
 import kotlin.math.floor
 
 interface FloatVector3 : Vector3<Float> {
@@ -33,6 +34,7 @@ interface FloatVector3 : Vector3<Float> {
 
 infix fun FloatVector3.distanceSquared(vector: FloatVector3) = distanceSquared(vector.x, vector.y, vector.z)
 
+@Serializable
 open class BaseFloatVector3(
     override val x: Float,
     override val y: Float,

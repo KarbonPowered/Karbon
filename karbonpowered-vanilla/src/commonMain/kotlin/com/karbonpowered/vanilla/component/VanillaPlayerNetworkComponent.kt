@@ -1,7 +1,6 @@
 package com.karbonpowered.vanilla.component
 
 import com.karbonpowered.core.entity.living.player.GameModes
-import com.karbonpowered.engine.component.PlayerNetworkComponent
 import com.karbonpowered.engine.protocol.ProtocolEvent
 import com.karbonpowered.engine.protocol.ProtocolEventListener
 import com.karbonpowered.engine.protocol.event.WorldChangeProtocolEvent

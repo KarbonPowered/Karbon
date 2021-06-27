@@ -1,6 +1,8 @@
 package com.karbonpowered.common.concurrent
 
+import com.karbonpowered.common.Named
 import kotlinx.atomicfu.locks.ReentrantLock
+import kotlinx.atomicfu.locks.reentrantLock
 import kotlinx.atomicfu.locks.withLock
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -43,5 +45,13 @@ fun <T> dualLock(first: ReentrantLock, second: ReentrantLock, block: () -> T): T
         first.unlock()
         second.unlock()
     }
+}
+
+class NamedReentrantLock(override val name: String) : Named {
+    val lock = reentrantLock()
+
+    override fun toString(): String = "NamedReentrantLock($name)"
+
+    inline fun <T> withLock(block: () -> T) = lock.withLock(block)
 }
 

@@ -4,179 +4,147 @@ import com.karbonpowered.engine.entity.EntityManager
 import com.karbonpowered.engine.scheduler.AsyncManager
 import com.karbonpowered.engine.snapshot.SnapshotManager
 import com.karbonpowered.engine.util.BitSize
-import com.karbonpowered.engine.util.collection.map.palette.AtomicPaletteIntStore
-import kotlinx.atomicfu.AtomicRef
+import com.karbonpowered.engine.world.cuboid.Cube
+import com.karbonpowered.engine.world.discrete.Position
 import kotlinx.atomicfu.atomic
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 private const val FILE_EXISTS = false
 
 /**
  * Represents a cube containing 16x16x16 Chunks (256x256x256 Blocks)
  */
+@OptIn(ExperimentalTime::class)
 class KarbonRegion(
-    val world: KarbonWorld,
-    val x: Int,
-    val y: Int,
-    val z: Int,
+    world: KarbonWorld,
+    val regionX: Int,
+    val regionY: Int,
+    val regionZ: Int,
     val regionSource: RegionSource
-) : AsyncManager {
+) : AsyncManager,
+    Cube(Position(world, regionX, regionY, regionZ), BLOCKS.SIZE.toFloat()) {
+    val engine = world.engine
+    val regionGenerator = RegionGenerator(this)
     val snapshotManager = SnapshotManager()
     val entityManager = EntityManager(this)
-    val blockX = x shl BLOCKS.BITS
-    val blockY = y shl BLOCKS.BITS
-    val blockZ = z shl BLOCKS.BITS
-    val chunkX = x shl CHUNKS.BITS
-    val chunkY = y shl CHUNKS.BITS
-    val chunkZ = z shl CHUNKS.BITS
+    val blockX = regionX shl BLOCKS.BITS
+    val blockY = regionY shl BLOCKS.BITS
+    val blockZ = regionZ shl BLOCKS.BITS
+    val chunkX = regionX shl CHUNKS.BITS
+    val chunkY = regionY shl CHUNKS.BITS
+    val chunkZ = regionZ shl CHUNKS.BITS
+    val isLoaded: Boolean = true
 
-    private val generator = RegionGenerator(this)
-    private val chunks: Array<Array<Array<AtomicRef<KarbonChunk?>>>> =
-        Array(CHUNKS.SIZE) { Array(CHUNKS.SIZE) { Array(CHUNKS.SIZE) { atomic(null) } } }
-    private val neighbours = Array(3) { dx ->
-        Array(3) { dy ->
-            Array(3) { dz ->
-                atomic(world.getRegion(x + dx - 1, y + dy - 1, z + dz - 1, LoadOption.NO_LOAD))
-            }
-        }
-    }
+    /**
+     * Chunks used for ticking.
+     */
+    private val chunks = atomic(Array<KarbonChunk?>(CHUNKS.VOLUME) { null })
 
-    private var activeChunks = atomic(0)
+    /**
+     * All live chunks. These are not ticked, but can be accessed.
+     */
+    private val live = atomic(Array<KarbonChunk?>(CHUNKS.VOLUME) { null })
 
-    fun unlinkNeighbours() {
-        repeat(3) { dx ->
-            repeat(3) { dy ->
-                repeat(3) { dz ->
-                    val region = world.getRegion(x + dx - 1, y + dy - 1, z + dz - 1, LoadOption.NO_LOAD)
-                    region?.unlinkNeighbour(this)
-                }
-            }
-        }
-    }
+    suspend fun chunk(x: Int, y: Int, z: Int, loadOption: LoadOption): KarbonChunk? {
+        val localX = x and CHUNKS.MASK
+        val localY = y and CHUNKS.MASK
+        val localZ = z and CHUNKS.MASK
+        val chunk = chunks.value[getChunkKey(localX, localY, localZ)]
 
-    private fun unlinkNeighbour(region: KarbonRegion) {
-        repeat(3) { dx ->
-            repeat(3) { dy ->
-                repeat(3) { dz ->
-                    neighbours[dx][dy][dz].compareAndSet(region, null)
-                }
-            }
-        }
-    }
-
-    fun getLocalRegion(dx: Int, dy: Int, dz: Int, loadOption: LoadOption = LoadOption.NO_LOAD): KarbonRegion? {
-        val ref = neighbours[dx][dy][dy]
-        var region = ref.value
-        if (region == null) {
-            region = world.getRegion(x + dx - 1, y + dy - 1, z + dz - 1, loadOption)
-            ref.compareAndSet(null, region)
-        }
-        return region
-    }
-
-    suspend fun getChunk(x: Int, y: Int, z: Int, loadOption: LoadOption): KarbonChunk? {
-        val cx = x and CHUNKS.MASK
-        val cy = y and CHUNKS.MASK
-        val cz = z and CHUNKS.MASK
-
-        var chunk = chunks[cx][cy][cz].value
         if (chunk != null) {
-            checkChunkLoaded(chunk, loadOption)
             return chunk
         }
 
-        val fileExists = FILE_EXISTS
-
-        // TODO: loading chunks if file exists
-        if (loadOption.isLoad && fileExists) {
-            chunk = KarbonChunk(this, chunkX + x, chunkY + y, chunkZ + z, AtomicPaletteIntStore(0, false))
-        }
-
-        if (loadOption.isGenerate && !fileExists && chunk == null) {
-            chunk = generator.generateChunk(chunkX + x, chunkY + y, chunkZ + z)
-            if (chunk != null) {
-                chunks[x][y][z].value = chunk
-                checkChunkLoaded(chunk, loadOption)
-                return chunk
-            } else {
-                println("Chunk generation failed! Region $this, chunk ($x, $y, $z): $loadOption")
-                Throwable().printStackTrace()
-            }
-        }
-
-        if (chunk == null) {
+        if (!loadOption.isLoad) {
             return null
         }
 
-        chunk = setChunk(chunk, x, y, z, false)
-        checkChunkLoaded(chunk, loadOption)
-        return chunk
+        return loadOrGenChunk(x, y, z, loadOption)
     }
 
-    private fun setChunk(newChunk: KarbonChunk, x: Int, y: Int, z: Int, generated: Boolean): KarbonChunk {
-        val ref = chunks[x][y][z]
+    private suspend fun loadOrGenChunk(x: Int, y: Int, z: Int, loadOption: LoadOption): KarbonChunk? {
+        val localX = x and CHUNKS.MASK
+        val localY = y and CHUNKS.MASK
+        val localZ = z and CHUNKS.MASK
+
+        val newChunk = if (loadOption.isLoad) loadChunk(localX, localY, localZ) else null
+        if (newChunk != null || !loadOption.isGenerate) {
+            return newChunk
+        }
+
+        regionGenerator.generateChunk(x, y, z).join()
+        val generatedChunk = live.value[getChunkKey(localX, localY, localZ)]
+        if (generatedChunk != null) {
+            return generatedChunk
+        }
+        engine.error("Chunk failed to generate! ($loadOption)")
+        engine.error("Region $this, chunk $x, $y, $z")
+        RuntimeException().printStackTrace()
+        return null
+    }
+
+    // TODO: Loading chunk
+    private fun loadChunk(localX: Int, localY: Int, localZ: Int): KarbonChunk? {
+        return null
+    }
+
+    fun setGeneratedChunks(newChunks: Array<Array<Array<KarbonChunk>>>) {
         while (true) {
-            if (ref.compareAndSet(null, newChunk)) {
-                if (generated) {
-                    // TODO: queue lightning
-                    // TODO: queue chunk sending to players
+            val liveChunks = live.value
+            val newArray = liveChunks.copyOf()
+            val width = newChunks.size
+            repeat(width) { x ->
+                repeat(width) { y ->
+                    repeat(width) { z ->
+                        val currentChunk = newChunks[x][y][z]
+                        val chunkKey = getChunkKey(x, y, z)
+                        check(liveChunks[chunkKey] == null) {
+                            "Tried to set a generated chunk, but a chunk already existed!"
+                        }
+                        newArray[chunkKey] = currentChunk
+                    }
                 }
-                activeChunks.incrementAndGet()
-
-                // TODO: add loaded entities
-                // TODO: add block updates
-
-                // TODO: call ChunkLoadEvent
-
-                return newChunk
             }
-
-            val oldChunk = ref.value
-            if (oldChunk != null) {
-                // TODO: unload chunk data
-                return oldChunk
+            if (live.compareAndSet(liveChunks, newArray)) {
+                break
             }
         }
     }
 
-    fun removeChunk(chunk: KarbonChunk): Boolean {
-        if (chunk.region != this) {
-            return false
+    override suspend fun startTickRun(stage: Int, duration: Duration) {
+        when (stage) {
+            0 -> updateEntities(duration)
+            1 -> updateDynamics(duration)
         }
-
-        val currentRef = chunks[chunk.x and CHUNKS.MASK][chunk.y and CHUNKS.MASK][chunk.z and CHUNKS.MASK]
-        val currentChunk = currentRef.value
-        if (currentChunk != chunk) {
-            return false
-        }
-        if (currentRef.compareAndSet(currentChunk, null)) {
-            val currentActiveChunks = activeChunks.decrementAndGet()
-            // TODO: remove entities
-            // TODO: unload chunk data
-            // TODO: remove chunk updates
-
-            if (currentActiveChunks == 0) {
-                return true
-            }
-            check(currentActiveChunks >= 0) {
-                "Region $this has less than 0 active chunks: $currentActiveChunks"
-            }
-        }
-        return false
     }
 
-    private fun checkChunkLoaded(chunk: KarbonChunk, loadOption: LoadOption) =
-        check(!loadOption.isLoad || chunk.cancelUnload()) {
-            "Returned unloaded chunk"
+    private suspend fun updateEntities(duration: Duration) = coroutineScope {
+        entityManager.entities.values.forEach { entity ->
+            launch {
+                entity.tick(duration)
+            }
         }
-
-    override suspend fun preSnapshotRun() {
-        entityManager.preSnapshotRun()
-        entityManager.syncEntities()
     }
 
-    override fun copySnapshotRun() {
-        entityManager.copyAllSnapshots()
-        snapshotManager.copyAllSnapshots()
+    private suspend fun updateDynamics(duration: Duration) = coroutineScope {
+        launch {
+            entityManager.entities.values.forEach { entity ->
+                launch {
+                    entity.physics.onPrePhysicsTick()
+                }
+            }
+        }.join()
+        //  TODO: update physics engine
+        launch {
+            entityManager.entities.values.forEach { entity ->
+                launch {
+                    entity.physics.onPostPhysicsTick()
+                }
+            }
+        }.join()
     }
 
     companion object {
@@ -189,5 +157,12 @@ class KarbonRegion(
          * Stores the size of the amount of blocks in this Region
          */
         val BLOCKS = BitSize(CHUNKS.BITS + KarbonChunk.BLOCKS.BITS)
+
+        fun getChunkKey(chunkX: Int, chunkY: Int, chunkZ: Int): Int {
+            val cx = chunkX and CHUNKS.MASK
+            val cy = chunkY and CHUNKS.MASK
+            val cz = chunkZ and CHUNKS.MASK
+            return CHUNKS.AREA * cx + CHUNKS.SIZE * cy + cz
+        }
     }
 }

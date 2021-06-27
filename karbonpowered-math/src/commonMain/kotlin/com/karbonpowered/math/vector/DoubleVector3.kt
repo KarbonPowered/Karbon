@@ -1,10 +1,21 @@
 package com.karbonpowered.math.vector
 
+import kotlin.math.floor
+
 interface DoubleVector3 : DoubleVector2, Vector3<Double> {
+    val floorX get() = floor(x)
+    val floorY get() = floor(y)
+    val floorZ get() = floor(z)
+
     fun add(x: Double, y: Double, z: Double): DoubleVector3
     fun sub(x: Double, y: Double, z: Double): DoubleVector3
     fun mul(x: Double, y: Double, z: Double): DoubleVector3
     fun div(x: Double, y: Double, z: Double): DoubleVector3
+
+    operator fun plus(vector: DoubleVector3): DoubleVector3 = add(vector.x, vector.y, vector.z)
+    operator fun minus(vector: DoubleVector3): DoubleVector3 = sub(vector.x, vector.y, vector.z)
+    operator fun times(vector: DoubleVector3): DoubleVector3 = mul(vector.x, vector.y, vector.z)
+    operator fun div(vector: DoubleVector3): DoubleVector3 = div(vector.x, vector.y, vector.z)
 
     fun distanceSquared(x: Double, y: Double, z: Double): Double {
         val dx = this.x - x

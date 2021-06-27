@@ -13,4 +13,7 @@ class EmptyCuboidIntBuffer(base: IntVector3, size: IntVector3) : CuboidIntBuffer
 
     override fun fillHorizontalLayer(value: Int, y: Int, height: Int) {
     }
+
+    override fun copyElement(thisIndex: Int, sourceIndex: Int, runLength: Int, source: CuboidBuffer) {
+    }
 }

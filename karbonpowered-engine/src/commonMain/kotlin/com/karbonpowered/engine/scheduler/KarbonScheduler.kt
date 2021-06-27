@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package com.karbonpowered.engine.scheduler
 
 import com.karbonpowered.engine.KarbonEngine
@@ -9,9 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
-
 
 /**
  * The threshold before physics and dynamic updates are aborted
@@ -21,9 +23,8 @@ private const val UPDATE_THRESHOLD = 100000
 /**
  * The number of milliseconds between pulses.
  */
-private const val PULSE_EVERY_MS = 1000L
+private val PULSE_EVERY = Duration.milliseconds(1000L)
 
-@OptIn(ExperimentalTime::class)
 class KarbonScheduler(
     val engine: KarbonEngine
 ) : TaskManager, CoroutineScope {
@@ -48,15 +49,15 @@ class KarbonScheduler(
 
     fun runMainTask() = launch {
         while (true) {
-            delay(PULSE_EVERY_MS)
+            delay(PULSE_EVERY)
             val tickDuration = measureTime {
-                tick(1000)
+                tick(PULSE_EVERY)
             }
 //            engine.info("Last tick duration: $tickDuration")
         }
     }
 
-    private suspend fun tick(delta: Long) {
+    private suspend fun tick(duration: Duration) {
         asyncManagers.copySnapshot()
         val managers = asyncManagers.snapshot
 
@@ -75,9 +76,20 @@ class KarbonScheduler(
             )
         }
 
+        startTickRun(managers, 0, duration).join()
+        startTickRun(managers, 1, duration).join()
+
         finalizeTick(managers).join()
         preSnapshotTick(managers).join()
         copySnapshotTick(managers).join()
+    }
+
+    suspend fun startTickRun(managers: Iterable<AsyncManager>, stage: Int, duration: Duration) = launch {
+        managers.forEach {
+            launch {
+                it.startTickRun(stage, duration)
+            }
+        }
     }
 
     private fun finalizeTick(managers: Iterable<AsyncManager>) = launch {

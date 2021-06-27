@@ -27,6 +27,15 @@ open class CuboidIntBuffer(
         data.fill(value, fromIndex, toIndex)
     }
 
+    override fun copyElement(thisIndex: Int, sourceIndex: Int, runLength: Int, source: CuboidBuffer) {
+        require(source is CuboidIntBuffer)
+        val end = thisIndex + runLength
+        var currentSourceIndex = sourceIndex
+        for (i in thisIndex until end) {
+            data[i] = source.data[currentSourceIndex++]
+        }
+    }
+
     @Suppress("NOTHING_TO_INLINE")
     private inline fun checkedIndex(x: Int, y: Int, z: Int): Int {
         val index = index(x, y, z)
