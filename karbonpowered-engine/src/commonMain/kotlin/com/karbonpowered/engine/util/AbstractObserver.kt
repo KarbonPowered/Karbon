@@ -46,21 +46,23 @@ abstract class AbstractObserver(
         val newObserving = mutableSetOf<ChunkReference>()
         val observing = mutableSetOf<ChunkReference>()
         if (transform != Transform.INVALID) {
-            val position = transform.position
-            val world = requireNotNull(position.world.refresh(engine.worldManager))
-            val chunkX = position.chunkX
-            val chunkY = position.chunkY
-            val chunkZ = position.chunkZ
-            val iterator = observerIterator.iterator(chunkX, chunkY, chunkZ)
-            iterator.forEach { (x, y, z) ->
-                launch { world.getChunk(x, y, z, LoadOption.LOAD_GEN) }
-                val chunk = ChunkReference(KarbonChunk.basePosition(WorldReference(world), x, y, z))
-                observing.add(chunk)
-                if (!oldObserving.contains(chunk)) {
-                    newObserving.add(chunk)
+            launch {
+                val position = transform.position
+                val world = requireNotNull(position.world.refresh(engine.worldManager))
+                val chunkX = position.chunkX
+                val chunkY = position.chunkY
+                val chunkZ = position.chunkZ
+                val iterator = observerIterator.iterator(chunkX, chunkY, chunkZ)
+                iterator.forEach { (x, y, z) ->
+                    launch { world.getChunk(x, y, z, LoadOption.LOAD_GEN) }
+                    val chunk = ChunkReference(KarbonChunk.basePosition(WorldReference(world), x, y, z))
+                    observing.add(chunk)
+                    if (!oldObserving.contains(chunk)) {
+                        newObserving.add(chunk)
+                    }
                 }
-            }
-            oldObserving.removeAll(observing)
+                oldObserving.removeAll(observing)
+            }.join()
         }
         if (oldObserving.isNotEmpty()) {
             stopObserving(oldObserving.asSequence())

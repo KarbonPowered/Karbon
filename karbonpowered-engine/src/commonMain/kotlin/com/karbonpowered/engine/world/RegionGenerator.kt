@@ -5,6 +5,8 @@ import com.karbonpowered.engine.util.cuboid.CuboidIntBuffer
 import com.karbonpowered.math.multiplyToShift
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
 class RegionGenerator(
     val region: KarbonRegion
@@ -17,6 +19,7 @@ class RegionGenerator(
     private val shift = width.multiplyToShift()
     private val mask = width - 1
 
+    @OptIn(ExperimentalTime::class)
     private val generatedChunks = Array(sections) { x ->
         Array(sections) { y ->
             Array(sections) { z ->
@@ -35,7 +38,10 @@ class RegionGenerator(
                     )
 
                     val world = requireNotNull(region.world.refresh(region.engine.worldManager))
-                    world.generator.generate(buffer, world)
+                    val generationTime = measureTime {
+                        world.generator.generate(buffer, world)
+                    }
+                    world.engine.info("Chunk $chunkX $chunkY $chunkZ generated for $generationTime")
 
                     val chunkBuffer = buffer // TODO: Copy the buffer depending on the generation width
                     val blockStore = AtomicPaletteIntStore(KarbonChunk.BLOCKS.BITS, true, 10, chunkBuffer.data)

@@ -68,8 +68,7 @@ class TripleIntObjectReferenceArrayMap<T>(
         TODO("Not yet implemented")
     }
 
-    override fun get(x: Int, y: Int, z: Int): T? =
-        getEntryRaw(x, y, z)?.value
+    override fun get(x: Int, y: Int, z: Int): T? = getEntryRaw(x, y, z)?.value
 
     override fun set(x: Int, y: Int, z: Int, value: T): T? {
         val entry = getOrCreateEntry(x, y, z)
@@ -81,6 +80,19 @@ class TripleIntObjectReferenceArrayMap<T>(
                 check(_values.remove(old)) { "Probably a old value missed in the value set" }
             }
             return old
+        }
+    }
+
+    fun getOrPut(x: Int, y: Int, z: Int, defaultValue: () -> T): T = lock.withLock {
+        val value = get(x, y, z)
+        if (value != null) {
+            value
+        } else {
+            val newValue = defaultValue()
+            val entry = getOrCreateEntry(x, y, z)
+            entry.put(newValue)
+            _values.add(newValue)
+            newValue
         }
     }
 

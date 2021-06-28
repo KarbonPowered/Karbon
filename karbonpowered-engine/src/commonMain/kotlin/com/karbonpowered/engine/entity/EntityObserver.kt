@@ -13,7 +13,7 @@ class EntityObserver(
     private var _isObserver by atomic(false)
 
     // TODO: Load from settings
-    override var syncDistance by atomic(1)
+    override var syncDistance by atomic(6)
     override var observerIterator by atomic(NO_CHUNKS)
     override var isObserver: Boolean
         get() = _isObserver

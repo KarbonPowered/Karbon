@@ -23,9 +23,9 @@ open class CuboidIntBuffer(
         data.fill(value)
     }
 
-    open fun fillHorizontalLayer(value: Int, y: Int, height: Int = y) {
+    open fun fillHorizontalLayer(value: Int, y: Int, height: Int = 1) {
         val fromIndex = checkedIndex(baseX, y, baseZ)
-        val toIndex = checkedIndex(topX - 1, y + height - 1, topZ - 1) + 1
+        val toIndex = checkedIndex(topX - 1, y + height, topZ - 1) + 1
         data.fill(value, fromIndex, toIndex)
     }
 
