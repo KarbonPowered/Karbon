@@ -16,6 +16,7 @@ allprojects {
 
     repositories {
         mavenCentral()
+        maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap/")
     }
 
     kotlin {
@@ -25,12 +26,13 @@ allprojects {
         sourceSets {
             val commonMain by getting {
                 dependencies {
+                    val ktorVersion: String by project
                     api("org.jetbrains.kotlinx:atomicfu:0.16.1")
                     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
                     api("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.4")
                     api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
-                    api("io.ktor:ktor-io:1.6.0")
-                    api("io.ktor:ktor-network:1.6.0")
+                    api("io.ktor:ktor-io:$ktorVersion")
+                    api("io.ktor:ktor-network:$ktorVersion")
                 }
             }
             commonTest {

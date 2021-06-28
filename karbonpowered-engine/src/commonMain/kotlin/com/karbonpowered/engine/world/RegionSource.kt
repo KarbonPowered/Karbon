@@ -47,21 +47,21 @@ class RegionSource(
     fun hasRegion(x: Int, y: Int, z: Int): Boolean = loadedRegions[x, y, z] != null
 
     fun removeRegion(region: KarbonRegion) {
-        if (region.world != world) {
-            return
-        }
-
-        if (loadedRegions.remove(region.x, region.y, region.z, region)) {
-            // TODO: Unregistering tasks managers
-
-            if (regionsLoaded.decrementAndGet() < 0) {
-                println("Regions loaded dropped below zero")
-            }
-
-            // TODO: Call RegionUnloadEvent
-            region.unlinkNeighbours()
-        } else {
-            println("Tried to remove region $region but region removal failed")
-        }
+//        if (region.world != world) {
+//            return
+//        }
+//
+//        if (loadedRegions.remove(region.x, region.y, region.z, region)) {
+//            // TODO: Unregistering tasks managers
+//
+//            if (regionsLoaded.decrementAndGet() < 0) {
+//                println("Regions loaded dropped below zero")
+//            }
+//
+//            // TODO: Call RegionUnloadEvent
+//            region.unlinkNeighbours()
+//        } else {
+//            println("Tried to remove region $region but region removal failed")
+//        }
     }
 }

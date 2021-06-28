@@ -1,10 +1,6 @@
 package com.karbonpowered.network.netty
 
-import io.ktor.utils.io.bits.*
-import io.ktor.utils.io.core.*
-import io.ktor.utils.io.streams.*
 import io.netty.buffer.ByteBuf
-import io.netty.buffer.ByteBufOutputStream
 import io.netty.channel.EventLoopGroup
 import io.netty.channel.epoll.Epoll
 import io.netty.channel.epoll.EpollEventLoopGroup
@@ -47,45 +43,5 @@ object Netty {
     }
 }
 
-fun ByteBuf.asInput() = ByteBufInput(this)
-
-@JvmInline
-value class ByteBufInput(val byteBuf: ByteBuf) : Input {
-    override var byteOrder: ByteOrder
-        get() = throw UnsupportedOperationException()
-        set(_) {}
-    override val endOfInput: Boolean
-        get() = !byteBuf.isReadable
-
-    override fun close() {
-        byteBuf.release()
-    }
-
-    override fun discard(n: Long): Long {
-        val size = minOf(n, byteBuf.readableBytes().toLong())
-        byteBuf.skipBytes(size.toInt())
-        return size
-    }
-
-    override fun peekTo(destination: Memory, destinationOffset: Long, offset: Long, min: Long, max: Long): Long {
-        val buffer = destination.buffer
-        val bytes = ByteArray(minOf(byteBuf.readableBytes(), max.toInt()))
-        val readerIndex = byteBuf.readerIndex()
-        byteBuf.readBytes(bytes)
-        byteBuf.readerIndex(readerIndex)
-        buffer.put(buffer.position() + destinationOffset.toInt(), bytes)
-        return bytes.size.toLong()
-    }
-
-    override fun readByte(): Byte = byteBuf.readByte()
-
-    override fun tryPeek(): Int = if (byteBuf.isReadable) {
-        byteBuf.getByte(byteBuf.readerIndex() + 1).toInt()
-    } else {
-        -1
-    }
-}
-
-fun ByteBuf.asOutput() = ByteBufOutputStream(this).asOutput()
 fun ByteBuf.readVarInt() = com.karbonpowered.server.readVarInt { readByte() }
 fun ByteBuf.writeVarInt(i: Int) = com.karbonpowered.server.writeVarInt(i) { writeByte(it.toInt()) }

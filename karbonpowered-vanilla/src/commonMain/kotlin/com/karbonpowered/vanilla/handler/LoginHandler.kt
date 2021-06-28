@@ -1,6 +1,5 @@
 package com.karbonpowered.vanilla.handler
 
-import com.karbonpowered.engine.protocol.event.WorldChangeProtocolEvent
 import com.karbonpowered.protocol.packet.clientbound.login.ClientboundLoginSuccessPacket
 import com.karbonpowered.server.Session
 import com.karbonpowered.server.event.PacketSentEvent
@@ -14,7 +13,5 @@ class LoginHandler(
     override fun packetSent(event: PacketSentEvent) {
         val packet = event.packet as? ClientboundLoginSuccessPacket ?: return
         val player = server.addPlayer(packet.uniqueId, packet.username, session)
-        val position = player.physics.position
-        player.network.callProtocolEvent(WorldChangeProtocolEvent(session, position.world))
     }
 }

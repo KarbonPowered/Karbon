@@ -4,7 +4,6 @@ import com.karbonpowered.common.concurrent.NamedReentrantLock
 import com.karbonpowered.engine.util.collection.map.palette.AtomicPaletteIntStore
 import com.karbonpowered.engine.util.cuboid.CuboidIntBuffer
 import com.karbonpowered.math.multiplyToShift
-import com.karbonpowered.math.vector.IntVector3
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -74,16 +73,12 @@ class RegionGenerator(
                 var chunkInWorldZ = baseChunkZ + chunkZLocal
 
                 val buffer = CuboidIntBuffer(
-                    base = IntVector3(
-                        x = chunkInWorldX shl KarbonChunk.BLOCKS.BITS,
-                        y = chunkInWorldY shl KarbonChunk.BLOCKS.BITS,
-                        z = chunkInWorldZ shl KarbonChunk.BLOCKS.BITS,
-                    ),
-                    size = IntVector3(
-                        x = KarbonChunk.BLOCKS.SIZE shl shift,
-                        y = KarbonChunk.BLOCKS.SIZE shl shift,
-                        z = KarbonChunk.BLOCKS.SIZE shl shift,
-                    )
+                    baseX = chunkInWorldX shl KarbonChunk.BLOCKS.BITS,
+                    baseY = chunkInWorldY shl KarbonChunk.BLOCKS.BITS,
+                    baseZ = chunkInWorldZ shl KarbonChunk.BLOCKS.BITS,
+                    sizeX = KarbonChunk.BLOCKS.SIZE shl shift,
+                    sizeY = KarbonChunk.BLOCKS.SIZE shl shift,
+                    sizeZ = KarbonChunk.BLOCKS.SIZE shl shift
                 )
                 world.generator.generateChunk(buffer, world)
 
@@ -94,16 +89,12 @@ class RegionGenerator(
                         Array(width) { yy ->
                             chunkInWorldY = baseChunkY + chunkYLocal + yy
                             val chunkBuffer = CuboidIntBuffer(
-                                IntVector3(
-                                    chunkInWorldX shl KarbonChunk.BLOCKS.BITS,
-                                    chunkInWorldY shl KarbonChunk.BLOCKS.BITS,
-                                    chunkInWorldZ shl KarbonChunk.BLOCKS.BITS,
-                                ),
-                                IntVector3(
-                                    KarbonChunk.BLOCKS.SIZE,
-                                    KarbonChunk.BLOCKS.SIZE,
-                                    KarbonChunk.BLOCKS.SIZE
-                                )
+                                baseX = chunkInWorldX shl KarbonChunk.BLOCKS.BITS,
+                                baseY = chunkInWorldY shl KarbonChunk.BLOCKS.BITS,
+                                baseZ = chunkInWorldZ shl KarbonChunk.BLOCKS.BITS,
+                                sizeX = KarbonChunk.BLOCKS.SIZE,
+                                sizeY = KarbonChunk.BLOCKS.SIZE,
+                                sizeZ = KarbonChunk.BLOCKS.SIZE
                             )
                             chunkBuffer.copyFrom(buffer)
                             KarbonChunk(

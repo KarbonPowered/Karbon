@@ -1,13 +1,14 @@
 package com.karbonpowered.vanilla.world
 
+import com.karbonpowered.data.ResourceKey
 import com.karbonpowered.engine.KarbonEngine
 import com.karbonpowered.engine.world.KarbonWorld
 import com.karbonpowered.engine.world.generator.WorldGenerator
 import com.karbonpowered.nbt.NBT
 
 class VanillaWorld(
-    engine: KarbonEngine, name: String, generator: WorldGenerator
-) : KarbonWorld(engine, name, generator) {
+    engine: KarbonEngine, identifier: ResourceKey, generator: WorldGenerator
+) : KarbonWorld(engine, identifier, generator) {
     fun createDimensionCodec() = NBT(
         "minecraft:dimension_type" to NBT(
             "type" to "minecraft:dimension_type",
