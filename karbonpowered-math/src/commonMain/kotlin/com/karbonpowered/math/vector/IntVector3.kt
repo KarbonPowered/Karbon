@@ -133,6 +133,10 @@ open class IntVector3(
 
     override fun compareTo(other: IntVector3): Int = lengthSquared - other.lengthSquared
 
+    operator fun component1() = x
+    operator fun component2() = y
+    operator fun component3() = z
+
     override fun toString(): String = "($x, $y, $z)"
 
     override fun hashCode(): Int = hashCode

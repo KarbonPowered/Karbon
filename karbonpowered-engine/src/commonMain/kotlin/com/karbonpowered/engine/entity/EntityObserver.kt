@@ -4,6 +4,7 @@ import com.karbonpowered.engine.util.AbstractObserver
 import com.karbonpowered.engine.util.ChunkIterator
 import com.karbonpowered.engine.world.LoadOption
 import com.karbonpowered.engine.world.discrete.Transform
+import com.karbonpowered.engine.world.reference.ChunkReference
 import kotlinx.atomicfu.atomic
 
 class EntityObserver(
@@ -12,7 +13,7 @@ class EntityObserver(
     private var _isObserver by atomic(false)
 
     // TODO: Load from settings
-    override var syncDistance by atomic(10)
+    override var syncDistance by atomic(1)
     override var observerIterator by atomic(NO_CHUNKS)
     override var isObserver: Boolean
         get() = _isObserver
@@ -33,7 +34,23 @@ class EntityObserver(
         val liveChunk = entity.physics.transform.position.chunk(engine.worldManager, LoadOption.NO_LOAD)
         val needsUpdate = observeChunksFailed || (isObserver && liveChunk != null && snapshotChunk != liveChunk)
         if (needsUpdate) {
-            updateObserver()
+            try {
+                updateObserver()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    override suspend fun startObserving(observing: Sequence<ChunkReference>) {
+        observing.forEach {
+            engine.info("Start observing: ${it.refresh(engine.worldManager)}")
+        }
+    }
+
+    override suspend fun stopObserving(observing: Sequence<ChunkReference>) {
+        observing.forEach {
+            engine.info("Stop observing: ${it.refresh(engine.worldManager)}")
         }
     }
 

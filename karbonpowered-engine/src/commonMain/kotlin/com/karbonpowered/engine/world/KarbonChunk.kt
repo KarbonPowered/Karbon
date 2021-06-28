@@ -4,35 +4,36 @@ import com.karbonpowered.engine.util.BitSize
 import com.karbonpowered.engine.util.collection.map.palette.AtomicPaletteIntStore
 import com.karbonpowered.engine.world.cuboid.Cube
 import com.karbonpowered.engine.world.discrete.Position
+import com.karbonpowered.engine.world.reference.WorldReference
 
 /**
  * Represents a cube containing 16x16x16 Blocks
  */
 class KarbonChunk(
     val region: KarbonRegion,
-    x: Int,
-    y: Int,
-    z: Int,
+    val chunkX: Int,
+    val chunkY: Int,
+    val chunkZ: Int,
     val blockStore: AtomicPaletteIntStore
 ) : Cube(
-    Position(
-        region.world,
-        (x shl BLOCKS.BITS).toFloat(),
-        (y shl BLOCKS.BITS).toFloat(),
-        (z shl BLOCKS.BITS).toFloat()
-    ),
+    basePosition(region.world, chunkX shl BLOCKS.BITS, chunkY shl BLOCKS.BITS, chunkZ shl BLOCKS.BITS),
     BLOCKS.SIZE.toFloat()
 ) {
     val isLoaded: Boolean = true
 
-    fun cancelUnload(): Boolean {
-        TODO()
-    }
+    override fun toString() = "Chunk($world, $chunkX, $chunkY, $chunkZ)"
 
     companion object {
         /**
          * Stores the size of the amount of blocks in this Chunk
          */
         val BLOCKS = BitSize(4)
+
+        fun basePosition(world: WorldReference, x: Int, y: Int, z: Int) = Position(
+            world,
+            (x shl BLOCKS.BITS).toFloat(),
+            (y shl BLOCKS.BITS).toFloat(),
+            (z shl BLOCKS.BITS).toFloat()
+        )
     }
 }

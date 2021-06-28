@@ -3,7 +3,6 @@ package com.karbonpowered.engine.util
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -91,61 +90,53 @@ object Log : CoroutineScope {
 
     fun info(logger: String, info: String) {
         val time = startTime.elapsedNow()
-        launch {
-            val log = buildString {
-                append(CYAN)
-                append("[")
-                appendTime(time)
-                append("] ")
-                append(WHITE)
-                append("[")
-                append(logger)
-                append("] ")
-                append(RESET)
-                append(info)
-            }
-            println(log)
+        val log = buildString {
+            append(CYAN)
+            appendTime(time)
+            append(" ")
+            append(WHITE)
+            append("[")
+            append(logger)
+            append("] ")
+            append(RESET)
+            append(info)
         }
+        println(log)
     }
 
     fun error(logger: String, info: String, throwable: Throwable?) {
         val time = startTime.elapsedNow()
-        launch {
-            val log = buildString {
-                append(CYAN)
-                append("[")
-                appendTime(time)
-                append("] ")
-                append(RED)
-                append("[")
-                append(logger)
-                append("] ")
-                append(RED)
-                append(info)
-            }
-            println(log)
-            throwable?.printStackTrace()
+        val log = buildString {
+            append(CYAN)
+            appendTime(time)
+            append(" ")
+            append(RED)
+            append("[")
+            append(logger)
+            append("] ")
+            append(RED)
+            append(info)
         }
+        println(log)
+        throwable?.printStackTrace()
     }
 
     fun warn(logger: String, info: String) {
         val time = startTime.elapsedNow()
-        launch {
-            val log = buildString {
-                append(CYAN)
-                append("[")
-                appendTime(time)
-                append("] ")
-                append(YELLOW)
-                append("[")
-                append(logger)
-                append("] ")
-                append(YELLOW)
-                append(info)
-            }
-            println(log)
+        val log = buildString {
+            append(CYAN)
+            appendTime(time)
+            append(" ")
+            append(YELLOW)
+            append("[")
+            append(logger)
+            append("] ")
+            append(YELLOW)
+            append(info)
         }
+        println(log)
     }
+
 
     private fun StringBuilder.appendTime(time: Duration) {
         time.toComponents { hours, minutes, seconds, nanoseconds ->

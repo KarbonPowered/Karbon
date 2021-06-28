@@ -75,4 +75,6 @@ open class KarbonWorld(
         region.entityManager.addEntity(entity)
         return entity
     }
+
+    override fun toString(): String = "World($identifier)"
 }

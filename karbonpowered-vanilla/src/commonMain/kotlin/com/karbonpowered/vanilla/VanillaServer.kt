@@ -5,7 +5,6 @@ import com.karbonpowered.data.ResourceKey
 import com.karbonpowered.engine.KarbonEngine
 import com.karbonpowered.engine.entity.KarbonPlayer
 import com.karbonpowered.engine.snapshot.SnapshotableHashMap
-import com.karbonpowered.engine.world.KarbonWorld
 import com.karbonpowered.engine.world.generator.FlatWorldGenerator
 import com.karbonpowered.server.Server
 import com.karbonpowered.server.Session
@@ -21,12 +20,7 @@ class VanillaServer(
     val networkServer: Server
 ) : KarbonEngine(), ServerListener {
     val players = SnapshotableHashMap<UUID, KarbonPlayer>(snapshotManager)
-    val worlds = SnapshotableHashMap<String, KarbonWorld>(snapshotManager)
-    val defaultWorld: KarbonWorld
-        get() {
-            val values = worlds.values
-            return values.first()
-        }
+    val defaultWorld get() = worldManager.defaultWorld
 
     override suspend fun start() = coroutineScope {
         val duration = measureTime {
@@ -36,6 +30,9 @@ class VanillaServer(
             worldManager.loadWorld(ResourceKey("karbon", "world"), FlatWorldGenerator(1))
         }
         info("Done! ($duration) Ready for players at ${networkServer.host}:${networkServer.port}")
+
+        val testEntity = defaultWorld.spawnEntity(defaultWorld.spawnPoint.position)
+        testEntity.observer.isObserver = true
     }
 
     override fun sessionAdded(event: SessionAddedEvent) {

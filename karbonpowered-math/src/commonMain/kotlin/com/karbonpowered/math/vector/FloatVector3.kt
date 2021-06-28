@@ -41,6 +41,8 @@ open class BaseFloatVector3(
     override val z: Float
 ) : FloatVector3 {
     override fun add(x: Float, y: Float, z: Float): FloatVector3 = FloatVector3(this.x + x, this.y + y, this.z + z)
+
+    override fun toString(): String = "($x, $y, $z)"
 }
 
 fun FloatVector3() = FloatVector3.ZERO

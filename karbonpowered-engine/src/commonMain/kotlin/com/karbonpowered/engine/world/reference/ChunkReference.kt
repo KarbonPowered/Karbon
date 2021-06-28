@@ -24,7 +24,7 @@ class ChunkReference(
     fun get(): KarbonChunk? =
         reference?.get()?.takeIf { it.isLoaded }
 
-    suspend fun refresh(manager: KarbonWorldManager, loadOption: LoadOption): KarbonChunk? {
+    suspend fun refresh(manager: KarbonWorldManager, loadOption: LoadOption = LoadOption.LOAD_GEN): KarbonChunk? {
         get()?.let { return it }
         val region = base.chunk(manager, loadOption)
         reference = region?.let { WeakReference(it) }

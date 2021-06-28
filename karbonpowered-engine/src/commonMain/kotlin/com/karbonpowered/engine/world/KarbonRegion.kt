@@ -24,8 +24,7 @@ class KarbonRegion(
     val regionY: Int,
     val regionZ: Int,
     val regionSource: RegionSource
-) : AsyncManager,
-    Cube(Position(world, regionX, regionY, regionZ), BLOCKS.SIZE.toFloat()) {
+) : AsyncManager, Cube(Position(world, regionX, regionY, regionZ), BLOCKS.SIZE.toFloat()) {
     val engine = world.engine
     val regionGenerator = RegionGenerator(this)
     val snapshotManager = SnapshotManager()
@@ -75,20 +74,25 @@ class KarbonRegion(
             return newChunk
         }
 
-        regionGenerator.generateChunk(x, y, z).join()
-        val generatedChunk = live.value[getChunkKey(localX, localY, localZ)]
-        if (generatedChunk != null) {
-            return generatedChunk
-        }
-        engine.error("Chunk failed to generate! ($loadOption)")
-        engine.error("Region $this, chunk $x, $y, $z")
-        RuntimeException().printStackTrace()
-        return null
+        val chunk = regionGenerator.generateChunk(x, y, z)
+        setChunk(chunk, x, y, z)
+        return chunk
     }
 
     // TODO: Loading chunk
     private fun loadChunk(localX: Int, localY: Int, localZ: Int): KarbonChunk? {
         return null
+    }
+
+    fun setChunk(newChunk: KarbonChunk, x: Int, y: Int, z: Int) {
+        val chunkIndex = getChunkKey(x, y, z)
+        val liveChunks = live.value
+        val newChunks = liveChunks.copyOf()
+        newChunks[chunkIndex] = newChunk
+        live.value = newChunks
+        if (chunks.value[chunkIndex] == null) {
+            chunks.value[chunkIndex] = newChunk
+        }
     }
 
     fun setGeneratedChunks(newChunks: Array<Array<Array<KarbonChunk>>>) {
@@ -146,6 +150,22 @@ class KarbonRegion(
             }
         }.join()
     }
+
+    override suspend fun finalizeRun() {
+        entityManager.finalizeRun()
+    }
+
+    override suspend fun preSnapshotRun() {
+        entityManager.preSnapshotRun()
+    }
+
+    override fun copySnapshotRun() {
+        chunks.value = live.value
+        snapshotManager.copyAllSnapshots()
+        entityManager.copyAllSnapshots()
+    }
+
+    override fun toString(): String = "Region(${world.get()}, $regionX, $regionY, $regionZ)"
 
     companion object {
         /**

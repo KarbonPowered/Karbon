@@ -16,7 +16,7 @@ class OutwardIterator(
 ) : Iterator<IntVector3> {
     private var current = IntVector3(x, y, z)
     private val center = IntVector3(x, y, z)
-    private var step = IntVector3(x, y, z)
+    private var step = IntVector3(0, 0, 0)
     private var first = true
     private var endDistance = maxDistance
     private var hasNext = endDistance >= 0
