@@ -42,7 +42,7 @@ open class ServerListener : SessionListener {
         val protocol = event.session.packetProtocol as MinecraftProtocol
         val packet = event.packet
         val session = event.session
-        println("RECEIVED: $packet")
+//        println("RECEIVED: $packet")
         when (packet) {
             is ServerboundHandshakePacket -> {
                 when (packet.handshakeIntent) {

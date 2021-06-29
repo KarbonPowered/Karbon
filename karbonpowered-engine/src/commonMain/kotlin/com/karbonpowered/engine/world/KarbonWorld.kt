@@ -6,7 +6,7 @@ import com.karbonpowered.data.ResourceKey
 import com.karbonpowered.engine.KarbonEngine
 import com.karbonpowered.engine.component.BaseComponentHolder
 import com.karbonpowered.engine.entity.KarbonEntity
-import com.karbonpowered.engine.entity.KarbonPlayer
+import com.karbonpowered.engine.player.KarbonPlayer
 import com.karbonpowered.engine.scheduler.AsyncManager
 import com.karbonpowered.engine.world.discrete.Position
 import com.karbonpowered.engine.world.discrete.Transform
@@ -66,11 +66,16 @@ open class KarbonWorld(
         return null
     }
 
-    fun spawnEntity(position: FloatVector3, option: LoadOption = LoadOption.LOAD_GEN): KarbonEntity {
+    fun spawnEntity(
+        position: FloatVector3,
+        uniqueId: UUID = uuid4(),
+        option: LoadOption = LoadOption.LOAD_GEN
+    ): KarbonEntity {
         val region = requireNotNull(getRegionFromBlock(position, option))
         val entity = KarbonEntity(
             engine,
-            Transform(Position(this, position), FloatQuaternion.fromAxesAnglesDeg(0f, 0f, 0f))
+            Transform(Position(this, position), FloatQuaternion.fromAxesAnglesDeg(0f, 0f, 0f)),
+            uniqueId
         )
         region.entityManager.addEntity(entity)
         return entity

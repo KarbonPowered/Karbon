@@ -4,7 +4,9 @@ import io.ktor.utils.io.bits.*
 import io.ktor.utils.io.core.*
 import io.ktor.utils.io.core.internal.*
 import io.ktor.utils.io.pool.*
+import io.ktor.utils.io.streams.*
 import io.netty.buffer.ByteBuf
+import io.netty.buffer.ByteBufInputStream
 
 private class ByteBufAsInput(
     val byteBuf: ByteBuf,
@@ -12,7 +14,8 @@ private class ByteBufAsInput(
 ) : Input(pool = pool) {
     override fun fill(destination: Memory, offset: Int, length: Int): Int {
         val readerIndex = byteBuf.readerIndex()
-        byteBuf.readBytes(destination.buffer.slice(offset, length))
+
+        byteBuf.readBytes(destination.buffer)
         return byteBuf.readerIndex() - readerIndex
     }
 
@@ -22,4 +25,4 @@ private class ByteBufAsInput(
 
 fun ByteBuf.asInput(
     pool: ObjectPool<ChunkBuffer> = ChunkBuffer.Pool
-): Input = ByteBufAsInput(this, pool)
+): Input = ByteBufInputStream(this).asInput(pool)

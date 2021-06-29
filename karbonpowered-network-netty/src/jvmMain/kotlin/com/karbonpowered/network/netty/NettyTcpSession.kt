@@ -94,7 +94,7 @@ open class NettyTcpSession(
         val sendingEvent = PacketSendingEvent(this, packet)
         callEvent(sendingEvent)
 
-        println("OUT: $packet")
+//        println("OUT: $packet")
 
         if (!sendingEvent.isCancelled) {
             val toSend = sendingEvent.packet

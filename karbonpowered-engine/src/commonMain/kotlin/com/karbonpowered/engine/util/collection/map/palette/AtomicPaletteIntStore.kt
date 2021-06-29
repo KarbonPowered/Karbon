@@ -82,6 +82,10 @@ class AtomicPaletteIntStore(
         return state
     }
 
+    fun fullArray() = IntArray(size) {
+        store[it]
+    }
+
     fun resetDirtyArrays(): Boolean {
         minX.value = 0
         minY.value = 0

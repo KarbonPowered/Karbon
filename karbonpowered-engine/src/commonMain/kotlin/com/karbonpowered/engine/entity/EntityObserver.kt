@@ -1,5 +1,7 @@
 package com.karbonpowered.engine.entity
 
+import com.karbonpowered.engine.event.EntityStartObservingChunksEvent
+import com.karbonpowered.engine.event.EntityStopObservingChunksEvent
 import com.karbonpowered.engine.util.AbstractObserver
 import com.karbonpowered.engine.util.ChunkIterator
 import com.karbonpowered.engine.world.LoadOption
@@ -43,15 +45,11 @@ class EntityObserver(
     }
 
     override suspend fun startObserving(observing: Sequence<ChunkReference>) {
-        observing.forEach {
-            engine.info("Start observing: ${it.refresh(engine.worldManager)}")
-        }
+        engine.eventManager.callEvent(EntityStartObservingChunksEvent(entity, observing.toSet()))
     }
 
     override suspend fun stopObserving(observing: Sequence<ChunkReference>) {
-        observing.forEach {
-            engine.info("Stop observing: ${it.refresh(engine.worldManager)}")
-        }
+        engine.eventManager.callEvent(EntityStopObservingChunksEvent(entity, observing.toSet()))
     }
 
     override fun copySnapshot() {

@@ -1,7 +1,7 @@
 package com.karbonpowered.common.collection
 
-interface Queue<E> : Collection<E> {
-    fun add(element: E): Boolean
+interface Queue<E> : MutableCollection<E> {
+    override fun add(element: E): Boolean
 
     fun offer(element: E): Boolean
 

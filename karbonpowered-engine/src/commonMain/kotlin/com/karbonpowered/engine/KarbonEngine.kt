@@ -5,6 +5,7 @@ import com.karbonpowered.engine.scheduler.KarbonScheduler
 import com.karbonpowered.engine.snapshot.SnapshotManager
 import com.karbonpowered.engine.util.Log
 import com.karbonpowered.engine.world.KarbonWorldManager
+import com.karbonpowered.event.SimpleEventManager
 import kotlin.time.ExperimentalTime
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
@@ -16,6 +17,7 @@ abstract class KarbonEngine : AsyncManager {
         addAsyncManager(this@KarbonEngine)
     }
     val worldManager = KarbonWorldManager(this)
+    val eventManager = SimpleEventManager()
     lateinit var startTime: TimeMark
 
     open suspend fun start() {

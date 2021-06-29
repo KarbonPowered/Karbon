@@ -5,6 +5,7 @@ kotlin {
                 api(project(":karbonpowered-network-netty"))
                 api(project(":karbonpowered-protocol-java-edition"))
                 api(project(":karbonpowered-engine"))
+                api(project(":karbonpowered-event"))
             }
         }
     }

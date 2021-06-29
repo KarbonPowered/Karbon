@@ -6,6 +6,7 @@ kotlin {
                 implementation(project(":karbonpowered-core"))
                 implementation(project(":karbonpowered-data"))
                 implementation(project(":karbonpowered-math"))
+                implementation(project(":karbonpowered-event"))
                 implementation(project(":karbonpowered-network"))
             }
         }

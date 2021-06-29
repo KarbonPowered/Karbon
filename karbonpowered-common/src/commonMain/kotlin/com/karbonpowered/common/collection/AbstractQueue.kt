@@ -10,13 +10,13 @@ abstract class AbstractQueue<E> : AbstractCollection<E>(), Queue<E> {
     override fun element(): E =
         peek() ?: throw NoSuchElementException()
 
-    fun clear() {
+    override fun clear() {
         while (true) {
             pool() ?: break
         }
     }
 
-    fun addAll(elements: Collection<E>): Boolean {
+    override fun addAll(elements: Collection<E>): Boolean {
         if (elements == this) throw IllegalArgumentException()
         var modified = false
         elements.forEach {

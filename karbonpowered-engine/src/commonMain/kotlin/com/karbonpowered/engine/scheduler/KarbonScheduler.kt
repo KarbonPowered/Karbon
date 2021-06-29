@@ -40,6 +40,8 @@ class KarbonScheduler(
      */
     private val asyncManagers = SnapshotableArrayList<AsyncManager>(snapshotManager)
 
+    val isOverloaded = false
+
     fun addAsyncManager(manager: AsyncManager): Boolean {
         engine.info("Add async manager: $manager")
         return asyncManagers.add(manager)
