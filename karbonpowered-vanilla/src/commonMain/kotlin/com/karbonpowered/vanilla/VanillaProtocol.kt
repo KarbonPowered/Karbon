@@ -49,12 +49,14 @@ class VanillaProtocol(
             serverbound(0x01, ServerboundBlockEntityTagQueryPacket.Codec)
             serverbound(0x02, ServerboundChangeDifficultyPacket.Codec)
             serverbound(0x03, ServerboundChatPacket.Codec)
+            serverbound(0x04, ServerboundClientRequestPacket.Codec)
             serverbound(0x05, ServerboundClientSettingsPacket.Codec)
             serverbound(0x0F, ServerboundKeepAlivePacket.Codec)
             serverbound(0x11, ServerboundPlayerPositionPacket.Codec)
             serverbound(0x12, ServerboundPlayerPositionRotationPacket.Codec)
             serverbound(0x13, ServerboundPlayerRotationPacket.Codec)
             serverbound(0x14, ServerboundPlayerOnGroundPacket.Codec)
+            serverbound(0x1B, ServerboundPlayerStatePacket.Codec)
         }
     }
 }

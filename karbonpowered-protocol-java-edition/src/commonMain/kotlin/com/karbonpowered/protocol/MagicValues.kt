@@ -5,6 +5,7 @@ import com.karbonpowered.core.entity.living.player.ChatVisibilities
 import com.karbonpowered.core.entity.living.player.GameModes
 import com.karbonpowered.core.entity.living.player.HandTypes
 import com.karbonpowered.core.entity.living.player.SkinParts
+import com.karbonpowered.protocol.packet.serverbound.game.ServerboundPlayerStatePacket
 import kotlin.reflect.KClass
 
 object MagicValues {
@@ -35,6 +36,16 @@ object MagicValues {
 
         register(HandTypes.OFF_HAND, 0)
         register(HandTypes.MAIN_HAND, 1)
+
+        register(ServerboundPlayerStatePacket.PlayerState.START_SNEAKING, 0)
+        register(ServerboundPlayerStatePacket.PlayerState.STOP_SNEAKING, 1)
+        register(ServerboundPlayerStatePacket.PlayerState.LEAVE_BED, 2)
+        register(ServerboundPlayerStatePacket.PlayerState.START_SPRINTING, 3)
+        register(ServerboundPlayerStatePacket.PlayerState.STOP_SPRINTING, 4)
+        register(ServerboundPlayerStatePacket.PlayerState.START_HORSE_JUMP, 5)
+        register(ServerboundPlayerStatePacket.PlayerState.STOP_HORSE_JUMP, 6)
+        register(ServerboundPlayerStatePacket.PlayerState.OPEN_HORSE_INVENTORY, 7)
+        register(ServerboundPlayerStatePacket.PlayerState.START_ELYTRA_FLYING, 8)
 
         register(MinecraftProtocol.SubProtocol.HANDSHAKE, 0)
         register(MinecraftProtocol.SubProtocol.STATUS, 1)
