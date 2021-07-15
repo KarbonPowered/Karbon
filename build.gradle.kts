@@ -28,7 +28,7 @@ allprojects {
                 dependencies {
                     val ktorVersion: String by project
                     api("org.jetbrains.kotlinx:atomicfu:0.16.2")
-                    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
+                    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1-native-mt")
                     api("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.4")
                     api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
                     api("io.ktor:ktor-io:$ktorVersion")
