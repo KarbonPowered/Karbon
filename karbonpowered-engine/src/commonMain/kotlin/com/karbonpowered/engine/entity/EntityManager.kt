@@ -16,9 +16,9 @@ class EntityManager(
         entities[entity.uniqueId] = entity
     }
 
-    fun removeEntity(entity: KarbonEntity) {
-        entities.remove(entity.uniqueId)
-    }
+    fun removeEntity(uniqueId: UUID) = entities.remove(uniqueId)
+
+    fun removeEntity(entity: KarbonEntity) = removeEntity(entity.uniqueId)
 
     fun copyAllSnapshots() {
         entities.values.forEach {

@@ -41,7 +41,7 @@ class RegionGenerator(
                     val generationTime = measureTime {
                         world.generator.generate(buffer, world)
                     }
-                    world.engine.info("Chunk $chunkX $chunkY $chunkZ generated for $generationTime")
+//                    world.engine.info("Chunk $chunkX $chunkY $chunkZ generated for $generationTime")
 
                     val chunkBuffer = buffer // TODO: Copy the buffer depending on the generation width
                     val blockStore = AtomicPaletteIntStore(KarbonChunk.BLOCKS.BITS, true, 10, chunkBuffer.data)

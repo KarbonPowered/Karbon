@@ -23,7 +23,7 @@ private const val UPDATE_THRESHOLD = 100000
 /**
  * The number of milliseconds between pulses.
  */
-private val PULSE_EVERY = Duration.milliseconds(1000L)
+private val PULSE_EVERY = Duration.milliseconds(1000L / 20)
 
 class KarbonScheduler(
     val engine: KarbonEngine

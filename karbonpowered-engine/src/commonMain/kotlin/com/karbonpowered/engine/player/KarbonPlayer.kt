@@ -13,7 +13,7 @@ open class KarbonPlayer(
     val engine: KarbonEngine,
     override val uniqueId: UUID,
     val username: String,
-    session: Session,
+    session: Session
 ) : Identifiable, AsyncManager {
     open val network = PlayerNetwork(this, session)
 

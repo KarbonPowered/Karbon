@@ -96,6 +96,17 @@ class VanillaPlayerNetwork(
                     ClientboundSyncDistancePacket(16),
                     flush = false
                 )
+                if (previousTransform.position != transform.position) {
+                    session.sendPacket(
+                        ClientboundGamePlayerPositionRotationPacket(
+                            transform.position.x.toDouble(),
+                            transform.position.y.toDouble(),
+                            transform.position.z.toDouble(),
+                            transform.rotation.x,
+                            transform.rotation.y
+                        ), flush = false
+                    )
+                }
                 flush = true
             }
 
@@ -110,18 +121,6 @@ class VanillaPlayerNetwork(
                     transform.position.chunkZ
                 ), flush = false
             )
-        }
-        if (previousTransform != transform) {
-            session.sendPacket(
-                ClientboundGamePlayerPositionRotationPacket(
-                    transform.position.x.toDouble(),
-                    transform.position.y.toDouble(),
-                    transform.position.z.toDouble(),
-                    transform.rotation.x,
-                    transform.rotation.y
-                ), flush = false
-            )
-            flush = true
         }
         if (flush) {
             session.flushPackets()

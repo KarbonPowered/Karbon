@@ -18,8 +18,17 @@ class KarbonPhysics(
     private val live = atomic(transform ?: Transform.INVALID)
     val snapshot = atomic(transform ?: Transform.INVALID)
 
-    override val transform: Transform
+    override var transform: Transform
         get() = live.value
+        set(value) {
+            var oldTransform: Transform
+            var newTransform: Transform
+            do {
+                oldTransform = live.value
+                newTransform = value
+            } while (!live.compareAndSet(oldTransform, newTransform))
+            sync()
+        }
 
     var position: Position
         get() = live.value.position

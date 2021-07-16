@@ -27,14 +27,14 @@ data class ClientboundMessagePacket(
 
         override fun decode(input: Input): ClientboundMessagePacket {
             val message = input.readString()
-            val packetType = MagicValues.value<MessageType>(input.readVarInt())
+            val packetType = MagicValues.key<MessageType>(input.readVarInt())
             val sender = input.readUUID()
             return ClientboundMessagePacket(LiteralText(message), packetType, sender)
         }
 
         override fun encode(output: Output, packet: ClientboundMessagePacket) {
             output.writeString(packet.message.toString())
-            output.writeVarInt(MagicValues.key(packet.packetType))
+            output.writeVarInt(MagicValues.value(packet.packetType))
             output.writeUUID(packet.sender)
         }
     }

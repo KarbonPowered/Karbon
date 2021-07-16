@@ -54,6 +54,7 @@ class VanillaProtocol(
             serverbound(0x04, ServerboundClientRequestPacket.Codec)
             serverbound(0x05, ServerboundClientSettingsPacket.Codec)
             serverbound(0x0F, ServerboundKeepAlivePacket.Codec)
+            serverbound(0x19, ServerboundPlayerAbilitiesPacket.Codec)
             serverbound(0x11, ServerboundPlayerPositionPacket.Codec)
             serverbound(0x12, ServerboundPlayerPositionRotationPacket.Codec)
             serverbound(0x13, ServerboundPlayerRotationPacket.Codec)

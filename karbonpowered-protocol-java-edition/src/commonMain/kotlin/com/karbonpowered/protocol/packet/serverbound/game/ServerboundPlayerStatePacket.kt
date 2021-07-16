@@ -37,7 +37,7 @@ data class ServerboundPlayerStatePacket(
 
         override fun decode(input: Input): ServerboundPlayerStatePacket {
             val entityId = input.readVarInt()
-            val state = MagicValues.value<PlayerState>(input.readVarInt())
+            val state = MagicValues.key<PlayerState>(input.readVarInt())
             val jumpBoost = input.readVarInt()
             return ServerboundPlayerStatePacket(entityId, state, jumpBoost)
         }
