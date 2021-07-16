@@ -15,6 +15,7 @@ interface Session : CoroutineScope {
     fun addListener(listener: SessionListener)
     fun listen(listener: SessionListenerBuilder.() -> Unit) = addListener(SessionListenerBuilder().apply(listener))
     fun removeListener(listener: SessionListener)
+    fun flushPackets();
     fun sendPacket(packet: Packet, flush: Boolean = true)
     fun sendPackets(vararg packets: Packet, flush: Boolean = true)
     fun sendPackets(packets: Iterable<Packet>, flush: Boolean = true)

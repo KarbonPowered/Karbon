@@ -44,6 +44,8 @@ class VanillaProtocol(
             clientbound(0x22, ClientboundPlayColumnData.Codec)
             clientbound(0x26, ClientboundGameJoinPacket.Codec)
             clientbound(0x38, ClientboundGamePlayerPositionRotationPacket.Codec)
+            clientbound(0x49, ClientboundSyncPositionPacket.Codec)
+            clientbound(0x4A, ClientboundSyncDistancePacket.Codec)
 
             serverbound(0x00, ServerboundAcceptTeleportationPacket.Codec)
             serverbound(0x01, ServerboundBlockEntityTagQueryPacket.Codec)

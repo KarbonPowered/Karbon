@@ -56,13 +56,17 @@ open class NettyTcpSession(
         _listeners.remove(listener)
     }
 
+    override fun flushPackets() {
+        nettyChannel?.flush()
+    }
+
     override fun sendPacket(packet: Packet, flush: Boolean) {
         if (nettyChannel == null) {
             return
         }
         prepareSend(packet)
         if (flush) {
-            nettyChannel?.flush()
+            flushPackets()
         }
     }
 
@@ -74,7 +78,7 @@ open class NettyTcpSession(
             prepareSend(packet)
         }
         if (flush) {
-            nettyChannel?.flush()
+            flushPackets()
         }
     }
 
@@ -86,7 +90,7 @@ open class NettyTcpSession(
             prepareSend(packet)
         }
         if (flush) {
-            nettyChannel?.flush()
+            flushPackets()
         }
     }
 

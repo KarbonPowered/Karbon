@@ -17,8 +17,8 @@ private const val CHUNK_COUNT = MAX_CHUNK_Y - MIN_CHUNK_Y
 private const val BIOME_SIZE = 16 * 96
 
 data class ClientboundPlayColumnData(
-    val x: Int,
-    val z: Int,
+    val chunkX: Int,
+    val chunkZ: Int,
     val heightMaps: NBT = NBT(),
     val biomes: IntArray = IntArray(BIOME_SIZE),
     val chunks: Array<ChunkData?> = arrayOfNulls(CHUNK_COUNT),
@@ -130,8 +130,8 @@ data class ClientboundPlayColumnData(
                     }
                 }
             }
-            output.writeInt(packet.x)
-            output.writeInt(packet.z)
+            output.writeInt(packet.chunkX)
+            output.writeInt(packet.chunkZ)
             output.writeVarInt(1)
             output.writeLong(mask)
             output.writeNBT(packet.heightMaps)

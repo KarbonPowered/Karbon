@@ -8,7 +8,7 @@ object IntPairHashed {
      * @param key2 an `int` value
      * @return a long which is the concatenation of key1 and key2
      */
-    fun key(key1: Int, key2: Int): Long = key1.toLong() shl 32 or key2.toLong() and 0xFFFFFFFFL
+    fun key(key1: Int, key2: Int): Long = (key1.toLong() shl 32) or (key2.toLong() and 0xFFFFFFFFL)
 
     /**
      * Gets the first 32-bit integer value from an long key

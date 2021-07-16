@@ -7,9 +7,7 @@ import com.karbonpowered.engine.world.KarbonChunk
 import com.karbonpowered.engine.world.LoadOption
 import com.karbonpowered.engine.world.discrete.Transform
 import com.karbonpowered.engine.world.reference.WorldReference
-import com.karbonpowered.protocol.packet.clientbound.game.ClientboundGameJoinPacket
-import com.karbonpowered.protocol.packet.clientbound.game.ClientboundGamePlayerPositionRotationPacket
-import com.karbonpowered.protocol.packet.clientbound.game.ClientboundPlayColumnData
+import com.karbonpowered.protocol.packet.clientbound.game.*
 import com.karbonpowered.server.Session
 import com.karbonpowered.vanilla.world.VanillaWorld
 import kotlinx.atomicfu.atomic
@@ -23,6 +21,7 @@ class VanillaPlayerNetwork(
 ) : PlayerNetwork(player, session) {
     private var currentWorld by atomic<WorldReference?>(null)
     private val activeColumns = mutableSetOf<Long>()
+    private var previousSyncDistance by atomic(0)
 
     // TODO: Optimize chunk sending
     override suspend fun attemptSendChunk(chunk: KarbonChunk): Boolean {
@@ -68,8 +67,9 @@ class VanillaPlayerNetwork(
     }
 
     override fun sendPositionUpdates(transform: Transform) {
+        var flush = false
         if (currentWorld != transform.position.world) {
-            val world = transform.position.world.refresh(player.engine.worldManager)!!
+            val world = requireNotNull(transform.position.world.refresh(player.engine.worldManager))
             val dimensionCodec = VanillaWorld.createDimensionCodec()
             val dimension = VanillaWorld.createOverworldTag()
             if (currentWorld == null) {
@@ -90,11 +90,26 @@ class VanillaPlayerNetwork(
                         false,
                         false,
                         true
-                    )
+                    ), flush = false
                 )
+                session.sendPacket(
+                    ClientboundSyncDistancePacket(16),
+                    flush = false
+                )
+                flush = true
             }
 
             currentWorld = transform.position.world
+        }
+        if (previousTransform.position.chunkX != transform.position.chunkX ||
+            previousTransform.position.chunkZ != transform.position.chunkZ
+        ) {
+            session.sendPacket(
+                ClientboundSyncPositionPacket(
+                    transform.position.chunkX,
+                    transform.position.chunkZ
+                ), flush = false
+            )
         }
         if (previousTransform != transform) {
             session.sendPacket(
@@ -104,8 +119,12 @@ class VanillaPlayerNetwork(
                     transform.position.z.toDouble(),
                     transform.rotation.x,
                     transform.rotation.y
-                )
+                ), flush = false
             )
+            flush = true
+        }
+        if (flush) {
+            session.flushPackets()
         }
     }
 }
