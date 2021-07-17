@@ -6,6 +6,7 @@ import com.karbonpowered.engine.player.PlayerNetwork
 import com.karbonpowered.engine.world.KarbonChunk
 import com.karbonpowered.engine.world.LoadOption
 import com.karbonpowered.engine.world.discrete.Transform
+import com.karbonpowered.engine.world.reference.ChunkReference
 import com.karbonpowered.engine.world.reference.WorldReference
 import com.karbonpowered.protocol.packet.clientbound.game.*
 import com.karbonpowered.server.Session
@@ -22,10 +23,14 @@ class VanillaPlayerNetwork(
 ) : PlayerNetwork(player, session) {
     private var currentWorld by atomic<WorldReference?>(null)
     private val activeColumns = mutableSetOf<Long>()
-    private var previousSyncDistance by atomic(0)
+
+    override suspend fun preSnapshotRun() {
+        super.preSnapshotRun()
+    }
 
     // TODO: Optimize chunk sending
     override suspend fun attemptSendChunk(chunk: KarbonChunk): Boolean {
+        if (!super.attemptSendChunk(chunk)) return false
         val columnKey = IntPairHashed.key(chunk.chunkX, chunk.chunkZ)
         if (activeColumns.contains(columnKey)) {
             return true
@@ -46,7 +51,7 @@ class VanillaPlayerNetwork(
             val chunkData = Array(COLUMN_HEIGHT) { idx ->
                 val c = chunks[idx].await()
                 if (c != null) {
-                    ClientboundPlayColumnData.ChunkData().also { chunkData ->
+                    ClientboundColumnDataPacket.ChunkData().also { chunkData ->
                         repeat(16) { x ->
                             repeat(16) { y ->
                                 repeat(16) { z ->
@@ -58,18 +63,32 @@ class VanillaPlayerNetwork(
                 } else null
             }
 
-            val packet = ClientboundPlayColumnData(
+            val packet = ClientboundColumnDataPacket(
                 chunk.chunkX,
                 chunk.chunkZ,
                 chunks = chunkData
             )
+//            player.engine.info("send chunk: ${chunk.chunkX} ${chunk.chunkZ}")
             session.sendPacket(packet)
         }
         return true
     }
 
+    override fun freeChunk(chunk: ChunkReference) {
+        super.freeChunk(chunk)
+        val chunkX = chunk.base.chunkX
+        val chunkZ = chunk.base.chunkZ
+        if (chunks.none { it.base.chunkX == chunkX && it.base.chunkZ == chunkZ }) {
+            val columnKey = IntPairHashed.key(chunkX, chunkZ)
+            if (activeColumns.remove(columnKey)) {
+                val packet = ClientboundUnloadColumnPacket(chunkX, chunkZ)
+                session.sendPacket(packet)
+            }
+        }
+    }
+
     override fun sendPositionUpdates(transform: Transform) {
-        var flush = false
+        super.sendPositionUpdates(transform)
         if (currentWorld != transform.position.world) {
             val world = requireNotNull(transform.position.world.refresh(player.engine.worldManager))
             val dimensionCodec = VanillaWorld.createDimensionCodec()
@@ -92,12 +111,9 @@ class VanillaPlayerNetwork(
                         false,
                         false,
                         true
-                    ), flush = false
+                    )
                 )
-                session.sendPacket(
-                    ClientboundSyncDistancePacket(16),
-                    flush = false
-                )
+                session.sendPacket(ClientboundSyncDistancePacket(16))
                 if (previousTransform.position != transform.position) {
                     session.sendPacket(
                         ClientboundGamePlayerPositionRotationPacket(
@@ -106,10 +122,9 @@ class VanillaPlayerNetwork(
                             transform.position.z.toDouble(),
                             transform.rotation.x,
                             transform.rotation.y
-                        ), flush = false
+                        )
                     )
                 }
-                flush = true
             }
 
             currentWorld = transform.position.world
@@ -121,11 +136,8 @@ class VanillaPlayerNetwork(
                 ClientboundSyncPositionPacket(
                     transform.position.chunkX,
                     transform.position.chunkZ
-                ), flush = false
+                )
             )
-        }
-        if (flush) {
-            session.flushPackets()
         }
     }
 }

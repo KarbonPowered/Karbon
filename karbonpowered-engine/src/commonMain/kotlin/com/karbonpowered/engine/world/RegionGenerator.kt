@@ -12,7 +12,7 @@ class RegionGenerator(
     val region: KarbonRegion
 ) : CoroutineScope {
     override val coroutineContext: CoroutineContext =
-        CoroutineName(toString()) + Dispatchers.Default
+        CoroutineName(toString()) + Dispatchers.Unconfined
 
     private val width: Int = 1 // TODO: extend buffering size for generating neighbour chunks
     private val sections = KarbonRegion.CHUNKS.SIZE / width

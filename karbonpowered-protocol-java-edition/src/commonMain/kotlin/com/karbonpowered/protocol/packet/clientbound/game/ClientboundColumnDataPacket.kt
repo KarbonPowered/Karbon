@@ -16,7 +16,7 @@ private const val MIN_CHUNK_Y = -4
 private const val CHUNK_COUNT = MAX_CHUNK_Y - MIN_CHUNK_Y
 private const val BIOME_SIZE = 16 * 96
 
-data class ClientboundPlayColumnData(
+data class ClientboundColumnDataPacket(
     val chunkX: Int,
     val chunkZ: Int,
     val heightMaps: NBT = NBT(),
@@ -98,10 +98,10 @@ data class ClientboundPlayColumnData(
         }
     }
 
-    object Codec : PacketCodec<ClientboundPlayColumnData> {
-        override val packetType = ClientboundPlayColumnData::class
+    object Codec : PacketCodec<ClientboundColumnDataPacket> {
+        override val packetType = ClientboundColumnDataPacket::class
 
-        override fun decode(input: Input): ClientboundPlayColumnData {
+        override fun decode(input: Input): ClientboundColumnDataPacket {
             val x = input.readInt()
             val z = input.readInt()
             input.readVarInt()
@@ -117,10 +117,10 @@ data class ClientboundPlayColumnData(
                 } else null
             }
             val blockEntities = List(input.readVarInt()) { requireNotNull(input.readNBT()) }
-            return ClientboundPlayColumnData(x, z, heightMaps, biomes, chunks, blockEntities)
+            return ClientboundColumnDataPacket(x, z, heightMaps, biomes, chunks, blockEntities)
         }
 
-        override fun encode(output: Output, packet: ClientboundPlayColumnData) {
+        override fun encode(output: Output, packet: ClientboundColumnDataPacket) {
             var mask = 0L
             val chunkData = buildPacket {
                 packet.chunks.forEachIndexed { index, chunk ->

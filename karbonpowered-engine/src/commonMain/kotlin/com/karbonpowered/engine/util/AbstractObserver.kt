@@ -10,7 +10,7 @@ import com.karbonpowered.engine.world.reference.WorldReference
 import com.karbonpowered.math.vector.IntVector3
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
+import kotlin.time.ExperimentalTime
 
 abstract class AbstractObserver(
     val engine: KarbonEngine
@@ -40,37 +40,38 @@ abstract class AbstractObserver(
     abstract fun copySnapshot()
     abstract suspend fun update()
 
+    @OptIn(ExperimentalTime::class)
     suspend fun updateObserver() = coroutineScope {
         val transform = transform
-        val oldObserving = observingChunks.toMutableSet()
-        val newObserving = mutableSetOf<ChunkReference>()
-        val observing = mutableSetOf<ChunkReference>()
         if (transform != Transform.INVALID) {
-            launch {
-                val position = transform.position
-                val world = requireNotNull(position.world.refresh(engine.worldManager))
-                val chunkX = position.chunkX
-                val chunkY = position.chunkY
-                val chunkZ = position.chunkZ
-                val iterator = observerIterator.iterator(chunkX, chunkY, chunkZ)
-                iterator.forEach { (x, y, z) ->
-                    launch { world.getChunk(x, y, z, LoadOption.LOAD_GEN) }
-                    val chunk = ChunkReference(KarbonChunk.basePosition(WorldReference(world), x, y, z))
-                    observing.add(chunk)
-                    if (!oldObserving.contains(chunk)) {
-                        newObserving.add(chunk)
-                    }
+            val oldObserving = observingChunks.toMutableSet()
+            val newObserving = mutableSetOf<ChunkReference>()
+            val observing = mutableSetOf<ChunkReference>()
+
+            val position = transform.position
+            val world = requireNotNull(position.world.refresh(engine.worldManager))
+            val chunkX = position.chunkX
+            val chunkY = position.chunkY
+            val chunkZ = position.chunkZ
+            val iterator = observerIterator.iterator(chunkX, chunkY, chunkZ)
+            iterator.forEach { (x, y, z) ->
+                world.getChunk(x, y, z, LoadOption.LOAD_GEN)
+                val chunk = ChunkReference(KarbonChunk.basePosition(WorldReference(world), x, y, z))
+                observing.add(chunk)
+                if (!oldObserving.contains(chunk)) {
+                    newObserving.add(chunk)
                 }
-                oldObserving.removeAll(observing)
-            }.join()
+            }
+
+            oldObserving.removeAll(observing)
+            if (oldObserving.isNotEmpty()) {
+                stopObserving(oldObserving.asSequence())
+            }
+            if (newObserving.isNotEmpty()) {
+                startObserving(newObserving.asSequence())
+            }
+            observingChunks = observing
         }
-        if (oldObserving.isNotEmpty()) {
-            stopObserving(oldObserving.asSequence())
-        }
-        if (newObserving.isNotEmpty()) {
-            startObserving(newObserving.asSequence())
-        }
-        observingChunks = observing
     }
 
     protected abstract suspend fun startObserving(observing: Sequence<ChunkReference>)

@@ -16,7 +16,7 @@ class KarbonChunk(
     val chunkZ: Int,
     val blockStore: AtomicPaletteIntStore
 ) : Cube(
-    basePosition(region.world, chunkX shl BLOCKS.BITS, chunkY shl BLOCKS.BITS, chunkZ shl BLOCKS.BITS),
+    basePosition(region.world, chunkX, chunkY, chunkZ),
     BLOCKS.SIZE.toFloat()
 ) {
     val isLoaded: Boolean = true

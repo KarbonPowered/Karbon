@@ -11,7 +11,7 @@ import com.karbonpowered.engine.world.reference.ChunkReference
 import com.karbonpowered.server.Session
 import kotlinx.atomicfu.atomic
 
-const val CHUNKS_PER_TICK = Int.MAX_VALUE
+const val CHUNKS_PER_TICK = 20
 
 open class PlayerNetwork(
     open val player: KarbonPlayer,
@@ -19,8 +19,7 @@ open class PlayerNetwork(
 ) : AsyncManager {
     protected val chunkSendQueue = ConcurrentLinkedQueue<ChunkReference>()
     protected val chunkFreeQueue = ConcurrentLinkedQueue<ChunkReference>()
-    protected val chunks = mutableSetOf<ChunkReference>()
-    protected val activeChunks = mutableSetOf<ChunkReference>()
+    protected val chunks = HashSet<ChunkReference>()
     protected var previousTransform by atomic(Transform.INVALID)
 
     fun addChunks(chunks: Collection<ChunkReference>) {
@@ -28,10 +27,7 @@ open class PlayerNetwork(
     }
 
     fun removeChunks(toRemove: Collection<ChunkReference>) {
-        toRemove.forEach {
-            chunkFreeQueue.add(it)
-            chunks.remove(it)
-        }
+        chunkFreeQueue.addAll(toRemove)
     }
 
     override suspend fun preSnapshotRun() {
@@ -40,9 +36,6 @@ open class PlayerNetwork(
         // We want to free all chunks first
         chunkFreeQueue.forEach(::freeChunk)
         chunkFreeQueue.clear()
-
-        // We will sync old chunks, but not new ones
-        val toSync = HashSet(activeChunks)
 
         sendPositionUpdates(transform)
         previousTransform = transform
@@ -54,7 +47,8 @@ open class PlayerNetwork(
         // Send regular chunks while we aren't overloaded and we haven't exceeded our send amount
         val iterator = chunkSendQueue.iterator()
         while (iterator.hasNext() && (chunksSentThisTick < CHUNKS_PER_TICK && !player.engine.scheduler.isOverloaded)) {
-            val chunk = iterator.next().refresh(player.engine.worldManager, LoadOption.NO_LOAD)
+            val chunkReference = iterator.next()
+            val chunk = chunkReference.refresh(player.engine.worldManager, LoadOption.NO_LOAD)
             if (chunk != null && attemptSendChunk(chunk)) {
                 chunksSentThisTick++
                 iterator.remove()
@@ -63,21 +57,10 @@ open class PlayerNetwork(
 
         sendPositionUpdates(transform)
         previousTransform = transform
-
-        toSync.forEach {
-            val chunk = it.get()
-            // If it was unloaded, we have to free it
-            // We don't remove it from our chunks though
-            if (chunk == null) {
-                player.engine.info("Active chunk (${it.base.chunkX} ${it.base.chunkY} ${it.base.chunkZ}) has been unloaded! Freeing from client. (Will try to send next tick)")
-                freeChunk(it)
-                chunkSendQueue.add(it)
-            }
-        }
     }
 
-    fun freeChunk(chunk: ChunkReference) {
-
+    open fun freeChunk(chunk: ChunkReference) {
+        chunks.remove(chunk)
     }
 
     open suspend fun attemptSendChunk(chunk: KarbonChunk): Boolean {
@@ -90,7 +73,7 @@ open class PlayerNetwork(
                 chunk
             )
         )
-        activeChunks.add(ChunkReference(chunk))
+        chunks.add(ChunkReference(chunk))
         return true
     }
 

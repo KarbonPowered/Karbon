@@ -32,6 +32,7 @@ open class KarbonEntity(
     val region: KarbonRegion?
         get() = physics.position.region(engine.worldManager)
 
+    @OptIn(ExperimentalTime::class)
     suspend fun finalizeRun() {
         val regionLive = physics.position.region(engine.worldManager, LoadOption.NO_LOAD)
         val regionSnapshot = physics.snapshot.value.position.region(engine.worldManager, LoadOption.NO_LOAD)

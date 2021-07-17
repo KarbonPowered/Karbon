@@ -26,9 +26,9 @@ class ChunkReference(
 
     suspend fun refresh(manager: KarbonWorldManager, loadOption: LoadOption = LoadOption.LOAD_GEN): KarbonChunk? {
         get()?.let { return it }
-        val region = base.chunk(manager, loadOption)
-        reference = region?.let { WeakReference(it) }
-        return region
+        val chunk = base.chunk(manager, loadOption)
+        reference = chunk?.let { WeakReference(it) }
+        return chunk
     }
 
     override fun equals(other: Any?): Boolean {
@@ -44,4 +44,5 @@ class ChunkReference(
 
     override fun hashCode(): Int = base.hashCode()
 
+    override fun toString() = "ChunkReference(x=${base.chunkX}, y=${base.chunkY}, z=${base.chunkZ}, ref=${get()})"
 }

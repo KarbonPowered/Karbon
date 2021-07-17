@@ -5,6 +5,7 @@ import com.karbonpowered.engine.scheduler.AsyncManager
 import com.karbonpowered.engine.snapshot.SnapshotManager
 import com.karbonpowered.engine.snapshot.SnapshotableHashMap
 import com.karbonpowered.engine.world.KarbonRegion
+import kotlin.time.ExperimentalTime
 
 class EntityManager(
     val region: KarbonRegion
@@ -39,6 +40,7 @@ class EntityManager(
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     override suspend fun finalizeRun() {
         entities.values.forEach { entity ->
             entity.finalizeRun()

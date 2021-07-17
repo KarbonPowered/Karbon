@@ -11,7 +11,7 @@ import kotlin.time.TimeSource
 @OptIn(ExperimentalTime::class)
 object Log : CoroutineScope {
     val job = SupervisorJob()
-    override val coroutineContext: CoroutineContext = Dispatchers.Default + job
+    override val coroutineContext: CoroutineContext = Dispatchers.Unconfined + job
 
     // Reset
     const val RESET = "\u001b[0m" // Text Reset

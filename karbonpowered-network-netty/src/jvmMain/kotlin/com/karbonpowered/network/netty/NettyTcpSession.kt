@@ -19,7 +19,7 @@ import io.netty.channel.Channel as NettyChannel
 open class NettyTcpSession(
     override var packetProtocol: PacketProtocol
 ) : SimpleChannelInboundHandler<Packet>(), Session {
-    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Default
+    override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Unconfined
     private val packetsQueue = Channel<Packet>(Channel.UNLIMITED)
     private var packetHandleJob: Job? = null
     protected var disconnected = false

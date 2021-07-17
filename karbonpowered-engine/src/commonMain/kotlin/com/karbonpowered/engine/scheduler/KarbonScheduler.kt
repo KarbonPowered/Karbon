@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
+import kotlin.time.TimeSource
 import kotlin.time.measureTime
 
 /**
@@ -28,7 +29,7 @@ private val PULSE_EVERY = Duration.milliseconds(1000L / 20)
 class KarbonScheduler(
     val engine: KarbonEngine
 ) : TaskManager, CoroutineScope {
-    override val coroutineContext: CoroutineContext = Dispatchers.Default
+    override val coroutineContext: CoroutineContext = Dispatchers.Unconfined
 
     /**
      * A snapshot manager for local snapshot variables
@@ -49,13 +50,18 @@ class KarbonScheduler(
 
     fun removeAsyncManager(manager: AsyncManager) = asyncManagers.remove(manager)
 
+    private var lastTime = TimeSource.Monotonic.markNow()
+
     fun runMainTask() = launch {
         while (true) {
             delay(PULSE_EVERY)
             val tickDuration = measureTime {
                 tick(PULSE_EVERY)
             }
-//            engine.info("Last tick duration: $tickDuration")
+            if (lastTime.elapsedNow() >= Duration.Companion.seconds(1)) {
+                lastTime = TimeSource.Monotonic.markNow()
+                engine.info("Last tick duration: $tickDuration")
+            }
         }
     }
 

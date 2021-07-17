@@ -8,6 +8,7 @@ import com.karbonpowered.engine.world.LoadOption
 import com.karbonpowered.engine.world.discrete.Transform
 import com.karbonpowered.engine.world.reference.ChunkReference
 import kotlinx.atomicfu.atomic
+import kotlin.time.ExperimentalTime
 
 class EntityObserver(
     val entity: KarbonEntity
@@ -31,6 +32,7 @@ class EntityObserver(
         observerIterator = chunkIterator
     }
 
+    @OptIn(ExperimentalTime::class)
     override suspend fun update() {
         val snapshotChunk = entity.physics.snapshot.value.position.chunk(engine.worldManager, LoadOption.NO_LOAD)
         val liveChunk = entity.physics.transform.position.chunk(engine.worldManager, LoadOption.NO_LOAD)

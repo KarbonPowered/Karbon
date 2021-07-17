@@ -2,49 +2,49 @@
 
 package com.karbonpowered.math.vector
 
+import kotlin.jvm.JvmInline
 import kotlin.math.*
 
-open class IntVector3(
-    override val x: Int = 0,
-    override val y: Int = 0,
-    open val z: Int = 0
-) : IntVector2(x, y), Comparable<IntVector3> {
-    private val hashCode by lazy {
-        (x.hashCode() * 211 + y.hashCode()) * 97 + z.hashCode()
-    }
+@JvmInline
+value class IntVector3(
+    val data: IntArray = intArrayOf(0, 0, 0)
+) : Comparable<IntVector3> {
+    val x get() = data[0]
+    val y get() = data[1]
+    val z get() = data[2]
     val lengthSquared: Int get() = x * x + y * y + z * z
     val length: Float get() = sqrt(lengthSquared.toDouble()).toFloat()
     val minAxis: Int get() = if (x < y) if (x < z) 0 else 2 else if (y < z) 1 else 2
     val maxAxis: Int get() = if (x < y) if (y < z) 2 else 1 else if (x < z) 2 else 0
 
-    constructor(vector: IntVector3) : this(vector.x, vector.y, vector.z)
+    constructor(x: Int, y: Int, z: Int) : this(intArrayOf(x, y, z))
     constructor(x: Double, y: Double, z: Double) : this(x.roundToInt(), y.roundToInt(), z.roundToInt())
     constructor(x: Float, y: Float, z: Float) : this(x.roundToInt(), y.roundToInt(), z.roundToInt())
 
     fun add(vector: IntVector3): IntVector3 = add(vector.x, vector.y, vector.z)
     fun add(x: Double, y: Double, z: Double): IntVector3 = add(x.roundToInt(), y.roundToInt(), z.roundToInt())
     fun add(x: Float, y: Float, z: Float): IntVector3 = add(x.roundToInt(), y.roundToInt(), z.roundToInt())
-    open fun add(x: Int, y: Int, z: Int): IntVector3 =
+    fun add(x: Int, y: Int, z: Int): IntVector3 =
         IntVector3(this.x + x, this.y + y, this.z + z)
 
     fun sub(vector: IntVector3): IntVector3 = sub(vector.x, vector.y, vector.z)
     fun sub(x: Double, y: Double, z: Double): IntVector3 = sub(x.roundToInt(), y.roundToInt(), z.roundToInt())
     fun sub(x: Float, y: Float, z: Float): IntVector3 = sub(x.roundToInt(), y.roundToInt(), z.roundToInt())
-    open fun sub(x: Int, y: Int, z: Int): IntVector3 =
+    fun sub(x: Int, y: Int, z: Int): IntVector3 =
         IntVector3(this.x - x, this.y - y, this.z - z)
 
     fun mul(a: Double): IntVector3 = mul(a.roundToInt(), a.roundToInt(), a.roundToInt())
     fun mul(a: Float): IntVector3 = mul(a.roundToInt(), a.roundToInt(), a.roundToInt())
     fun mul(a: Int): IntVector3 = mul(a, a, a)
     fun mul(vector: IntVector3): IntVector3 = mul(vector.x, vector.y, vector.z)
-    open fun mul(x: Int, y: Int, z: Int): IntVector3 =
+    fun mul(x: Int, y: Int, z: Int): IntVector3 =
         IntVector3(this.x * x, this.y * y, this.z * z)
 
     fun div(a: Double): IntVector3 = div(a.roundToInt(), a.roundToInt(), a.roundToInt())
     fun div(a: Float): IntVector3 = div(a.roundToInt(), a.roundToInt(), a.roundToInt())
     fun div(a: Int): IntVector3 = div(a, a, a)
     fun div(vector: IntVector3): IntVector3 = div(vector.x, vector.y, vector.z)
-    open fun div(x: Int, y: Int, z: Int): IntVector3 =
+    fun div(x: Int, y: Int, z: Int): IntVector3 =
         IntVector3(this.x / x, this.y / y, this.z / z)
 
     fun dot(vector: IntVector3): Int = dot(vector.x, vector.y, vector.z)
@@ -125,11 +125,10 @@ open class IntVector3(
     fun distance(x: Float, y: Float, z: Float): Float = distance(x.roundToInt(), y.roundToInt(), z.roundToInt())
     fun distance(x: Int, y: Int, z: Int): Float = sqrt(distanceSquared(x, y, z).toDouble()).toFloat()
 
-    override fun toIntArray(): IntArray = intArrayOf(x, y, z)
     fun toInt(): IntVector3 = IntVector3(x, y, z)
     fun toDouble(): DoubleVector3 = DoubleVector3(x.toDouble(), y.toDouble(), z.toDouble())
 
-    fun copy(): IntVector3 = IntVector3(this)
+    fun copy(): IntVector3 = IntVector3(data)
 
     override fun compareTo(other: IntVector3): Int = lengthSquared - other.lengthSquared
 
@@ -138,21 +137,6 @@ open class IntVector3(
     operator fun component3() = z
 
     override fun toString(): String = "($x, $y, $z)"
-
-    override fun hashCode(): Int = hashCode
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-
-        other as IntVector3
-
-        if (x != other.x) return false
-        if (y != other.y) return false
-        if (z != other.z) return false
-
-        return true
-    }
 
     companion object {
         val ZERO = IntVector3(0, 0, 0)
@@ -178,36 +162,6 @@ open class IntVector3(
             x == 0 && y == 0 && z == 1 -> UNIT_Z
             else -> IntVector3(x, y, z)
         }
-    }
-}
-
-open class MutableIntVector3(
-    override var x: Int = 0,
-    override var y: Int = 0,
-    override var z: Int = 0
-) : IntVector3(x, y, z) {
-    override fun add(x: Int, y: Int, z: Int): IntVector3 = apply {
-        this.x += x
-        this.y += y
-        this.z += z
-    }
-
-    override fun sub(x: Int, y: Int, z: Int): IntVector3 = apply {
-        this.x -= x
-        this.y -= y
-        this.z -= z
-    }
-
-    override fun mul(x: Int, y: Int, z: Int): IntVector3 = apply {
-        this.x *= x
-        this.y *= y
-        this.z *= z
-    }
-
-    override fun div(x: Int, y: Int, z: Int): IntVector3 = apply {
-        this.x /= x
-        this.y /= y
-        this.z /= z
     }
 }
 

@@ -109,13 +109,13 @@ class AtomicShortIntArray(
      */
     fun set(initial: IntArray) {
         require(initial.size == size) { "Array length mismatch, expected $size, got ${initial.size}" }
-        val unique = initial.toSet().size
         val allowedPalette = AtomicShortIntPaletteBackingArray.allowedPalette(size)
+        val unique = initial.uniqueCount(allowedPalette)
         resizeLock.withLock {
             store.value = when {
                 unique == 1 -> AtomicShortIntUniformBackingArray(size, initial = initial.first())
-                unique > allowedPalette -> AtomicShortIntDirectBackingArray(initial)
-                else -> AtomicShortIntPaletteBackingArray(size, unique, initial)
+                unique <= allowedPalette -> AtomicShortIntPaletteBackingArray(size, unique, initial)
+                else -> AtomicShortIntDirectBackingArray(initial)
             }
         }
     }
@@ -196,5 +196,15 @@ class AtomicShortIntArray(
                 store.value = AtomicShortIntPaletteBackingArray(array, compress = true, expand = false, unique)
             }
         }
+    }
+
+    private fun IntArray.uniqueCount(allowedPalette: Int): Int {
+        val list = ArrayList<Int>(allowedPalette)
+        forEach {
+            if (it !in list) {
+                list.add(it)
+            }
+        }
+        return list.size
     }
 }
