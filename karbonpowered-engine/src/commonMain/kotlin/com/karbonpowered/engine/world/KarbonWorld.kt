@@ -58,12 +58,7 @@ open class KarbonWorld(
 
     suspend fun getChunk(x: Int, y: Int, z: Int, loadOption: LoadOption): KarbonChunk? {
         val region = getRegionFromChunk(x, y, z, loadOption)
-        if (region != null) {
-            return region.chunk(x, y, z, loadOption)
-        } else if (loadOption.isLoad && loadOption.isGenerate) {
-            println("Unable to load region: $x, $y, $z: $loadOption")
-        }
-        return null
+        return region.chunk(x, y, z, loadOption)
     }
 
     fun spawnEntity(
