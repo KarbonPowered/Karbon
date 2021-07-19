@@ -12,7 +12,6 @@ import com.karbonpowered.protocol.packet.clientbound.game.*
 import com.karbonpowered.server.Session
 import com.karbonpowered.vanilla.world.VanillaWorld
 import kotlinx.atomicfu.atomic
-import kotlinx.coroutines.async
 import kotlin.random.Random
 
 private const val COLUMN_HEIGHT = 24
@@ -37,19 +36,13 @@ class VanillaPlayerNetwork(
         } else {
             activeColumns.add(columnKey)
             val world = chunk.world.refresh(player.engine.worldManager)
-            val chunks = Array(COLUMN_HEIGHT) { idx ->
-                session.async {
-                    world?.getChunk(
-                        chunk.chunkX,
-                        idx - 4,
-                        chunk.chunkZ,
-                        LoadOption.LOAD_GEN
-                    )
-                }
-            }
-
             val chunkData = Array(COLUMN_HEIGHT) { idx ->
-                val c = chunks[idx].await()
+                val c = world?.getChunk(
+                    chunk.chunkX,
+                    idx - 4,
+                    chunk.chunkZ,
+                    LoadOption.LOAD_GEN
+                )
                 if (c != null) {
                     ClientboundColumnDataPacket.ChunkData().also { chunkData ->
                         repeat(16) { x ->
@@ -78,12 +71,10 @@ class VanillaPlayerNetwork(
         super.freeChunk(chunk)
         val chunkX = chunk.base.chunkX
         val chunkZ = chunk.base.chunkZ
-        if (chunks.none { it.base.chunkX == chunkX && it.base.chunkZ == chunkZ }) {
-            val columnKey = IntPairHashed.key(chunkX, chunkZ)
-            if (activeColumns.remove(columnKey)) {
-                val packet = ClientboundUnloadColumnPacket(chunkX, chunkZ)
-                session.sendPacket(packet)
-            }
+        val columnKey = IntPairHashed.key(chunkX, chunkZ)
+        if (activeColumns.remove(columnKey)) {
+            val packet = ClientboundUnloadColumnPacket(chunkX, chunkZ)
+            session.sendPacket(packet)
         }
     }
 

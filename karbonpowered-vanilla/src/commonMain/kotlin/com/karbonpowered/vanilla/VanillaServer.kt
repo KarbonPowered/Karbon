@@ -18,6 +18,7 @@ import com.karbonpowered.vanilla.handler.ChatHandler
 import com.karbonpowered.vanilla.handler.LoginHandler
 import com.karbonpowered.vanilla.player.VanillaMovementComponent
 import com.karbonpowered.vanilla.player.VanillaPlayer
+import com.karbonpowered.vanilla.world.VanillaChunkIterator
 import kotlinx.coroutines.coroutineScope
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
@@ -58,7 +59,7 @@ class VanillaServer(
         playerSessions[session] = uniqueId
 
         entity.observer.syncDistance = 8
-        entity.observer.isObserver = true
+        entity.observer.setObserver(true, VanillaChunkIterator(entity.observer.syncDistance, -4, 20))
         entity.components.add(PlayerObserveChunksComponent(player))
         entity.components.add(VanillaMovementComponent(player, entity))
 

@@ -17,6 +17,15 @@ class Position(
     override val y: Float = 0f,
     override val z: Float = 0f
 ) : FloatVector3 {
+
+    private val hashcode by lazy {
+        var result = world.hashCode()
+        result = 31 * result + x.hashCode()
+        result = 31 * result + y.hashCode()
+        result = 31 * result + z.hashCode()
+        result
+    }
+
     constructor(world: WorldReference, x: Int, y: Int, z: Int) : this(world, x.toFloat(), y.toFloat(), z.toFloat())
     constructor(world: WorldReference, vector: FloatVector3) : this(world, vector.x, vector.y, vector.z)
     constructor(world: WorldReference, vector: IntVector3) : this(
@@ -84,13 +93,7 @@ class Position(
         return true
     }
 
-    override fun hashCode(): Int {
-        var result = world.hashCode()
-        result = 31 * result + x.hashCode()
-        result = 31 * result + y.hashCode()
-        result = 31 * result + z.hashCode()
-        return result
-    }
+    override fun hashCode(): Int = hashcode
 
     override fun toString(): String = "(${world.identifier}, $x, $y, $z)"
 
