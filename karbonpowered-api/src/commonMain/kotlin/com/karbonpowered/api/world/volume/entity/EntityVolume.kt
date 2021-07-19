@@ -45,12 +45,15 @@ interface EntityVolume : Volume {
 
     interface Mutable<M : Mutable<M>> : Sequence<M>, MutableVolume, BlockVolume.Mutable<M> {
         fun <E : Entity<E>> createEntity(type: EntityType<E>, position: IntVector3): E =
-            createEntity(type, position.toDouble())
+            createEntity(type, DoubleVector3(position.x.toDouble(), position.y.toDouble(), position.z.toDouble()))
 
         fun <E : Entity<E>> createEntity(type: EntityType<E>, position: DoubleVector3): E
 
         fun <E : Entity<E>> createEntityNaturally(type: EntityType<E>, position: IntVector3): E =
-            createEntityNaturally(type, position.toDouble())
+            createEntityNaturally(
+                type,
+                DoubleVector3(position.x.toDouble(), position.y.toDouble(), position.z.toDouble())
+            )
 
         fun <E : Entity<E>> createEntityNaturally(type: EntityType<E>, position: DoubleVector3): E
 

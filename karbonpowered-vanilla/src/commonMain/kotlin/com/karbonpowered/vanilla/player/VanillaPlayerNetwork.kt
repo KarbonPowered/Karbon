@@ -31,10 +31,7 @@ class VanillaPlayerNetwork(
     override suspend fun attemptSendChunk(chunk: KarbonChunk): Boolean {
         if (!super.attemptSendChunk(chunk)) return false
         val columnKey = IntPairHashed.key(chunk.chunkX, chunk.chunkZ)
-        if (activeColumns.contains(columnKey)) {
-            return true
-        } else {
-            activeColumns.add(columnKey)
+        if (activeColumns.add(columnKey)) {
             val world = chunk.world.refresh(player.engine.worldManager)
             val chunkData = Array(COLUMN_HEIGHT) { idx ->
                 val c = world?.getChunk(
@@ -61,10 +58,11 @@ class VanillaPlayerNetwork(
                 chunk.chunkZ,
                 chunks = chunkData
             )
-//            player.engine.info("send chunk: ${chunk.chunkX} ${chunk.chunkZ}")
             session.sendPacket(packet)
+            return true
+        } else {
+            return false
         }
-        return true
     }
 
     override fun freeChunk(chunk: ChunkReference) {

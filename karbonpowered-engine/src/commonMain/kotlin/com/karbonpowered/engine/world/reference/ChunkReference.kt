@@ -37,7 +37,10 @@ class ChunkReference(
 
         other as ChunkReference
 
-        if (base != other.base) return false
+        if (base.chunkX != other.base.chunkX) return false
+        if (base.chunkY != other.base.chunkY) return false
+        if (base.chunkZ != other.base.chunkZ) return false
+        if (base.world.identifier != other.base.world.identifier) return false
 
         return true
     }

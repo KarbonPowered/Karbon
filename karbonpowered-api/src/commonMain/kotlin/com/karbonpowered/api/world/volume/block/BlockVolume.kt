@@ -11,7 +11,6 @@ import com.karbonpowered.api.world.volume.sequence.SequenceOptions
 import com.karbonpowered.api.world.volume.sequence.VolumeSequence
 import com.karbonpowered.math.vector.IntVector2
 import com.karbonpowered.math.vector.IntVector3
-import com.karbonpowered.math.vector.intVector3Of
 
 interface BlockVolume : Volume {
     fun block(x: Int, y: Int, z: Int): BlockState
@@ -62,7 +61,7 @@ interface BlockVolume : Volume {
      * @param z The z position
      * @return The highest opaque position
      */
-    fun highestPositionAt(x: Int, y: Int, z: Int): IntVector3 = intVector3Of(x, this.highestYAt(x, z), z)
+    fun highestPositionAt(x: Int, y: Int, z: Int): IntVector3 = IntVector3(x, this.highestYAt(x, z), z)
     fun highestPositionAt(position: IntVector3): IntVector3 = highestPositionAt(position.x, position.y, position.z)
 
     interface Sequence<B : Sequence<B>> : BlockVolume {

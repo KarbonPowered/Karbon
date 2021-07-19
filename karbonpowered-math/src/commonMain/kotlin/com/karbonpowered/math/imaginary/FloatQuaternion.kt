@@ -1,15 +1,11 @@
 package com.karbonpowered.math.imaginary
 
 import com.karbonpowered.math.FLT_EPSILON
-import com.karbonpowered.math.tableSin
 import com.karbonpowered.math.toRadians
 import com.karbonpowered.math.vector.FloatVector3
 import com.karbonpowered.math.vector.Vector4
 import kotlinx.serialization.Serializable
-import kotlin.math.abs
-import kotlin.math.cos
-import kotlin.math.sign
-import kotlin.math.sqrt
+import kotlin.math.*
 
 /**
  * Represent a quaternion of the form `xi + yj + zk + w`.
@@ -150,7 +146,7 @@ interface FloatQuaternion : FloatImaginary, Comparable<FloatQuaternion>, Vector4
          */
         fun fromAngleRadAxis(angle: Float, x: Float, y: Float, z: Float): FloatQuaternion {
             val halfAngle = angle / 2
-            val q = tableSin(halfAngle.toDouble()) / sqrt(x * x + y * y + z * z)
+            val q = (sin(halfAngle.toDouble()) / sqrt(x * x + y * y + z * z)).toFloat()
             return FloatQuaternion(x * q, y * q, z * q, cos(halfAngle))
         }
     }

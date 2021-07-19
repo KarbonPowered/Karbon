@@ -1,6 +1,7 @@
 package com.karbonpowered.engine.util
 
 import com.karbonpowered.math.vector.IntVector3
+import com.karbonpowered.math.vector.MutableIntVector3
 
 /**
  * An Iterator that iterates outwards from a given central 3d integer coordinate
@@ -14,9 +15,9 @@ class OutwardIterator(
     z: Int = 0,
     maxDistance: Int = Int.MAX_VALUE
 ) : Iterator<IntVector3> {
-    private var current = IntVector3(x, y, z)
+    private var current = MutableIntVector3(x, y, z)
     private val center = IntVector3(x, y, z)
-    private var step = IntVector3(0, 0, 0)
+    private var step = MutableIntVector3(0, 0, 0)
     private var first = true
     private var endDistance = maxDistance
     private var hasNext = endDistance >= 0
@@ -30,7 +31,6 @@ class OutwardIterator(
 
         // First block is always the central block
         if (first) {
-            step = IntVector3(0, step.y, 0)
             first = false
             if (endDistance <= 0) {
                 hasNext = false
@@ -42,41 +42,50 @@ class OutwardIterator(
 
             // Last block was top of layer, move to start of next layer
             if (dx == 0 && dz == 0 && dy >= 0) {
-                current = IntVector3(current.x, (center.y shl 1) - current.y - 1, current.z)
-                step = IntVector3(0, step.y, 0)
+                current.y = (center.y shl 1) - current.y - 1
+                step.x = 0
+                step.z = 0
                 distance++
             } else if (dx == 0) {
                 // Reached end of horizontal slice
                 // Move up to next slice
                 if (dz >= 0) {
-                    step = IntVector3(1, step.y, -1)
-                    current = current.add(0, 1, 0)
+                    step.x = 1
+                    step.z = -1
+                    current.y++
 
                     // Bottom half of layer
                     if (dy < 0) {
-                        current = current.add(0, 0, 1)
+                        current.z++
                         // Top half of layer
                     } else {
-                        current = current.add(0, 0, -1)
+                        current.z--
                         // Reached top of layer
                         if (current.z == center.z) {
-                            step = IntVector3(0, step.y, 0)
+                            step.x = 0
+                            step.z = 0
                         }
                     }
                     // Change direction (50% of horizontal slice complete)
                 } else {
-                    step = IntVector3(-1, step.y, 1)
+                    step.x = -1
+                    step.z = 1
                 }
             } else if (dz == 0) {
                 // Change direction (25% of horizontal slice complete)
-                step = if (dx > 0) {
-                    IntVector3(-1, step.y, -1)
+
+                if (dx > 0) {
+                    step.x = -1
+                    step.z = -1
                     // Change direction (75% of horizontal slice compete)
                 } else {
-                    IntVector3(1, step.y, 1)
+                    step.x = 1
+                    step.z = 1
                 }
             }
-            current = current.add(step)
+            current.x += step.x
+            current.y += step.y
+            current.z += step.z
             if (distance == 0 || (dx == 0 && dz == 1 && dy >= endDistance - 1)) {
                 hasNext = false
             }

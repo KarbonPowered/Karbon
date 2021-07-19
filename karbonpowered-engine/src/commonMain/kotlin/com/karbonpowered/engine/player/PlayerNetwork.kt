@@ -11,7 +11,7 @@ import com.karbonpowered.engine.world.reference.ChunkReference
 import com.karbonpowered.server.Session
 import kotlinx.atomicfu.atomic
 
-const val CHUNKS_PER_TICK = 20
+const val CHUNKS_PER_TICK = Int.MAX_VALUE
 
 open class PlayerNetwork(
     open val player: KarbonPlayer,
@@ -22,11 +22,11 @@ open class PlayerNetwork(
     protected val chunks = HashSet<ChunkReference>()
     protected var previousTransform by atomic(Transform.INVALID)
 
-    fun addChunks(chunks: Collection<ChunkReference>) {
+    fun addChunks(chunks: Iterable<ChunkReference>) {
         chunkSendQueue.addAll(chunks)
     }
 
-    fun removeChunks(toRemove: Collection<ChunkReference>) {
+    fun removeChunks(toRemove: Iterable<ChunkReference>) {
         chunkFreeQueue.addAll(toRemove)
     }
 
@@ -48,7 +48,7 @@ open class PlayerNetwork(
         val iterator = chunkSendQueue.iterator()
         while (iterator.hasNext() && (chunksSentThisTick < CHUNKS_PER_TICK && !player.engine.scheduler.isOverloaded)) {
             val chunkReference = iterator.next()
-            val chunk = chunkReference.refresh(player.engine.worldManager, LoadOption.NO_LOAD)
+            val chunk = chunkReference.refresh(player.engine.worldManager, LoadOption.LOAD_GEN)
             if (chunk != null && attemptSendChunk(chunk)) {
                 chunksSentThisTick++
                 iterator.remove()
@@ -73,8 +73,7 @@ open class PlayerNetwork(
                 chunk
             )
         )
-        chunks.add(ChunkReference(chunk))
-        return true
+        return chunks.add(ChunkReference(chunk))
     }
 
     open fun sendPositionUpdates(transform: Transform) {

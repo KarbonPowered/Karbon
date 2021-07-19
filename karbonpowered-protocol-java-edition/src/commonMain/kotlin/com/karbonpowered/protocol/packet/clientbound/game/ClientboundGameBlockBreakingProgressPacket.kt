@@ -4,7 +4,6 @@ import com.karbonpowered.math.unpackLongX
 import com.karbonpowered.math.unpackLongY
 import com.karbonpowered.math.unpackLongZ
 import com.karbonpowered.math.vector.IntVector3
-import com.karbonpowered.math.vector.intVector3Of
 import com.karbonpowered.protocol.MinecraftPacket
 import com.karbonpowered.protocol.util.writeBlockPosition
 import com.karbonpowered.server.packet.PacketCodec
@@ -40,7 +39,7 @@ data class ClientboundGameBlockBreakingProgressPacket(
             val entityId = input.readVarInt()
             val packedLocation = input.readLong()
             val location =
-                intVector3Of(unpackLongX(packedLocation), unpackLongY(packedLocation), unpackLongZ(packedLocation))
+                IntVector3(unpackLongX(packedLocation), unpackLongY(packedLocation), unpackLongZ(packedLocation))
             val progress = input.readByte()
             return ClientboundGameBlockBreakingProgressPacket(entityId, location, progress.toInt())
         }

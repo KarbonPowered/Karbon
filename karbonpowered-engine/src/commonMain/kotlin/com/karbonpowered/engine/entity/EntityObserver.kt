@@ -8,7 +8,10 @@ import com.karbonpowered.engine.world.LoadOption
 import com.karbonpowered.engine.world.discrete.Transform
 import com.karbonpowered.engine.world.reference.ChunkReference
 import kotlinx.atomicfu.atomic
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
+import kotlin.time.TimeSource
+import kotlin.time.measureTime
 
 class EntityObserver(
     val entity: KarbonEntity
@@ -27,6 +30,12 @@ class EntityObserver(
     override val transform: Transform
         get() = entity.physics.transform
 
+    @OptIn(ExperimentalTime::class)
+    private var lastDuration: Duration = Duration.ZERO
+
+    @OptIn(ExperimentalTime::class)
+    private var lastPrint = TimeSource.Monotonic.markNow()
+
     override fun setObserver(observer: Boolean, chunkIterator: ChunkIterator) {
         _isObserver = observer
         observerIterator = chunkIterator
@@ -39,19 +48,25 @@ class EntityObserver(
         val needsUpdate = observeChunksFailed || (isObserver && liveChunk != null && snapshotChunk != liveChunk)
         if (needsUpdate) {
             try {
-                updateObserver()
+                lastDuration = measureTime {
+                    updateObserver()
+                }
+                if (lastPrint.elapsedNow() > Duration.Companion.seconds(1)) {
+                    lastPrint = TimeSource.Monotonic.markNow()
+//                    engine.info("Last update duration: $lastDuration")
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
-    override suspend fun startObserving(observing: Sequence<ChunkReference>) {
-        engine.eventManager.callEvent(EntityStartObservingChunksEvent(entity, observing.toSet()))
+    override suspend fun startObserving(observing: Iterable<ChunkReference>) {
+        engine.eventManager.callEvent(EntityStartObservingChunksEvent(entity, observing))
     }
 
-    override suspend fun stopObserving(observing: Sequence<ChunkReference>) {
-        engine.eventManager.callEvent(EntityStopObservingChunksEvent(entity, observing.toSet()))
+    override suspend fun stopObserving(observing: Iterable<ChunkReference>) {
+        engine.eventManager.callEvent(EntityStopObservingChunksEvent(entity, observing))
     }
 
     override fun copySnapshot() {

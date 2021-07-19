@@ -5,7 +5,7 @@ import com.karbonpowered.engine.world.reference.ChunkReference
 
 data class EntityStopObservingChunksEvent(
     val observer: KarbonEntity,
-    val observed: Set<ChunkReference>
+    val observed: Iterable<ChunkReference>
 ) : EngineEvent {
     override fun call(listener: EngineEventListener) {
         listener.onEntityStopObservingChunks(this)

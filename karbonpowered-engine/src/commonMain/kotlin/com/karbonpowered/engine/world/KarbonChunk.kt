@@ -35,5 +35,12 @@ class KarbonChunk(
             (y shl BLOCKS.BITS).toFloat(),
             (z shl BLOCKS.BITS).toFloat()
         )
+
+        fun basePosition(world: KarbonWorld, x: Int, y: Int, z: Int) = Position(
+            world,
+            (x shl BLOCKS.BITS).toFloat(),
+            (y shl BLOCKS.BITS).toFloat(),
+            (z shl BLOCKS.BITS).toFloat()
+        )
     }
 }

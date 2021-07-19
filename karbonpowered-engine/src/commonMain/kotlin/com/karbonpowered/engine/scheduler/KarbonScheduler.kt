@@ -24,7 +24,7 @@ private const val UPDATE_THRESHOLD = 100000
 /**
  * The number of milliseconds between pulses.
  */
-private val PULSE_EVERY = Duration.milliseconds(1000L / 20)
+private val PULSE_EVERY = Duration.milliseconds(1000L)
 
 class KarbonScheduler(
     val engine: KarbonEngine
@@ -60,7 +60,7 @@ class KarbonScheduler(
             }
             if (lastTime.elapsedNow() >= Duration.Companion.seconds(1)) {
                 lastTime = TimeSource.Monotonic.markNow()
-                engine.info("Last tick duration: $tickDuration")
+//                engine.info("Last tick duration: $tickDuration")
             }
         }
     }

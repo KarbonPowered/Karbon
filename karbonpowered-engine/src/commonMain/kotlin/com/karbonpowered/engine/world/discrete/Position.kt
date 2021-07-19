@@ -17,7 +17,6 @@ class Position(
     override val y: Float = 0f,
     override val z: Float = 0f
 ) : FloatVector3 {
-
     private val hashcode by lazy {
         var result = world.hashCode()
         result = 31 * result + x.hashCode()

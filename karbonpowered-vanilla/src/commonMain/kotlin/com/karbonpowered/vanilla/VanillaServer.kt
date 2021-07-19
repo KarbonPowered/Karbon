@@ -59,7 +59,7 @@ class VanillaServer(
         playerSessions[session] = uniqueId
 
         entity.observer.syncDistance = 8
-        entity.observer.setObserver(true, VanillaChunkIterator(entity.observer.syncDistance, -4, 20))
+        entity.observer.setObserver(true, VanillaChunkIterator(entity.observer.syncDistance, 0, 0))
         entity.components.add(PlayerObserveChunksComponent(player))
         entity.components.add(VanillaMovementComponent(player, entity))
 
