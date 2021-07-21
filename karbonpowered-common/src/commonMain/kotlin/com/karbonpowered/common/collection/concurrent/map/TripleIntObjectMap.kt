@@ -1,4 +1,4 @@
-package com.karbonpowered.common.collection.concurrent
+package com.karbonpowered.common.collection.concurrent.map
 
 interface TripleIntObjectMap<T> : Map<Triple<Int, Int, Int>, T> {
     override val values: Collection<T>

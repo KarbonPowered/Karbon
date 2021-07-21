@@ -1,6 +1,11 @@
 package com.karbonpowered.engine.player
 
+import com.karbonpowered.common.UUID
 import com.karbonpowered.common.collection.ConcurrentLinkedQueue
+import com.karbonpowered.common.collection.concurrent.synchronized
+import com.karbonpowered.engine.KarbonServerEngine
+import com.karbonpowered.engine.entity.KarbonEntity
+import com.karbonpowered.engine.protocol.ProtocolEventListener
 import com.karbonpowered.engine.protocol.event.ChunkSendEvent
 import com.karbonpowered.engine.protocol.event.UpdateEntityEvent
 import com.karbonpowered.engine.scheduler.AsyncManager
@@ -16,11 +21,29 @@ const val CHUNKS_PER_TICK = Int.MAX_VALUE
 open class PlayerNetwork(
     open val player: KarbonPlayer,
     val session: Session
-) : AsyncManager {
+) : AsyncManager, ProtocolEventListener {
     protected val chunkSendQueue = ConcurrentLinkedQueue<ChunkReference>()
     protected val chunkFreeQueue = ConcurrentLinkedQueue<ChunkReference>()
-    protected val chunks = HashSet<ChunkReference>()
+    protected val activeChunks = HashSet<ChunkReference>()
     protected var previousTransform by atomic(Transform.INVALID)
+    protected val synchronizedEntities = HashSet<UUID>().synchronized()
+
+    val chunks: Set<ChunkReference>
+        get() = activeChunks
+
+    fun hasSpawned(entity: KarbonEntity) = synchronizedEntities.contains(entity.uniqueId)
+
+    override fun onUpdateEntity(event: UpdateEntityEvent) {
+        if (player.engine !is KarbonServerEngine) {
+            return
+        }
+        if (event.action == UpdateEntityEvent.UpdateAction.ADD) {
+            synchronizedEntities.add(event.uniqueId)
+        }
+        if (event.action == UpdateEntityEvent.UpdateAction.REMOVE) {
+            synchronizedEntities.remove(event.uniqueId)
+        }
+    }
 
     fun addChunks(chunks: Iterable<ChunkReference>) {
         chunkSendQueue.addAll(chunks)
@@ -60,7 +83,7 @@ open class PlayerNetwork(
     }
 
     open fun freeChunk(chunk: ChunkReference) {
-        chunks.remove(chunk)
+        activeChunks.remove(chunk)
     }
 
     open suspend fun attemptSendChunk(chunk: KarbonChunk): Boolean {
@@ -73,7 +96,7 @@ open class PlayerNetwork(
                 chunk
             )
         )
-        return chunks.add(ChunkReference(chunk))
+        return activeChunks.add(ChunkReference(chunk))
     }
 
     open fun sendPositionUpdates(transform: Transform) {

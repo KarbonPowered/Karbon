@@ -1,4 +1,4 @@
-package com.karbonpowered.common.collection.concurrent
+package com.karbonpowered.common.collection.concurrent.map
 
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.atomicArrayOfNulls

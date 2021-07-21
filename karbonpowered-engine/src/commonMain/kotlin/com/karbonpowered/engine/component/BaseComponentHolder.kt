@@ -29,7 +29,8 @@ class BaseComponentHolder(
         }
     }
 
-    override fun <T : Component> get(type: KClass<T>): T = (components[type] ?: findComponent(type)) as T
+    override fun <T : Component> get(type: KClass<T>, factory: () -> T): T =
+        (components[type] ?: findComponent(type) ?: factory()) as T
 
     private fun attachComponent(key: KClass<out Component>, component: Component, attach: Boolean) {
         if (component.attachTo(this)) {

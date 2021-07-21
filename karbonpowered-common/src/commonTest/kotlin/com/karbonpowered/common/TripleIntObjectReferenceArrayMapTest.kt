@@ -1,6 +1,6 @@
 package com.karbonpowered.common
 
-import com.karbonpowered.common.collection.concurrent.TripleIntObjectReferenceArrayMap
+import com.karbonpowered.common.collection.concurrent.map.TripleIntObjectReferenceArrayMap
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

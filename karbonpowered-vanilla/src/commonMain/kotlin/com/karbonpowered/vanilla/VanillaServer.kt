@@ -2,7 +2,7 @@ package com.karbonpowered.vanilla
 
 import com.karbonpowered.common.UUID
 import com.karbonpowered.data.ResourceKey
-import com.karbonpowered.engine.KarbonEngine
+import com.karbonpowered.engine.KarbonServerEngine
 import com.karbonpowered.engine.player.KarbonPlayer
 import com.karbonpowered.engine.player.component.PlayerObserveChunksComponent
 import com.karbonpowered.engine.snapshot.SnapshotableHashMap
@@ -26,9 +26,8 @@ import kotlin.time.measureTime
 @OptIn(ExperimentalTime::class)
 class VanillaServer(
     val networkServer: Server
-) : KarbonEngine(), ServerListener {
-    val players = SnapshotableHashMap<UUID, VanillaPlayer>(snapshotManager)
-    val playerSessions = SnapshotableHashMap<Session, UUID>(snapshotManager)
+) : KarbonServerEngine(), ServerListener {
+    override val players = SnapshotableHashMap<UUID, VanillaPlayer>(snapshotManager)
     val defaultWorld get() = worldManager.defaultWorld
 
     override suspend fun start() = coroutineScope {

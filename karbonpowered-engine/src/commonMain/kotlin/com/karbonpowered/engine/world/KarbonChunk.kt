@@ -29,6 +29,13 @@ class KarbonChunk(
          */
         val BLOCKS = BitSize(4)
 
+        fun basePosition(position: Position) = basePosition(
+            position.world,
+            position.chunkX,
+            position.chunkY,
+            position.chunkZ
+        )
+
         fun basePosition(world: WorldReference, x: Int, y: Int, z: Int) = Position(
             world,
             (x shl BLOCKS.BITS).toFloat(),

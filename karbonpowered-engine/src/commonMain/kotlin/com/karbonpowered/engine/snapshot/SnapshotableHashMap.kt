@@ -5,9 +5,9 @@ import io.ktor.util.*
 import io.ktor.util.collections.*
 
 @OptIn(InternalAPI::class)
-class SnapshotableHashMap<K : Any, V : Any>(
+class SnapshotableHashMap<K : Any, out V : Any>(
     manager: SnapshotManager
-) : Snapshotable, MutableMap<K, V> {
+) : Snapshotable, MutableMap<K, @UnsafeVariance V> {
     init {
         manager.add(this)
     }
@@ -27,19 +27,19 @@ class SnapshotableHashMap<K : Any, V : Any>(
 
     override fun containsKey(key: K): Boolean = snapshot.containsKey(key)
 
-    override fun containsValue(value: V): Boolean = snapshot.containsValue(value)
+    override fun containsValue(value: @UnsafeVariance V): Boolean = snapshot.containsValue(value)
 
     override fun get(key: K): V? = snapshot[key]
 
     override fun isEmpty(): Boolean = snapshot.isEmpty()
 
-    override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
+    override val entries: MutableSet<MutableMap.MutableEntry<K, @UnsafeVariance V>>
         get() = snapshot.toMutableMap().entries
 
     override val keys: MutableSet<K>
         get() = snapshot.keys.toMutableSet()
 
-    override val values: MutableCollection<V>
+    override val values: MutableCollection<@UnsafeVariance V>
         get() = snapshot.values.toMutableSet()
 
     override fun clear() {
@@ -48,14 +48,14 @@ class SnapshotableHashMap<K : Any, V : Any>(
         live.clear()
     }
 
-    override fun put(key: K, value: V): V? {
+    override fun put(key: K, value: @UnsafeVariance V): V? {
         val oldValue = live.put(key, value)
         dirtyKeys.add(key)
         dirtyValues.add(value)
         return oldValue
     }
 
-    override fun putAll(from: Map<out K, V>) {
+    override fun putAll(from: Map<out K, @UnsafeVariance V>) {
         from.forEach { (key, value) ->
             put(key, value)
         }

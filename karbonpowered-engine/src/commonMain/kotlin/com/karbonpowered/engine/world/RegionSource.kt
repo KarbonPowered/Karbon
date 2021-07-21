@@ -1,6 +1,6 @@
 package com.karbonpowered.engine.world
 
-import com.karbonpowered.common.collection.concurrent.TripleIntObjectReferenceArrayMap
+import com.karbonpowered.common.collection.concurrent.map.TripleIntObjectReferenceArrayMap
 
 private const val REGION_MAP_BITS = 5
 
