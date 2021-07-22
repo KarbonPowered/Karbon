@@ -38,6 +38,7 @@ fun main() = runBlocking {
                     context.send(ClientboundStatusResponsePacket(motd))
                 }
                 is ServerboundStatusPingPacket -> context.send(ClientboundStatusPongPacket(packet.payload))
+
             }
             println("receive packet: $packet")
         }

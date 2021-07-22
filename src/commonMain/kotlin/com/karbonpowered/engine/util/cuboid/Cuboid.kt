@@ -1,6 +1,6 @@
-package com.karbonpowered.engine.world.cuboid
+package com.karbonpowered.engine.util.cuboid
 
-import com.karbonpowered.engine.world.discrete.Position
+import com.karbonpowered.engine.world.Position
 import com.karbonpowered.math.vector.FloatVector3
 
 open class Cuboid(
@@ -10,7 +10,7 @@ open class Cuboid(
     val x = base.x / size.x
     val y = base.y / size.y
     val z = base.z / size.z
-    val max = base + size
+    val max = Position(base.world, base.x + size.x, base.y + size.y, base.z + size.z)
 
     val world get() = base.world
 

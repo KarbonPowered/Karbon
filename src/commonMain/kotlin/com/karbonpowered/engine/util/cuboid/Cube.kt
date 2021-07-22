@@ -1,6 +1,6 @@
-package com.karbonpowered.engine.world.cuboid
+package com.karbonpowered.engine.util.cuboid
 
-import com.karbonpowered.engine.world.discrete.Position
+import com.karbonpowered.engine.world.Position
 import com.karbonpowered.math.vector.FloatVector3
 
 /**

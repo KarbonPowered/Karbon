@@ -1,14 +1,22 @@
 package com.karbonpowered.math.vector
 
+import kotlin.math.floor
+
 interface FloatVector3 {
     val array: FloatArray
     val x: Float get() = array[0]
     val y: Float get() = array[1]
     val z: Float get() = array[2]
 
+    val floorX get() = floor(x)
+    val floorY get() = floor(y)
+    val floorZ get() = floor(z)
+
     operator fun component1() = x
     operator fun component2() = y
     operator fun component3() = z
+
+    operator fun plus(other: FloatVector3): FloatVector3
 
     override fun toString(): String
     override fun equals(other: Any?): Boolean
@@ -25,6 +33,9 @@ private class FloatVector3Impl(
     override val array: FloatArray
 ) : FloatVector3 {
     private val hashCode = array.contentHashCode()
+
+    override fun plus(other: FloatVector3): FloatVector3 =
+        FloatVector3(x + other.x, y + other.y, z + other.z)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
