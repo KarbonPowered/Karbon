@@ -51,39 +51,24 @@ allprojects {
     }
 
     val compilerArgs = listOf(
-        "-Xopt-in=kotlin.RequiresOptIn",
-        "-Xopt-in=kotlin.ExperimentalUnsignedTypes",
         "-Xopt-in=kotlin.time.ExperimentalTime",
+        "-Xopt-in=kotlin.RequiresOptIn"
     )
 
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
         kotlinOptions {
             jvmTarget = "16"
             apiVersion = "1.5"
             languageVersion = "1.5"
-            freeCompilerArgs = freeCompilerArgs + compilerArgs
-//            allWarningsAsErrors = true
+            freeCompilerArgs = compilerArgs
         }
     }
 
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompileCommon> {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompileCommon>().configureEach {
         kotlinOptions {
             apiVersion = "1.5"
             languageVersion = "1.5"
-            freeCompilerArgs = freeCompilerArgs + compilerArgs
-//            allWarningsAsErrors = true
-        }
-    }
-}
-
-kotlin {
-    sourceSets {
-        val jvmMain by getting {
-            dependencies {
-                subprojects {
-                    api(this)
-                }
-            }
+            freeCompilerArgs = compilerArgs
         }
     }
 }
